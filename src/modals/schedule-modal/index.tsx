@@ -58,7 +58,7 @@ export interface ISchedule {
   date?: Date;
 }
 
-const ScheduleModal : React.FC<ScheduleModalProps> = (props) => {
+export const ScheduleModal : React.FC<ScheduleModalProps> = (props) => {
 
   console.log("Schedule modal user", props.user)
   const [ mode, setMode ]= useState<string>('create')
@@ -380,7 +380,6 @@ console.log(output)
 
 }
 
-export default ScheduleModal
 // export default connect((state : StoreState) => {
 //   console.log(state.schedule)
 // //  jobs: (state.schedule.jobs || {list: []}).list,
