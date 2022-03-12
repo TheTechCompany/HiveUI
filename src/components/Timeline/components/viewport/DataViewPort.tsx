@@ -63,6 +63,7 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
             nowposition={props.nowposition}
             dayWidth={dayWidth}
             color={item.color}
+            opacity={item.opacity}
             left={new_position}
             width={new_width}
             height={props.itemheight}

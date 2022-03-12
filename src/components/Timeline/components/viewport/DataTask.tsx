@@ -26,6 +26,7 @@ export interface DataTaskProps {
   onUpdateTask?: any;
   isSelected?: boolean;
   color?: any;
+  opacity?: number;
   onSelectItem?: any;
   height?: any;
   nowposition?: any;
@@ -226,6 +227,7 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
       return {
         ...configStyle,
         background: backgroundColor,
+        opacity: props.opacity || 1,
         left: left.current,
         width: width.current,
         height: props.height - 5,

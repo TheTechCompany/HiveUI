@@ -18,6 +18,7 @@ export type Task = {
     end?: Date;
     name?: string;
     color?: string | {color: string, percent: number}[];
+    opacity?: number;
     collapsibleContent?: any;
     hoverInfo?: any;
     showLabel?: boolean | string;
