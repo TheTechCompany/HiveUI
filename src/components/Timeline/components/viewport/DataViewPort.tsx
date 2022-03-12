@@ -44,6 +44,8 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
       if (!item) break;
       //FIXME PAINT IN BOUNDARIES
 
+      console.log({item})
+
       let new_position = DateHelper.dateToPixel(item.start, props.nowposition, dayWidth || 0);
       let new_width = DateHelper.dateToPixel(item.end, props.nowposition, dayWidth || 0) - new_position;
 

@@ -250,6 +250,7 @@ const hoverEnd = (e: any) => {
 }
 
 
+  console.log({opacity: props.opacity})
   const style = calculateStyle();
     return (
       <Popover
