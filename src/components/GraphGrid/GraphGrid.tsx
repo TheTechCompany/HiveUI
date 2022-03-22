@@ -36,7 +36,7 @@ export interface GridLayoutItem {
 
 export interface GraphGridProps {
   className?: string;
-
+  onRemoveItem?: (item: GridLayoutItem) => void;
   onLayoutChange: (layout: GridLayout[]) => void;
   layout: GridLayoutItem[]
   children: (item: GridLayoutItem) => React.ReactNode;
@@ -81,7 +81,7 @@ export const BaseGraphGrid: React.FC<GraphGridProps> = (props) => {
       {props.layout.map((item) => (
         <div style={{display: 'flex'}} key={item.id}>
           {props.noWrap ? props.children(item) : (
-          <GraphContainer dataKey={item.id} label={item.label} total={item.total} onRemove={() => {}}>
+          <GraphContainer dataKey={item.id} label={item.label} total={item.total} onRemove={() => props.onRemoveItem?.(item)}>
             {props.children?.(item)}
           </GraphContainer>
           )}
