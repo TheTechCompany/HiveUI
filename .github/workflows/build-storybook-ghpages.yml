@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+    paths: ["src/components/**", "src/views/**", "src/modals/**"] # Trigger the action only when files change in the folders defined here
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
