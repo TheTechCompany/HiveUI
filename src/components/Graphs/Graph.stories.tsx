@@ -7,7 +7,7 @@ import { Box } from 'grommet';
 import { BarGraph } from './BarGraph';
 
 export default {
-  title: 'Example/Graph',
+  title: 'Components/Graph',
   component: LineGraph,
 } as ComponentMeta<typeof LineGraph>;
 

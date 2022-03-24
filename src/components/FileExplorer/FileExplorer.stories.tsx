@@ -8,7 +8,7 @@ import {
 } from "./FileExplorer";
 
 export default {
-  title: "Example/FileExplorer",
+  title: "Components/FileExplorer",
   component: FileExplorer,
 } as Meta;
 
