@@ -15,7 +15,7 @@ import {
 } from "./components/nodes";
 
 export default {
-  title: "Example/InfiniteCanvas",
+  title: "Components/InfiniteCanvas",
   component: InfiniteCanvas,
 } as Meta;
 

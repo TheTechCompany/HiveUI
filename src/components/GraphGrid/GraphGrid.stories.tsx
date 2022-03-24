@@ -5,7 +5,7 @@ import { GraphGrid } from './GraphGrid';
 import { Box } from 'grommet';
 
 export default {
-  title: 'Example/GraphGrid',
+  title: 'Components/GraphGrid',
   component: GraphGrid,
   argTypes: {
     color: { control: 'color' },
@@ -25,7 +25,7 @@ Primary.args = {
 		w: 2,
 		h: 2,
 	}],
-	children: (item) => (<Box>{item.id}</Box>)
+	children: (item: any) => (<Box>{item.id}</Box>)
 };
 
 
@@ -42,5 +42,5 @@ CustomContainer.args = {
 		h: 2,
 	}],
 	noWrap: true,
-	children: (item) => (<Box>{item.id}</Box>),
+	children: (item: any) => (<Box>{item.id}</Box>),
 };

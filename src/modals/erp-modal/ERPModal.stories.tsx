@@ -9,7 +9,7 @@ import {
 } from ".";
 
 export default {
-  title: "Example/ERPModal",
+  title: "Components/ERPModal",
   component: ERPModal,
 } as Meta;
 
