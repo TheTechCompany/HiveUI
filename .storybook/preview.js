@@ -1,3 +1,6 @@
+import { Grommet } from "grommet";
+import {BaseStyle} from '@hexhive/styles'
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -7,3 +10,11 @@ export const parameters = {
     },
   },
 }
+
+export const decorators = [
+  (Story) => (
+    <Grommet style={{flex: 1, display: 'flex'}} theme={BaseStyle}>
+      <Story />
+    </Grommet>
+  ),
+];
