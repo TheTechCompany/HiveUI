@@ -8,7 +8,7 @@ import { useState } from 'react';
 import moment from 'moment';
 
 export default {
-  title: 'Example/Timeline',
+  title: 'Components/Timeline',
   component: Timeline,
   argTypes: {
     color: { control: 'color' },

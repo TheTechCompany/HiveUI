@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { Kanban } from "./Kanban";
 
 export default {
-  title: "Example/Kanban",
+  title: "Components/Kanban",
   component: Kanban,
   argTypes: {
     color: { control: "color" },

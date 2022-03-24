@@ -13,7 +13,7 @@ export interface SidebarProps {
     email: string;
   }
   menu: any[];
-  active: any;
+  active?: any;
   onLogoClick?: () => void;
   onSelect: any;
 }

@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { ColorDot } from './ColorDot';
 
 export default {
-  title: 'Example/ColorDot',
+  title: 'Components/ColorDot',
   component: ColorDot,
   argTypes: {
     color: { control: 'color' },

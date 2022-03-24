@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { FileViewer } from "./FileViewer";
 
 export default {
-  title: "Example/FileViewer",
+  title: "Components/FileViewer",
   component: FileViewer,
   argTypes: {
     color: { control: "color" },
