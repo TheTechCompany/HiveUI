@@ -1,9 +1,14 @@
-import React from 'react';
-import { Kanban } from '../components/Kanban/Kanban'
+import React from "react";
+import { Kanban } from "../components/Kanban/Kanban";
 
-describe('Kanban', () => {
+// Kanban - tests, can move card, can add card, can add list, can move list
 
-    test('Can add card', () => {
-        
-    })
-})
+describe("Kanban", () => {
+  test("Can add card", () => {});
+
+  test("Can move card", () => {});
+
+  test("Can add list", () => {});
+
+  test("Can move list", () => {});
+});
