@@ -14,6 +14,9 @@ const Template: ComponentStory<typeof AvatarList> = (args) => (
 
 export const Primary = Template.bind({});
 Primary.args = {
-  name: "green",
-  size: 10,
+  users: [
+    { name: "John Doe", color: "red" },
+    { name: "Bob Jones", color: "blue" },
+  ],
+  size: 48,
 };

@@ -1,7 +1,7 @@
 // __tests__/ColorDot.test.ts
 import React from "react";
 
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { ColorDot } from "..";
 
 describe("ColorDot", () => {
