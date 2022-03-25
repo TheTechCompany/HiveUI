@@ -37,7 +37,9 @@ export interface FileExplorerProps {
     onBreadcrumbClick: (crumb: {name: string, id: string}) => void;
     onClick?: (item: IFile) => void;
 
+    path: string;
     onNavigate: (id: string) => void;
+    
     selected?: string[];
     onSelect?: (id: string) => void;
     onDeselect?: (id: string) => void;
@@ -54,20 +56,15 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const [ view, setView ] = useState<string>('list');
 
     useEffect(() => {
-        if(currentPath > -1 && !_.isEqual(props.breadcrumbs, navigationHistory[currentPath].path)){
-            let history = navigationHistory.slice()
-            history.push({path: props.breadcrumbs})
-            setCurrentPath(history.length - 1)
-            setNavigationHistory(history)
-        }
-    }, [props.breadcrumbs])
+        console.log({path: props.path})
+    }, [props.path])
 
     useEffect(() => {
-        listenHistory((location) => {
-            console.log("location", location)
+        // listenHistory((location) => {
+        //     console.log("location", location)
 
-            props.onBreadcrumbClick({name: '', id: location.id})
-        })
+        //     props.onBreadcrumbClick({name: '', id: location.id})
+        // })
     }, [])
 
     const views : {[key: string]: JSX.Element} = {
@@ -77,7 +74,8 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     }
 
     const onNavigate = (id: string) => {
-        historyRef.push(`/explore/${id}`, {id: id})
+        props.onNavigate(id)
+        // historyRef.push(`/explore/${id}`, {id: id})
     }
 
     const [ preview, setPreview ] = useState<IFile  | undefined | null>(null)
