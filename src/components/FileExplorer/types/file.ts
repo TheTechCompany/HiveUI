@@ -5,3 +5,8 @@ export interface IFile {
     size?: number;
     isFolder?: boolean;
 }
+
+export interface Breadcrumb {
+    id?: string;
+    name: string;
+}
