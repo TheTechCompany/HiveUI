@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { Story, Meta, storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { TextInput } from "grommet";
+import path from 'path'
 import {
     FileExplorer, FileExplorerProps
 } from "./FileExplorer";
@@ -13,9 +14,20 @@ export default {
 } as Meta;
 
 
-const Template: Story<FileExplorerProps> = (args) => (
-  <FileExplorer {...args} />
-);
+const Template: Story<FileExplorerProps> = (args) => {
+  const [ strPath, setPath ] = useState('');
+
+  return <FileExplorer  
+          {...args} 
+          onNavigate={(id) => {
+            setPath(path.join(strPath, id))
+            args.onNavigate?.(id)
+          }}
+          onBreadcrumbClick={(crumb) => {
+            setPath(crumb)
+          }} 
+          path={strPath}  />
+};
 
 export const Files = Template.bind({});
 Files.args = {
@@ -27,6 +39,17 @@ Files.args = {
     ]
 }
 
+export const Folders = Template.bind({});
+Folders.args = {
+  onNavigate: (id) => console.log({id}),
+  files: [
+    {id: 'folder', name: 'Folder', isFolder: true},
+  ],
+  refetchFiles: (path) => {
+    console.log({path})
+    return [];
+  }
+}
 export const Uploads = Template.bind({});
 Uploads.args = {
     files: [

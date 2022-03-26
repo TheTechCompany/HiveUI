@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Kanban } from "./Kanban";
+import { Box } from "grommet";
 
 export default {
   title: "Components/Kanban",
@@ -43,5 +44,6 @@ WithCards.args = {
       ],
     },
   ],
-  renderCard: (item: any) => <div>{item.name}</div>,
+  onCreateColumn: () => {},
+  renderCard: (item: any) => <Box background="neutral-1">{item.name}</Box>,
 };

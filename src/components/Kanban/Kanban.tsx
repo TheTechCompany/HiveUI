@@ -7,6 +7,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { KanbanColumn } from "./KanbanColumn";
+import { KanbanCreateColumn } from "./KanbanCreateColumn";
 
 export interface KColumn {
   id?: any;
@@ -24,6 +25,8 @@ export interface BaseKanbanProps {
 
   renderCard?: (item?: any) => any;
   onDrag?: (result: DropResult) => void;
+  
+  onCreateColumn?: () => void;
   columns?: Array<KColumn>;
 }
 export const Kanban: React.FC<BaseKanbanProps> = ({
@@ -33,6 +36,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   withScrollableColumns,
   renderCard,
   onDrag,
+  onCreateColumn,
   columns = [],
 }) => {
   const onDragEnd = (result: DropResult) => {
@@ -84,6 +88,10 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
               renderCard={renderCard}
             />
           ))}
+          <Box>
+            {onCreateColumn && <KanbanCreateColumn onCreate={onCreateColumn} />}
+          </Box>
+          
           {provided.placeholder}
         </Box>
       )}

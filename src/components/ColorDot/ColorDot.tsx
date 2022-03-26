@@ -11,7 +11,9 @@ export interface ColorDotProps {
 export const ColorDot : React.FC<ColorDotProps> = ({size, color}) => {
 
     return (
-      <div style={{
+      <div 
+        className="hive-color-dot"  
+      style={{
         marginRight: 8,
         background: color,
         borderRadius: size * 2,
