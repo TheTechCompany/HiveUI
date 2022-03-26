@@ -1,8 +1,9 @@
 import { Box } from 'grommet';
 import React from 'react';
-import { RouteObject, Routes, useRoutes } from 'react-router-dom';
+import { RouteObject, Routes, useNavigate, useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { Sidebar } from '../../components';
+import { useViewport } from '../../hooks';
 
 export interface SidebarViewProps {
     menu?: any[];
@@ -14,27 +15,48 @@ export interface SidebarViewProps {
 
 export const BaseSidebarView : React.FC<SidebarViewProps> = (props) => {
 
-    const routes = useRoutes(props.routes || [])
+    const routing_table = props.menu?.map((menu_item) => ({
+        path: menu_item.path,
+        element: menu_item.component,
+        children: []
+    }))
 
+    const routes = useRoutes(routing_table || [])
+
+    console.log({routes})
+    const navigate = useNavigate()
+
+    const { width, height, resizeListener, isMobile, isTablet } = useViewport()
+
+    const getDirection = () => {
+        if(!isMobile){
+          return 'row';
+        }else{
+          return 'column-reverse'
+        }
+      }
+
+      console.log({isMobile})
     return (
-        <Box flex className={props.className}>
+        <Box 
+            direction={isMobile ? 'column-reverse' : 'row'}
+            flex 
+            className={props.className}>
+            {resizeListener}
             <Sidebar
                 menu={props.menu || []}
-                onSelect={props.onMenuSelect}
+                onSelect={(item) => {
+                    console.log({item: item.path})
+                    
+                    
+                    navigate(item.path)
+                }}
                 />
             <Box>
-                <Routes>
                     {routes}
-                </Routes>
             </Box>
         </Box>
     )
 }
 
-export const SidebarView = styled(BaseSidebarView)`
-    flex-direction: row;
-
-    @media only screen and (max-width: 600px) {
-        flex-direction: column-reverse;
-    }
-`
+export const SidebarView = BaseSidebarView
