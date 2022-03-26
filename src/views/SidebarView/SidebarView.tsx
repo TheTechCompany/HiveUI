@@ -23,20 +23,10 @@ export const BaseSidebarView : React.FC<SidebarViewProps> = (props) => {
 
     const routes = useRoutes(routing_table || [])
 
-    console.log({routes})
     const navigate = useNavigate()
 
     const { width, height, resizeListener, isMobile, isTablet } = useViewport()
 
-    const getDirection = () => {
-        if(!isMobile){
-          return 'row';
-        }else{
-          return 'column-reverse'
-        }
-      }
-
-      console.log({isMobile})
     return (
         <Box 
             direction={isMobile ? 'column-reverse' : 'row'}

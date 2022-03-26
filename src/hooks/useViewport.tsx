@@ -6,8 +6,6 @@ export const useViewport = () => {
     
     const width = sizes.width || window.innerWidth;
     const height = sizes.height || window.innerHeight;
-    // const [ width, setWidth ] = useState<number>(window.innerWidth)
-    // const [ height, setHeight ] = useState<number>(window.innerHeight)
 
     
     const isTablet = useMemo(() => {
@@ -18,14 +16,6 @@ export const useViewport = () => {
         return width < 800
     }, [width, height])
 
-    // window.onresize = () => {
-    //     // console.log({width: window.innerWidth})
-    //     setWidth(window.innerWidth)
-    //     setHeight(window.innerHeight);
-    // }
-
-    // setWidth(window.innerWidth)
-    // setHeight(window.innerHeight);
 
     return {width, height, isMobile, isTablet, resizeListener}
 }

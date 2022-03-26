@@ -34,20 +34,6 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
   const defaultMinified = isTablet;
 
   const [ sidebarExpanded, setSidebarExpanded ] = useState();
-  // _logout(){
-  //   this.props.logout()
-  //   this.props.history.push('/')
-  // }
-
-  // _settings(){
-  //   this.props.history.push(`${props.match.url}settings`);
-  // }
-
-  // _profile(){
-  //   this.props.history.push(`${props.match.url}profile`);
-  // }
-
-  // const { active, user, menu, logo } = props;
 
   const getDirection = () => {
     if(isMobile){
