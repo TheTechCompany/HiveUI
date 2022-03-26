@@ -20,7 +20,6 @@ import { MissingPreview } from './components/missing-preview'
 import { UploadDrawer } from './components/upload-drawer'
 import _ from 'lodash'
 import { history as historyRef, listenHistory } from './context/history'
-import path from 'path'
 
 export interface FileExplorerProps {
     files?: IFile[] | IFile
@@ -62,7 +61,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
 
     useEffect(() => {
         console.log({path: props.path})
-        setBreadcrumbs(props.path.split(path.sep).map((x) => ({name: x})))
+        setBreadcrumbs(props.path.split('/').map((x) => ({name: x})))
         props.refetchFiles?.(props.path);
     }, [props.path])
 

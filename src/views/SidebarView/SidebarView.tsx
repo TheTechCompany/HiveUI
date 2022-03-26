@@ -1,19 +1,17 @@
 import { Box } from 'grommet';
 import React from 'react';
 import { RouteObject, Routes, useNavigate, useRoutes } from 'react-router-dom';
-import styled from 'styled-components';
 import { Sidebar } from '../../components';
 import { useViewport } from '../../hooks';
 
 export interface SidebarViewProps {
     menu?: any[];
-    onMenuSelect?: (item: any) => void;
-    routes?: RouteObject[]
 
+    viewportPadding?: string;
     className?: string;
 }
 
-export const BaseSidebarView : React.FC<SidebarViewProps> = (props) => {
+export const SidebarView : React.FC<SidebarViewProps> = (props) => {
 
     const routing_table = props.menu?.map((menu_item) => ({
         path: menu_item.path,
@@ -27,26 +25,27 @@ export const BaseSidebarView : React.FC<SidebarViewProps> = (props) => {
 
     const { width, height, resizeListener, isMobile, isTablet } = useViewport()
 
+    const Components = [
+        <Sidebar
+            menu={props.menu || []}
+            onSelect={(item) => {                    
+                navigate(item.path)
+            }}
+            />,
+        <Box 
+            pad={props.viewportPadding || 'xsmall'} 
+            flex>
+            {routes}
+        </Box>
+    ]
     return (
         <Box 
-            direction={isMobile ? 'column-reverse' : 'row'}
+            direction={isMobile ? 'column' : 'row'}
             flex 
             className={props.className}>
             {resizeListener}
-            <Sidebar
-                menu={props.menu || []}
-                onSelect={(item) => {
-                    console.log({item: item.path})
-                    
-                    
-                    navigate(item.path)
-                }}
-                />
-            <Box>
-                    {routes}
-            </Box>
+
+            {isMobile ? Components.reverse() : Components}
         </Box>
     )
 }
-
-export const SidebarView = BaseSidebarView
