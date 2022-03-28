@@ -34,5 +34,13 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Get version
+        run: |
+         PACKAGE_VERSION=$(cat package.json \
+          | grep version \
+          | head -1 \
+          | awk -F: '{ print $2 }' \
+          | sed 's/[",]//g')
+          
       - name: Release
         run: npm run release -- --preRelease=alpha
