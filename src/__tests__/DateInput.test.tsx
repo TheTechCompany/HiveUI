@@ -23,10 +23,6 @@ describe('DateInput', () => {
             fireEvent.click(date);
 
             const input = container.querySelector('input');
-
-
-
-            console.log({date})
         
             expect(input).toHaveValue('10/03/2022');
         }

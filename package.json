@@ -34,7 +34,7 @@
     "@types/react-popover": "^0.5.4",
     "@types/styled-components": "^5.1.24",
     "babel-loader": "^8.2.4",
-    "grommet": "^2.21.0",
+    "grommet": "https://github.com/grommet/grommet/tarball/stable",
     "jest": "^27.5.1",
     "jest-environment-jsdom": "^27.5.1",
     "postcss": "^8.4.8",
