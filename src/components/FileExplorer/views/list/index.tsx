@@ -34,7 +34,7 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                             justify="between"  
                             onClick={(e) => {
                                 
-                                datum.isFolder ? navigate?.(datum.id || '') : clickFile?.(datum)
+                                datum.isFolder ? navigate?.(datum.name || '') : clickFile?.(datum)
                             }} direction="row">
                         <Box direction="row" align="center">
            

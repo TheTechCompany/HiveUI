@@ -1,6 +1,5 @@
 import typescript from "rollup-plugin-typescript2";
-import resolve from '@rollup/plugin-node-resolve';
-import postcss from 'rollup-plugin-styles'
+
 import pkg from "./package.json";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];

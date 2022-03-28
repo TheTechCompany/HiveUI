@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Box, Button, Text } from 'grommet';
+import { Box, Button, List, Nav, Text } from 'grommet';
 
 import styled from 'styled-components'
 import { matchPath } from 'react-router-dom';
+import { useViewport } from '../../hooks';
+import { SidebarMenuItem, SidebarMenuItemProps } from './SidebarItem';
+
+export interface SidebarMenuItem {
+  path: string;
+  icon?: any;
+  label?: string;
+  component?: any
+}
 
 export interface SidebarProps {
   logo?: any
@@ -12,54 +21,62 @@ export interface SidebarProps {
     name: string;
     email: string;
   }
-  menu: any[];
+  menu: SidebarMenuItem[];
   active?: any;
   onLogoClick?: () => void;
-  onSelect: any;
+  onSelect: (item: SidebarMenuItem) => void;
 }
 
 const BaseSidebar: React.FC<SidebarProps> = (props) => {
 
-  // _logout(){
-  //   this.props.logout()
-  //   this.props.history.push('/')
-  // }
+  const { width, height, isMobile, isTablet } = useViewport();
 
-  // _settings(){
-  //   this.props.history.push(`${props.match.url}settings`);
-  // }
+  const defaultMinified = isTablet;
 
-  // _profile(){
-  //   this.props.history.push(`${props.match.url}profile`);
-  // }
+  const [ sidebarExpanded, setSidebarExpanded ] = useState();
 
-  // const { active, user, menu, logo } = props;
+  const getDirection = () => {
+    if(isMobile){
+      return 'row';
+    }else{
+      return 'column'
+    }
+  }
 
   return (
     <Box
+      width={!isMobile ? (!defaultMinified ? '13vw' : '50px') : '100%' }
+      height={isMobile ? '55px' : '100%'}
       background={{color: "brand"}}
       elevation="small"
-      className={`${props.className} sidebar`}>
+      direction={getDirection()}>
+      
       {props.logo && <Button 
         onClick={props.onLogoClick}
         icon={props.logo}
         style={{padding: '10%'}}
         className="sidebar-header-image" >
       </Button> }
-      <Box margin={{top: 'medium'}} pad={{vertical: 'xsmall'}} className="sidebar-menu">
-        {props.menu?.map((x, ix) => (
-          <li
-            key={`sidebar-${ix}`}
-            className={`sidebar-menu-opt ${matchPath(props.active, x.path)  ? "active" : ''}`}
-            onClick={() => props.onSelect(x)}>
+      <Nav
+        gap="none"
+       direction={getDirection()}
+        pad={'none'}
 
-            {React.cloneElement(x.icon, {style: {minWidth: '20px', maxWidth: '20px'}})}
-            <Text size="15px" color={'neutral-1'} margin={{left: 'small'}}>{x.label}</Text>
+        >
+        {props.menu.map((datum) => (
+          <SidebarMenuItem 
+            minified={defaultMinified}
+            onClick={() => {
+              props.onSelect(datum)
+            }}
+            path={datum.path}
+            label={datum.label} 
+            icon={datum.icon}/>
 
-
-          </li>
         ))}
-      </Box>
+     
+
+      </Nav>
 
     </Box>
   );
@@ -68,175 +85,178 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
 export interface ID {
  id: number;
 }
-export const Sidebar = styled(BaseSidebar)`
-@media print{
-  .sidebar{
-    display: none !important;
-  }
-}
 
-@media (max-width: 600px){
-  .sidebar-header-image, .sidebar-admin-option, .sidebar-footer{
-    display: none !important;
-  }
+export const Sidebar = BaseSidebar
 
-  .sidebar{
-    width: 100% !important;
-  }
+// styled<SidebarProps>(BaseSidebar)`
+// @media print{
+//   .sidebar{
+//     display: none !important;
+//   }
+// }
 
-  .sidebar-menu{
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 0;
-    justify-content: space-between;
-  }
-}
+// @media (max-width: 600px){
+//   .sidebar-header-image, .sidebar-admin-option, .sidebar-footer{
+//     display: none !important;
+//   }
 
-@media (min-width: 601px) and (max-width:1024px){
-  .sidebar{
-    width: 52px !important;
-  }
-}
+//   .sidebar{
+//     width: 100% !important;
+//   }
 
-@media (max-width: 1025px){
+//   .sidebar-menu{
+//     display: flex;
+//     flex-direction: row;
+//     margin-bottom: 0;
+//     justify-content: space-between;
+//   }
+// }
 
-  .sidebar > .sidebar-footer > .sidebar-footer__action{
-    flex: 1;
-    justify-content: center;
-  }
-  .sidebar > .sidebar-footer > .sidebar-footer__info{
-    display: none;
-  }
+// @media (min-width: 601px) and (max-width:1024px){
+//   .sidebar{
+//     width: 52px !important;
+//   }
+// }
 
-  .sidebar > .sidebar-menu {
-    margin-top: 0px;
-  }
+// @media (max-width: 1025px){
 
-  .sidebar-menu > .sidebar-menu-opt{
-    font-size: 0px;
-  }
+//   .sidebar > .sidebar-footer > .sidebar-footer__action{
+//     flex: 1;
+//     justify-content: center;
+//   }
+//   .sidebar > .sidebar-footer > .sidebar-footer__info{
+//     display: none;
+//   }
 
-  .sidebar > .sidebar-header-image{
-    display: none !important;
-  }
+//   .sidebar > .sidebar-menu {
+//     margin-top: 0px;
+//   }
 
-  .sidebar-admin-option p{
-    font-size: 0px;
-  }
-}
+//   .sidebar-menu > .sidebar-menu-opt{
+//     font-size: 0px;
+//   }
 
-.sidebar-admin-option:hover{ 
- background: rgb(230, 230, 230, 0.2); 
-}
+//   .sidebar > .sidebar-header-image{
+//     display: none !important;
+//   }
 
-.sidebar-admin-option{
-  cursor: pointer;
-  display: flex;
-  color: white;
-  align-items: center;
-  height: 45px;
-  font-size: 18px;
-  padding-left: 15px;
-}
+//   .sidebar-admin-option p{
+//     font-size: 0px;
+//   }
+// }
 
-.sidebar-header-image{
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+// .sidebar-admin-option:hover{ 
+//  background: rgb(230, 230, 230, 0.2); 
+// }
 
-.sidebar-footer{
-  display: flex;
-  color: white;
-  padding: 8px;
-  border-top: 1px solid #e6e6e6;
-}
+// .sidebar-admin-option{
+//   cursor: pointer;
+//   display: flex;
+//   color: white;
+//   align-items: center;
+//   height: 45px;
+//   font-size: 18px;
+//   padding-left: 15px;
+// }
 
-.sidebar-footer__info{
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: flex-start;
-}
+// .sidebar-header-image{
+//   background-size: contain;
+//   background-repeat: no-repeat;
+//   background-position: center;
+// }
 
-.sidebar-footer__action{
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  justify-content: flex-end;
-}
+// .sidebar-footer{
+//   display: flex;
+//   color: white;
+//   padding: 8px;
+//   border-top: 1px solid #e6e6e6;
+// }
 
-.sidebar-footer__email > p{
-  font-size: 11px;
-  color: #e6e6e6;
-}
+// .sidebar-footer__info{
+//   display: flex;
+//   flex: 1;
+//   flex-direction: column;
+//   align-items: flex-start;
+// }
 
-&.sidebar{
-  user-select: none;
-  border-radius-top-left: 0px !important;
-  border-radius-bottom-left: 0px !important;
-  display: flex;
-  width: 155px;
-  flex-direction: column;
-}
+// .sidebar-footer__action{
+//   display: flex;
+//   align-items: center;
+//   cursor: pointer;
+//   justify-content: flex-end;
+// }
 
-.sidebar-header-image{
-  height: 60px;
-  margin-top: 16px;
-  filter: invert(1);
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-bottom: 15px;
-}
+// .sidebar-footer__email > p{
+//   font-size: 11px;
+//   color: #e6e6e6;
+// }
 
-.sidebar-menu{
-  padding: 0;
-  flex: 1;
-  list-style: none;
-}
+// &.sidebar{
+//   user-select: none;
+//   border-radius-top-left: 0px !important;
+//   border-radius-bottom-left: 0px !important;
+//   display: flex;
+//   width: 155px;
+//   flex-direction: column;
+// }
 
-.sidebar-menu > li{
-  cursor: pointer;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  color: #e6e6e6;
-  padding-left: 15px;
-}
+// .sidebar-header-image{
+//   height: 60px;
+//   margin-top: 16px;
+//   filter: invert(1);
+//   padding-left: 10px;
+//   padding-right: 10px;
+//   margin-bottom: 15px;
+// }
 
-.sidebar-menu > li > span {
-  margin-right: 15px;
-}
+// .sidebar-menu{
+//   padding: 0;
+//   flex: 1;
+//   list-style: none;
+// }
 
-.sidebar-menu > li:hover{
- background: rgb(230, 230, 230, 0.2); 
-}
+// .sidebar-menu > li{
+//   cursor: pointer;
+//   height: 45px;
+//   display: flex;
+//   align-items: center;
+//   font-size: 18px;
+//   color: #e6e6e6;
+//   padding-left: 15px;
+// }
 
-.sidebar-menu > li.active{
-  background: rgb(230, 230, 230, 0.2);;
-}
+// .sidebar-menu > li > span {
+//   margin-right: 15px;
+// }
 
-`
+// .sidebar-menu > li:hover{
+//  background: rgb(230, 230, 230, 0.2); 
+// }
 
-/*
- {user.user_type == "admin" ? (
-          <div className="sidebar-admin-option" onClick={this._settings.bind(this)}>
-            <Icon style={{marginRight: '15px'}}>supervised_user_circle</Icon>
-            <Typography className="sidebar-admin-option__text">Admin</Typography>
-          </div>
-        ) : null}
-*/
+// .sidebar-menu > li.active{
+//   background: rgb(230, 230, 230, 0.2);;
+// }
 
-//   export default connect((state) => {
-//     return {
-//       user: state.auth.user,
-//       token: state.auth.token
-//     }
-//   }, (dispatch) => ({
-//     logout: () => dispatch(logout())
-//   }))(withRouter(styled(Sidebar)`
-//     .sidebar-header-image{
-//       background-image: url(${Logo});
-//     }
-//   `));
+// `
+
+// /*
+//  {user.user_type == "admin" ? (
+//           <div className="sidebar-admin-option" onClick={this._settings.bind(this)}>
+//             <Icon style={{marginRight: '15px'}}>supervised_user_circle</Icon>
+//             <Typography className="sidebar-admin-option__text">Admin</Typography>
+//           </div>
+//         ) : null}
+// */
+
+// //   export default connect((state) => {
+// //     return {
+// //       user: state.auth.user,
+// //       token: state.auth.token
+// //     }
+// //   }, (dispatch) => ({
+// //     logout: () => dispatch(logout())
+// //   }))(withRouter(styled(Sidebar)`
+// //     .sidebar-header-image{
+// //       background-image: url(${Logo});
+// //     }
+// //   `));

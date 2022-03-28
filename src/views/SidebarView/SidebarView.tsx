@@ -1,40 +1,51 @@
 import { Box } from 'grommet';
 import React from 'react';
-import { RouteObject, Routes, useRoutes } from 'react-router-dom';
-import styled from 'styled-components';
+import { RouteObject, Routes, useNavigate, useRoutes } from 'react-router-dom';
 import { Sidebar } from '../../components';
+import { useViewport } from '../../hooks';
 
 export interface SidebarViewProps {
     menu?: any[];
-    onMenuSelect?: (item: any) => void;
-    routes?: RouteObject[]
 
+    viewportPadding?: string;
     className?: string;
 }
 
-export const BaseSidebarView : React.FC<SidebarViewProps> = (props) => {
+export const SidebarView : React.FC<SidebarViewProps> = (props) => {
 
-    const routes = useRoutes(props.routes || [])
+    const routing_table = props.menu?.map((menu_item) => ({
+        path: menu_item.path,
+        element: menu_item.component,
+        children: []
+    }))
 
+    const routes = useRoutes(routing_table || [])
+
+    const navigate = useNavigate()
+
+    const { width, height, resizeListener, isMobile, isTablet } = useViewport()
+
+    const Components = [
+        <Sidebar
+            menu={props.menu || []}
+            onSelect={(item) => {                    
+                navigate(item.path)
+            }}
+            />,
+        <Box 
+            pad={props.viewportPadding || 'xsmall'} 
+            flex>
+            {routes}
+        </Box>
+    ]
     return (
-        <Box flex className={props.className}>
-            <Sidebar
-                menu={props.menu || []}
-                onSelect={props.onMenuSelect}
-                />
-            <Box>
-                <Routes>
-                    {routes}
-                </Routes>
-            </Box>
+        <Box 
+            direction={isMobile ? 'column' : 'row'}
+            flex 
+            className={props.className}>
+            {resizeListener}
+
+            {isMobile ? Components.reverse() : Components}
         </Box>
     )
 }
-
-export const SidebarView = styled(BaseSidebarView)`
-    flex-direction: row;
-
-    @media only screen and (max-width: 600px) {
-        flex-direction: column-reverse;
-    }
-`

@@ -9,7 +9,7 @@ import { FileExplorerContext } from './context'
 import { DEFAULT_ICONS } from './defaults/defaultIcons'
 import { FolderModal } from './modals'
 import { IAction } from './types/action'
-import { IFile } from './types/file'
+import { Breadcrumb, IFile } from './types/file'
 import { humanFileSize } from './utils'
 import { GridView } from './views/grid'
 import { ListView } from './views/list'
@@ -24,6 +24,8 @@ import { history as historyRef, listenHistory } from './context/history'
 export interface FileExplorerProps {
     files?: IFile[] | IFile
 
+    refetchFiles?: (path: string) => IFile[];
+
     preview?: string;
 
     uploading?: {name?: string, percent?: number}[]
@@ -34,10 +36,11 @@ export interface FileExplorerProps {
     actions?: IAction[];
     
     onDrop: (files: File[]) => void;
-    onBreadcrumbClick: (crumb: {name: string, id: string}) => void;
     onClick?: (item: IFile) => void;
 
-    onNavigate: (id: string) => void;
+    path: string;
+    onNavigate: (path: string) => void;
+    
     selected?: string[];
     onSelect?: (id: string) => void;
     onDeselect?: (id: string) => void;
@@ -51,23 +54,22 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const [navigationHistory, setNavigationHistory] = useState<{path: {name: string, id: string}[]}[]>([])
     const [ currentPath, setCurrentPath ] = useState<number>(-1)
 
+    const [ breadcrumbs, setBreadcrumbs ] = useState<Breadcrumb[]>([])
+
     const [ view, setView ] = useState<string>('list');
 
     useEffect(() => {
-        if(currentPath > -1 && !_.isEqual(props.breadcrumbs, navigationHistory[currentPath].path)){
-            let history = navigationHistory.slice()
-            history.push({path: props.breadcrumbs})
-            setCurrentPath(history.length - 1)
-            setNavigationHistory(history)
-        }
-    }, [props.breadcrumbs])
+        console.log({path: props.path})
+        setBreadcrumbs(props.path.split('/').slice(1).map((x) => ({name: x})))
+        props.refetchFiles?.(props.path);
+    }, [props.path])
 
     useEffect(() => {
-        listenHistory((location) => {
-            console.log("location", location)
+        // listenHistory((location) => {
+        //     console.log("location", location)
 
-            props.onBreadcrumbClick({name: '', id: location.id})
-        })
+        //     props.onBreadcrumbClick({name: '', id: location.id})
+        // })
     }, [])
 
     const views : {[key: string]: JSX.Element} = {
@@ -76,8 +78,13 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
         thumbnail: <ThumbnailView />
     }
 
-    const onNavigate = (id: string) => {
-        historyRef.push(`/explore/${id}`, {id: id})
+    const onNavigate = (path: string) => {
+        console.log({path})
+        let parts = props.path.split('/').slice(1).filter((a) => a.length > 0);
+        parts.push(path);
+
+        props.onNavigate(`/${parts.join('/')}`)
+        // historyRef.push(`/explore/${id}`, {id: id})
     }
 
     const [ preview, setPreview ] = useState<IFile  | undefined | null>(null)
@@ -153,8 +160,8 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                     justify="between"
                     direction="row">
                 <Breadcrumbs 
-                    onBreadcrumbClick={props.onBreadcrumbClick}
-                    breadcrumbs={props.breadcrumbs || []} />
+                    onBreadcrumbClick={(crumb) => props.onNavigate(`/${crumb}`)}
+                    breadcrumbs={breadcrumbs || []} />
 
                     <Box 
                         round={{size: 'small'}}
