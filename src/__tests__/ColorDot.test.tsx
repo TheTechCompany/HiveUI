@@ -1,21 +1,16 @@
 // __tests__/ColorDot.test.ts
-import React from 'react'
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { ColorDot } from "..";
 
-import {render, fireEvent, waitFor, screen} from '@testing-library/react'
-import { ColorDot } from '..'
+describe("ColorDot", () => {
+  test("renders at specified size", () => {
+    render(<ColorDot size={5} color={"red"} />);
 
-import '@testing-library/jest-dom'
+    const element = screen.getByRole("color-dot");
 
-describe('ColorDot', () => {
-    test('renders at specified size', () => {
-        const { container } = render(<ColorDot size={5} color={'red'} />);
-    
-        const element = container.querySelector('.hive-color-dot');
-    
-        expect(element).toHaveStyle({
-            background: 'red',
-            width: '5px',
-            height: '5px'
-        });
-    })
-})
+    expect(element.style.width).toBe("5px");
+    expect(element.style.height).toBe("5px");
+  });
+});
