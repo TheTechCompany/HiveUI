@@ -32,7 +32,6 @@ Files.args = {
     files: [
         {name: 'Test.pdf', size: 22000},
         {name: 'Test.pdf', size: 22000},
-        {name: 'Test.pdf', size: 22000},
     ]
 }
 
