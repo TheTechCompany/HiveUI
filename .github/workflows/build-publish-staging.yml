@@ -35,4 +35,4 @@ jobs:
         run: yarn build
 
       - name: Release
-        run: npm run release patch --preRelease=alpha
+        run: npm run release prepatch --preRelease=alpha
