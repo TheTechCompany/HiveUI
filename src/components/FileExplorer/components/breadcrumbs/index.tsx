@@ -1,4 +1,5 @@
 import { Box, Button } from 'grommet';
+import { Home } from 'grommet-icons';
 import React from 'react';
 
 export interface BreadcrumbProps {
@@ -8,7 +9,13 @@ export interface BreadcrumbProps {
 
 export const Breadcrumbs : React.FC<BreadcrumbProps> = (props) => {
     return (
-        <Box direction="row">
+        <Box direction="row" align='center'>
+            <Button 
+                onClick={() => props.onBreadcrumbClick('')}
+                plain
+                style={{padding: 6, borderRadius: 3}}
+                icon={<Home size="small" />} 
+                hoverIndicator={'accent-1'} />
             {props.breadcrumbs.length < 1 && '/'}
             {props.breadcrumbs.map((crumb, ix) => (
                 <Box direction="row">

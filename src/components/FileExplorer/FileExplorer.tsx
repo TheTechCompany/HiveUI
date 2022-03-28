@@ -36,7 +36,6 @@ export interface FileExplorerProps {
     actions?: IAction[];
     
     onDrop: (files: File[]) => void;
-    onBreadcrumbClick: (crumb: string) => void;
     onClick?: (item: IFile) => void;
 
     path: string;
@@ -161,7 +160,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                     justify="between"
                     direction="row">
                 <Breadcrumbs 
-                    onBreadcrumbClick={props.onBreadcrumbClick}
+                    onBreadcrumbClick={(crumb) => props.onNavigate(`/${crumb}`)}
                     breadcrumbs={breadcrumbs || []} />
 
                     <Box 
