@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - staging
+    paths: ["src/components/**", "src/views/**", "src/modals/**", "src/hooks/**"]
 
 jobs:
   build-and-deploy:
