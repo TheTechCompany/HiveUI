@@ -10,6 +10,7 @@ describe("ColorDot", () => {
 
     const element = screen.getByRole("color-dot");
 
-    expect(element.style.width && element.style.height).toBe("5px");
+    expect(element.style.width).toBe("5px");
+    expect(element.style.height).toBe("5px");
   });
 });
