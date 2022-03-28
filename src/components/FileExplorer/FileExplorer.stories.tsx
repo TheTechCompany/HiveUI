@@ -21,7 +21,7 @@ const Template: Story<FileExplorerProps> = (args) => {
   return <FileExplorer  
           {...args} 
           onNavigate={(id) => {
-            setPath(path.join(strPath, id))
+            setPath(id)
             args.onNavigate?.(id)
           }}
           onBreadcrumbClick={(crumb) => {

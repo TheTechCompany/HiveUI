@@ -9,6 +9,7 @@ export interface BreadcrumbProps {
 export const Breadcrumbs : React.FC<BreadcrumbProps> = (props) => {
     return (
         <Box direction="row">
+            {props.breadcrumbs.length < 1 && '/'}
             {props.breadcrumbs.map((crumb, ix) => (
                 <Box direction="row">
                 {ix == 0 && '/'}

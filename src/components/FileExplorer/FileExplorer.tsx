@@ -40,7 +40,7 @@ export interface FileExplorerProps {
     onClick?: (item: IFile) => void;
 
     path: string;
-    onNavigate: (id: string) => void;
+    onNavigate: (path: string) => void;
     
     selected?: string[];
     onSelect?: (id: string) => void;
@@ -61,7 +61,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
 
     useEffect(() => {
         console.log({path: props.path})
-        setBreadcrumbs(props.path.split('/').map((x) => ({name: x})))
+        setBreadcrumbs(props.path.split('/').slice(1).map((x) => ({name: x})))
         props.refetchFiles?.(props.path);
     }, [props.path])
 
@@ -79,8 +79,12 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
         thumbnail: <ThumbnailView />
     }
 
-    const onNavigate = (id: string) => {
-        props.onNavigate(id)
+    const onNavigate = (path: string) => {
+        console.log({path})
+        let parts = props.path.split('/').slice(1).filter((a) => a.length > 0);
+        parts.push(path);
+
+        props.onNavigate(`/${parts.join('/')}`)
         // historyRef.push(`/explore/${id}`, {id: id})
     }
 
