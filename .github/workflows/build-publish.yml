@@ -45,3 +45,10 @@ jobs:
       - name: Release
         run: |
           npm run release -- patch
+
+      - name: Merge master -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: development
+          github_token: ${{ github.token }}
