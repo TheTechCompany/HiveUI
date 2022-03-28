@@ -15,7 +15,6 @@ jobs:
         with:
           node-version: '16.x'
 
-
       - name: Install deps
         run: yarn
 
