@@ -36,14 +36,12 @@ jobs:
 
       - name: Get version
         run: |
-         PACKAGE_VERSION=$(cat package.json \
+         echo "PKG_VERSION=$(cat package.json \
           | grep version \
           | head -1 \
           | awk -F: '{ print $2 }' \
-          | sed 's/[",]//g')
+          | sed 's/[",]//g')" >> $GITHUB_ENV
         
-        echo "PKG_VERSION" >> $GITHUB_ENV
-
       - name: Release
         run: |
           if [[ "$PKG_VERSION" =~ ^.*alpha.*$ ]]; then
