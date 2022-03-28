@@ -11,6 +11,11 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
       
+      - name: Set NZ Locale
+        run: |
+          sudo locale-gen en_NZ.UTF-8
+          sudo update-locale LANG=en_NZ.UTF-8
+          
       - name: git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
