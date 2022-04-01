@@ -11,24 +11,30 @@ import {
 import moment from 'moment';
 // import './index.css';
 
-export class DateSelector extends Component<any, any> {
+export interface DateSelectorProps {
+  value: Date;
+  onChange: (value: Date) => void;
+  stepSize?: moment.unitOfTime.DurationConstructor;
+  displayFormat?: string;
+}
+
+export const DateSelector : React.FC<DateSelectorProps> = (props) => {
   
-  change(direction: number){
-    const { value, onChange, stepSize } = this.props;
+  const { value, displayFormat } = props;
+
+  const change = (direction: number) => {
+    const { value, onChange, stepSize } = props;
     var m = moment(value).add(direction, stepSize || 'months');
-    onChange(m);
+    onChange(m.toDate());
   }
 
-  render(){
-    const { value, displayFormat } = this.props;
-    return (
+  return (
       <Box direction="row" align="center" className="month-picker">
-        <Button icon={<ChevronLeft />} onClick={this.change.bind(this, -1)} />
+        <Button icon={<ChevronLeft />} onClick={() => change(-1)} />
    
         <Text className="month-picker__display">{moment(value).format(displayFormat)}</Text>
-        <Button icon={<ChevronRight />} onClick={this.change.bind(this, 1)} />
+        <Button icon={<ChevronRight />} onClick={() => change(1)} />
 
-      </Box>
-    );  
-  }
+      </Box>  
+  )
 }
