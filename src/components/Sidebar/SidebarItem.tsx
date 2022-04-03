@@ -29,7 +29,12 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
             justify={props.minified ? 'center' : undefined}
             background={isActive  ? 'gray' : 'transparent'}>
 
-            <Box align='center' justify='center' width={iconSize} height={iconSize}>
+            <Box 
+                pad={isMobile ? '8px' : undefined}
+                align='center' 
+                justify='center' 
+                width={iconSize} 
+                height={iconSize}>
                  {props.icon}
             </Box>
             {!props.minified && <Text size="15px" color={'neutral-1'} margin={{left: 'small'}}>{props.label}</Text>}

@@ -27,7 +27,7 @@ const Item1 = () => {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  menu: [
+  views: [
     {
       label: 'Item',
       icon: <Add />, 

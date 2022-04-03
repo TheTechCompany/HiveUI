@@ -4,8 +4,14 @@ import { RouteObject, Routes, useNavigate, useRoutes } from 'react-router-dom';
 import { Sidebar } from '../../components';
 import { useViewport } from '../../hooks';
 
+export interface SidebarViewItem {
+    path: string;
+    component: any;
+    icon?: any;
+    label?: string;
+}
 export interface SidebarViewProps {
-    menu?: any[];
+    views?: SidebarViewItem[];
 
     viewportPadding?: string;
     className?: string;
@@ -13,7 +19,7 @@ export interface SidebarViewProps {
 
 export const SidebarView : React.FC<SidebarViewProps> = (props) => {
 
-    const routing_table = props.menu?.map((menu_item) => ({
+    const routing_table = props.views?.map((menu_item) => ({
         path: menu_item.path,
         element: menu_item.component,
         children: []
@@ -27,7 +33,7 @@ export const SidebarView : React.FC<SidebarViewProps> = (props) => {
 
     const Components = [
         <Sidebar
-            menu={props.menu || []}
+            menu={props.views || []}
             onSelect={(item) => {                    
                 navigate(item.path)
             }}
