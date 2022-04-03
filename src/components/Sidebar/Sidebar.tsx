@@ -45,7 +45,7 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
 
   return (
     <Box
-      width={!isMobile ? (!defaultMinified ? '13vw' : '50px') : '100%' }
+      width={!isMobile ? (!defaultMinified ? '200px' : '50px') : '100%' }
       height={isMobile ? '55px' : '100%'}
       background={{color: "brand"}}
       elevation="small"
