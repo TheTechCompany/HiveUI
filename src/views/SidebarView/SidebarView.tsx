@@ -20,7 +20,7 @@ export interface SidebarViewProps {
 export const SidebarView : React.FC<SidebarViewProps> = (props) => {
 
     const routing_table = props.views?.map((menu_item) => ({
-        path: menu_item.path,
+        path: `${menu_item.path}/*`,
         element: menu_item.component,
         children: []
     }))
