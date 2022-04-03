@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {Avatar, Text} from 'grommet';
-import { invertColor } from '@hexhive/utils';
 
 export interface AvatarListProps {
   users?: Array<{name?: string, color?: string}>;
@@ -28,7 +27,7 @@ export const AvatarList : React.FC<AvatarListProps> =  ({
           }
 
           return(
-            <Avatar style={style}>
+            <Avatar key={`${ix}`} style={style}>
               <Text color="white" size={`${size * (5/8)}px`} >
                 {x.name?.split(' ').map((x) => x[0]).join('')}
               </Text>
