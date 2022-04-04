@@ -22,6 +22,7 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
     return (
         <Box 
             onClick={props.onClick}
+            focusIndicator={false}
             hoverIndicator={'gray'}
             direction='row'
             pad='small'
