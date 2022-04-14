@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box } from "grommet";
 import {
   Droppable,
@@ -14,7 +14,7 @@ export interface KColumn {
   title?: string;
   ttl?: number;
   menu?: { label: string; onClick?: any }[];
-  rows?: any[];
+  rows: any[];
 }
 
 export interface BaseKanbanProps {
@@ -25,7 +25,7 @@ export interface BaseKanbanProps {
 
   renderCard?: (item?: any) => any;
   onDrag?: (result: DropResult) => void;
-  
+
   onCreateColumn?: () => void;
   columns?: Array<KColumn>;
 }
@@ -39,21 +39,53 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   onCreateColumn,
   columns = [],
 }) => {
+  const [columnsState, setColumnsState] = useState(columns);
   const onDragEnd = (result: DropResult) => {
     console.log(result);
 
     let origin: number = parseInt(result.source.droppableId);
     let dest = result.destination?.droppableId;
 
-    if (dest) {
-      let item_ix = columns[origin].rows
-        ?.map((x) => x.id)
-        .indexOf(result.draggableId);
-      if (item_ix && item_ix > -1) {
-        let item = columns[origin].rows?.splice(item_ix, 1);
-        columns[parseInt(dest)].rows?.push(item);
-      }
+    if (!result.destination) return;
+    else if (origin !== parseInt(dest!)) {
+      const items = Array.from(columns[origin].rows);
+      const itemsDest = Array.from(columns[parseInt(dest!)].rows);
+
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      itemsDest.splice(result.destination.index, 0, reorderedItem);
+
+      console.log(items, itemsDest);
+
+      let newColumns = [...columns];
+
+      newColumns[origin].rows = items;
+      newColumns[parseInt(dest!)].rows = itemsDest;
+
+      setColumnsState(newColumns);
+    } else {
+      const items = Array.from(columns[origin].rows);
+
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+
+      let newColumns = [...columns];
+
+      newColumns[origin].rows = items;
+
+      setColumnsState(newColumns);
     }
+
+    // if (dest) {
+    //   let item_ix = columns[origin].rows
+    //     ?.map((x) => x.id)
+    //     .indexOf(result.draggableId);
+    //   console.log(item_ix);
+
+    //   if (item_ix && item_ix > -1) {
+    //     let item = columns[origin].rows?.splice(item_ix, 1);
+    //     columns[parseInt(dest)].rows?.push(item);
+    //   }
+    // }
 
     //     onChange?.(columns)
   };
@@ -91,7 +123,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
           <Box>
             {onCreateColumn && <KanbanCreateColumn onCreate={onCreateColumn} />}
           </Box>
-          
+
           {provided.placeholder}
         </Box>
       )}
@@ -99,7 +131,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   );
 
   return (
-    <DragDropContext onDragEnd={onDrag || onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd || onDrag}>
       <Box flex>{board}</Box>
     </DragDropContext>
   );
