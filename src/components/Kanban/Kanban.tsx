@@ -39,6 +39,8 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   onCreateColumn,
   columns = [],
 }) => {
+  // USING REACT STATE TO UPDATE COLOMNS AS THEY ARE DRAGGED
+
   const [columnsState, setColumnsState] = useState(columns);
   const onDragEnd = (result: DropResult) => {
     console.log(result);
@@ -47,7 +49,9 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
     let dest = result.destination?.droppableId;
 
     if (!result.destination) return;
+    // IF THER MOVE IS INVALID
     else if (origin !== parseInt(dest!)) {
+      // IF THE ITEM IS MOVED TO ANOTHER COLUMN
       const items = Array.from(columns[origin].rows);
       const itemsDest = Array.from(columns[parseInt(dest!)].rows);
 
@@ -63,6 +67,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
 
       setColumnsState(newColumns);
     } else {
+      // IF THE ITEM IS MOVED TO THE SAME COLUMN
       const items = Array.from(columns[origin].rows);
 
       const [reorderedItem] = items.splice(result.source.index, 1);
