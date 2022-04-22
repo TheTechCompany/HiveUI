@@ -28,6 +28,7 @@ WithCards.args = {
       rows: [
         {
           name: "two",
+          id: "12",
         },
       ],
     },
@@ -37,9 +38,11 @@ WithCards.args = {
       rows: [
         {
           name: "three",
+          id: "1",
         },
         {
           name: "fsdf",
+          id: "2",
         },
       ],
     },
