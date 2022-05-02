@@ -13,7 +13,7 @@ import moment from 'moment';
 
 export interface DateSelectorProps {
   value: Date;
-  onChange: (value: Date) => void;
+  onChange?: (value: Date) => void;
   stepSize?: moment.unitOfTime.DurationConstructor;
   displayFormat?: string;
 }
@@ -25,7 +25,7 @@ export const DateSelector : React.FC<DateSelectorProps> = (props) => {
   const change = (direction: number) => {
     const { value, onChange, stepSize } = props;
     var m = moment(value).add(direction, stepSize || 'months');
-    onChange(m.toDate());
+    onChange?.(m.toDate());
   }
 
   return (
