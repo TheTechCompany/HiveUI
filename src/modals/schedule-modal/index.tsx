@@ -48,11 +48,12 @@ export interface ScheduleModalProps {
 
 export interface ISchedule {
   id?: string;
+
   people?: Array<{id?: string, name?: string}>
   equipment?: Array<string | undefined | null>
 
-  project: {name: string, id: string};
-  notes: Array<string | undefined | null>,
+  project: {displayId: string, name: string, id: string};
+  notes?: Array<string | undefined | null>,
   managers?: Array<{id?: string, name?: string}>;
   owner?: {id: string, name: string};
   date?: Date;

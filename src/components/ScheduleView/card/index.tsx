@@ -2,12 +2,18 @@ import React from 'react';
 import { Box, Text } from "grommet";
 import { useState } from "react";
 import Popover from "react-popover";
-import { ScheduleCardProps } from "../schedule-card";
 import { Content } from "./content";
 import { Footer } from "./footer";
 import { Header } from "./header";
+import { ISchedule } from '../../../modals';
 
-export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, users, onClick }) => {
+export interface ScheduleCardProps {
+    data: ISchedule;
+    onMove?: (dir: number) => void;
+    onClick?: () => void;
+}
+
+export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, onClick }) => {
     const [hoverEl, setHoverEl] = useState<any>()
 
     const moveDown = () => {
@@ -46,7 +52,7 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, users,
                 preferPlace={"right"}
                 body={(
                     <Box elevation="large" background={'light-1'} round="xsmall" pad="xsmall">
-                        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{data.notes.map((x) => (<li>{x}</li>))}</ul>
+                        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{data.notes?.map((x) => (<li>{x}</li>))}</ul>
                     </Box>)} >
 
                 <Box
@@ -71,7 +77,7 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, users,
                             weight="bold" 
                             className="card-title" >{data?.project.name}</Text>
                         <Content
-                            users={users || []}
+                            users={data.managers || []}
                             data={data} />
                     </Box>
                     <Footer
