@@ -19,29 +19,19 @@ var moment = require('moment');
 
 export interface ScheduleViewProps {
   actions?: {left?: any, right?: any};
-  onCreateItem: (ts: Date) => void;
-  onUpdateItem: (item: any) => void;
-  // onSaveItem: (item: any, ts: Date) => void;
-  // onCloneItem: (item: any, current: Date[], newDates: Date[]) => void;
-  onDeleteItem: (item: any) => void;
+  onCreateItem?: (ts: Date) => void;
+  onUpdateItem?: (item: any) => void;
+  onDeleteItem?: (item: any) => void;
 
-  onJoinCard: (item: any) => void;
-  onLeaveCard: (item: any) => void;
+  onJoinCard?: (item: any) => void;
+  onLeaveCard?: (item: any) => void;
 
-  events: ISchedule[];
+  events?: ISchedule[];
 
-  users?: any[];
-  user?: any
-  token?: string;
+  isLoading?: boolean;
 
-  projects: any[];
-  people: any[];
-  equipment: any[]
-
-  isLoading: boolean;
-
-  date: Date;
-  onHorizonChanged: (start: Date, end: Date) => void;
+  date?: Date;
+  onHorizonChanged?: (start: Date, end: Date) => void;
 }
 
 
@@ -76,7 +66,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
     setDate(moment(week).startOf('isoWeek'))
     setParams(params)
 
-    props.onHorizonChanged(new Date(params[0].valueOf()), new Date(params[1].valueOf()))
+    props.onHorizonChanged?.(new Date(params[0].valueOf()), new Date(params[1].valueOf()))
   }
 
 
@@ -101,7 +91,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
               // if (!props.user.readonly) {
 
             //    setScheduledJobs(scheduleData[i])
-              props.onUpdateItem(item)
+              props.onUpdateItem?.(item)
                 // toggleEditorModal(true, x);
 
               // } else {
@@ -133,7 +123,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
 
             // toggleEditorModal(true)
 
-            props.onCreateItem(day);
+            props.onCreateItem?.(day);
           }
         } />
       );
@@ -172,9 +162,6 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
   return (
     <ScheduleViewContext.Provider
       value={{
-          projects: props.projects,
-          people: props.people,
-          equipment: props.equipment,
           changeWeek,
           date
       }}>
