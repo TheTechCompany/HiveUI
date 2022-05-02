@@ -5,10 +5,10 @@ import Popover from "react-popover";
 import { Content } from "./content";
 import { Footer } from "./footer";
 import { Header } from "./header";
-import { ISchedule } from '../../../modals';
+import { ScheduleItem } from '../types';
 
 export interface ScheduleCardProps {
-    data: ISchedule;
+    data: ScheduleItem;
     onMove?: (dir: number) => void;
     onClick?: () => void;
 }

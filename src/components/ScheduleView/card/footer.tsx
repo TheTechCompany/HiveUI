@@ -1,9 +1,9 @@
 import { Box, Text} from 'grommet';
 import React from 'react'
-import { ISchedule } from '../../../modals';
+import { ScheduleItem } from '../types';
 
 interface FooterProps {
-    data?: ISchedule;
+    data?: ScheduleItem;
 }
 
 export const Footer : React.FC<FooterProps> = ({data}) => {

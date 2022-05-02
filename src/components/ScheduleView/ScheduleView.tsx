@@ -6,8 +6,8 @@ import { DateSelector } from '../DateSelector'
 
 import {ScheduleCard} from './card';
 
-import {  ScheduleModal, ISchedule } from '../../modals';
 // import './index.css';
+import { ScheduleItem } from './types';
 
 import {ScheduleHeader} from './header'
 
@@ -26,7 +26,7 @@ export interface ScheduleViewProps {
   onJoinCard?: (item: any) => void;
   onLeaveCard?: (item: any) => void;
 
-  events?: ISchedule[];
+  events?: ScheduleItem[];
 
   isLoading?: boolean;
 

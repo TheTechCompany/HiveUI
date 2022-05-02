@@ -1,11 +1,11 @@
 import React from 'react';
 import { invertColor, stringToColor } from '@hexhive/utils';
-import { ISchedule } from '../../../modals';
 import { Box, Text, Button } from 'grommet';
 import { Down as ArrowDown, Up as ArrowUp } from 'grommet-icons'
+import { ScheduleItem } from '../types';
 
 interface HeaderProps {
-    data: ISchedule
+    data: ScheduleItem
     moveUp: () => void;
     moveDown: () => void;
 }

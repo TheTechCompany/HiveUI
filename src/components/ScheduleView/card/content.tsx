@@ -1,6 +1,6 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
-import { ISchedule } from '../../../modals';
+import { ScheduleItem } from '../types';
 import {FileHex} from '../../../assets';
 import { AvatarList } from '../../AvatarList';
 import { stringToColor } from '@hexhive/utils';
@@ -8,14 +8,13 @@ import { useContext } from 'react';
 import { ScheduleViewContext } from '../context';
 
 interface ContentProps {
-    data: ISchedule;
+    data: ScheduleItem;
 
     users: any[];
 }
 
 export const Content : React.FC<ContentProps> = ({data, users}) => {
 
-    const { people, equipment, projects } = useContext(ScheduleViewContext)
 
     const staffNames = () => {
         const names = data?.people || []
@@ -71,9 +70,9 @@ export const Content : React.FC<ContentProps> = ({data, users}) => {
        })} />
      ]
 
-     let job = data?.project ? projects?.find((a) => a?.id == data?.project.id) : {files: []}
+   //   let job = data?.project ? projects?.find((a) => a?.id == data?.project.id) : {files: []}
  
-     if(job?.files && job?.files.length > 0){
+     if(data?.files && data?.files.length > 0){
         content.push(<FileHex height={25} width={25} />)
      }
      return content;
