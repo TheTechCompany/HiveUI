@@ -199,14 +199,3 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
   );
 
 }
-
-// export default connect((state: StoreState) => ({
-//   users: state.schedule.users.list,
-//   user: state.auth.user,
-//   token: state.auth.token
-// }), (dispatch) => ({
-//   getJobs: () => dispatch(getJobs() as any),
-//   getPlant: () => dispatch(getPlant() as any),
-//   getUsers: () => dispatch( getUsers() as any),
-//   getEmployees: () => dispatch(getEmployees() as any)
-// }))(WeekView)
