@@ -42,18 +42,6 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
 
   const [params, setParams] = useState<any[]>([moment().startOf('isoWeek'), moment().endOf('isoWeek')])
 
-  //const [scheduleData, setScheduleData] = useState<any[]>([])
-
-  const [scheduledJobs, setScheduledJobs] = useState<any[]>([]) //figure out where this goes
-
-  const [selected, setSelected] = useState<any>()
-
-  const [currentDay, setCurrentDay] = useState<any>()
-
-  const [timestamp, setTimestamp] = useState(new Date())
-
-  console.log(props.events)
-
   useEffect(() => {
     if(props.date){
       setDate(moment(props.date).startOf('isoWeek'))
@@ -79,9 +67,8 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
 
   const renderSchedule = (i: number) => {
     let scheduleDay = moment(date).clone().add(i, 'days')
-    console.log("RENDER SCHEDULE", scheduleDay.format("DD/MM/yyyy"))
+
     return props.events?.filter((a) => {
-      //console.log(a.date)
       return moment(a.date).isSame(scheduleDay, 'day')
     }).map((item: any, ix: number) => {
       return (
@@ -118,9 +105,6 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
           className="add-item-button" 
           onClick={() => {
             var day = moment(params[0]).add(dayIndex, 'day')
-            setTimestamp(day)
-            setCurrentDay(dayIndex)
-
             // toggleEditorModal(true)
 
             props.onCreateItem?.(day);
