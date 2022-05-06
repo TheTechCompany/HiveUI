@@ -31,15 +31,14 @@ export interface FileExplorerProps {
     uploading?: {name?: string, percent?: number}[]
 
     previewEngines?: {filetype: string, component: React.FC<{file: any}>}[];
-    breadcrumbs: {name: string, id: string}[]
 
     actions?: IAction[];
     
-    onDrop: (files: File[]) => void;
+    onDrop?: (files: File[]) => void;
     onClick?: (item: IFile) => void;
 
     path: string;
-    onNavigate: (path: string) => void;
+    onNavigate?: (path: string) => void;
     
     selected?: string[];
     onSelect?: (id: string) => void;
@@ -83,7 +82,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
         let parts = props.path.split('/').slice(1).filter((a) => a.length > 0);
         parts.push(path);
 
-        props.onNavigate(`/${parts.join('/')}`)
+        props.onNavigate?.(`/${parts.join('/')}`)
         // historyRef.push(`/explore/${id}`, {id: id})
     }
 
@@ -117,15 +116,10 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const onDrop = (acceptedFiles: File[]) => {
         // Do something with the files
         console.log(acceptedFiles)
-        props.onDrop(acceptedFiles)
+        props.onDrop?.(acceptedFiles)
     }
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
-    
-    const getPath = () => {
-        console.log(props.files, props.breadcrumbs)
-        let file = Array.isArray(props.files) ? props.files?.find((a) => a.id == props.breadcrumbs[props.breadcrumbs.length - 1].id) : props.files
-        return file;
-    }
+   
 
     return (
         <FileExplorerContext.Provider value={{
@@ -160,7 +154,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                     justify="between"
                     direction="row">
                 <Breadcrumbs 
-                    onBreadcrumbClick={(crumb) => props.onNavigate(`/${crumb}`)}
+                    onBreadcrumbClick={(crumb) => props.onNavigate?.(`/${crumb}`)}
                     breadcrumbs={breadcrumbs || []} />
 
                     <Box 
