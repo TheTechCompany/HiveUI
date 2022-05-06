@@ -1,5 +1,5 @@
-import { Box, Text, List, Button, CheckBox } from 'grommet';
-import { Folder, Document, More } from 'grommet-icons';
+import { Box, ListItemText, List, Checkbox, Button, Typography, IconButton, ListItem, ListItemButton } from '@mui/material';
+import { Folder, MoreVert, More } from '@mui/icons-material';
 import React from 'react';
 import { useFileExplorer } from '../../context';
 import { IFile } from '../../types/file';
@@ -12,46 +12,45 @@ export const ListView : React.FC<ListViewProps> = (props) => {
     const { files, navigate, selectFile, clickFile, selected } = useFileExplorer()
 
     return (
-        <Box focusIndicator={false}>
-            <List
-                pad={"none"}
-                data={files}>
-                {(datum: IFile) => (
-                    <Box
-              
-                        key={datum.id}
-                    focusIndicator={false}
-                        style={{cursor: 'pointer'}}
-                        align="center"
-                        direction="row" >
-                            <CheckBox checked={(selected || '').indexOf(datum.id || '') > -1} onChange={(e) => {
+        <Box>
+            <List>
+                {files?.map((datum: IFile) => (
+                    <ListItemButton
+                        dense
+                        onClick={() => {
+
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer'}}
+                      >
+                          <Box style={{display: 'flex', alignItems: 'center', padding: 4, marginRight: 5}}>
+                          {datum.isFolder ? <Folder /> :  undefined}
+
+                          </Box>
+                            {/* <Checkbox checked={(selected || '').indexOf(datum.id || '') > -1} onChange={(e) => {
                                 e.stopPropagation()
                                 selectFile?.(datum.id || '', e.target.checked)
-                            }}/>
+                            }}/> */}
                         <Box 
-                            flex
-                            hoverIndicator={true}
-                            justify="between"  
+                            style={{display: 'flex', alignItems: 'center', flex: 1}}
                             onClick={(e) => {
-                                
                                 datum.isFolder ? navigate?.(datum.name || '') : clickFile?.(datum)
-                            }} direction="row">
-                        <Box direction="row" align="center">
-           
-                            <Box pad="xsmall">
-                                {datum.isFolder ? <Folder /> : <Document />}
+                            }} >
+                            <Box style={{display: 'flex', alignItems: 'center', flex: 1}} >
+            
+                               
+                                <Typography>{datum.name}</Typography>
+
                             </Box>
-                            <Text>{datum.name}</Text>
 
+                            <Box style={{display: 'flex', alignItems: 'center'}}>
+                                <Typography>{humanFileSize(datum.size || 0)}</Typography>
+                                <IconButton>
+                                    <MoreVert />
+                                </IconButton>
+                            </Box>
                         </Box>
-
-                        <Box direction="row" align="center">
-                            <Text>{humanFileSize(datum.size || 0)}</Text>
-                            <Button hoverIndicator style={{padding: 3}}  icon={<More />} />
-                        </Box>
-                        </Box>
-                    </Box>
-                )}
+                    </ListItemButton>
+                ))}
             </List>
         </Box>
     )
