@@ -149,9 +149,9 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                 style={{position: 'relative'}}
                 background="neutral-1"
                 direction="column">
-                <ActionHeader
+                {/* <ActionHeader
                     onNext={goNext}
-                    onPrev={goPrev}/>
+                    onPrev={goPrev}/> */}
                 <Box   
                     elevation="small"
                     pad={{horizontal: 'xsmall'}}

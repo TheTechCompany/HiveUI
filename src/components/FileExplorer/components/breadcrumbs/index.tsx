@@ -1,5 +1,5 @@
-import { Box, Button } from 'grommet';
-import { Home } from 'grommet-icons';
+import { Box, Button, IconButton } from '@mui/material';
+import { Home } from '@mui/icons-material';
 import React from 'react';
 
 export interface BreadcrumbProps {
@@ -9,23 +9,29 @@ export interface BreadcrumbProps {
 
 export const Breadcrumbs : React.FC<BreadcrumbProps> = (props) => {
     return (
-        <Box direction="row" align='center'>
-            <Button 
+        <Box style={{display: 'flex', flex: 1, alignItems: 'center'}}>
+            <IconButton 
                 onClick={() => props.onBreadcrumbClick('')}
-                plain
-                style={{padding: 6, borderRadius: 3}}
-                icon={<Home size="small" />} 
-                hoverIndicator={'accent-1'} />
+              >
+
+                <Home />
+            </IconButton>
+            
+            <Box style={{flex: 1, display: 'flex', borderRadius: 3}}>
             {props.breadcrumbs.length < 1 && '/'}
             {props.breadcrumbs.map((crumb, ix) => (
-                <Box direction="row">
-                {ix == 0 && '/'}
-                <Button
-                    onClick={() => props.onBreadcrumbClick(props.breadcrumbs.slice(0, ix + 1).map((x) => x.name).join('/'))}
-                    style={{ borderRadius: 3, padding: '2px'}} hoverIndicator plain label={crumb.name} /> 
-                {props.breadcrumbs.length - 1 > ix && '/'}
+                <Box style={{display: 'flex',alignItems: 'center'}}>
+                    <Box>{ix == 0 && '/'}</Box>
+                    <Button
+                        style={{color: 'black'}}
+                        onClick={() => props.onBreadcrumbClick(props.breadcrumbs.slice(0, ix + 1).map((x) => x.name).join('/'))}
+                    >
+                        {crumb.name}
+                    </Button>
+                    {props.breadcrumbs.length - 1 > ix && '/'}
                 </Box>
             ))}
+            </Box>
         </Box>
     )
 }
