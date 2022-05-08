@@ -6,7 +6,10 @@ const SSHAPE_SIDE_WIDTH = 20;
 class Link extends Component<any, any>{
   constructor(props: any) {
     super(props);
+    console.log("Link", {props: props})
+
   }
+
 
   calcNormCoordinates = () => {
     let cpt1 = { x: 0, y: 0 };

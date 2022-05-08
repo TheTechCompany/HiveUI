@@ -19,7 +19,7 @@ interface LinkViewPortProps {
   scrollTop?: number;
 
   links?: Link[];
-  data?: Task[];
+  // data?: Task[];
 
   nowposition?: number;
 
@@ -43,11 +43,14 @@ interface LinkViewPortState {
 
 export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
    
+
   const taskToCreate = useDataItem(props.taskToCreate?.task?.id || '')
+
   const link = useLink(props.taskToCreate?.task?.id)
 
   const links = useLinks()
-  const { data, dayWidth } = useContext(TimelineContext)
+
+  const { tasks, links: dataLinks, dayWidth } = useContext(TimelineContext)
 
   const [ selectedItem, setSelectedItem ] = useState<any>(null)
   const [ changingTask, setChangingTask ] = useState<any>()
@@ -76,6 +79,7 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
 
     let x = DateHelper.dateToPixel(date, 0, dayWidth || 0);
     let y = (index * (itemHeight)) + (itemHeight / 2);
+
     return { x: x, y: y };
   };
 
@@ -85,19 +89,19 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
     let startItem: any = {}
     let endItem: any = {};
 
-    if (data?.length == 0) return;
+    if (tasks?.length == 0) return;
     for (let i = 0; i < (links || []).length; i++) {
       let link = links?.[i];
       if (!link) return;
      // if (renderLinks[link.id]) continue;
 
-      startItem = data?.find((a) => a.id == link?.source)
+      startItem = tasks?.find((a) => a.id == link?.source)
     
       if (!startItem) {
         //ret.concat([null])
         continue;
       }
-      endItem = data?.find((a) => a.id == link?.target)
+      endItem = tasks?.find((a) => a.id == link?.target)
 
       if (!endItem) {
       //  setCache(cache.concat([null]))
@@ -114,7 +118,6 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
 
   const renderCreateLink = () => {
     if (props.interactiveMode && props.taskToCreate?.task.id) {
-
       if(!taskToCreate || !taskToCreate.end) return console.error("No link")
   
       let position = getItemPosition(taskToCreate?.index, taskToCreate?.end);
