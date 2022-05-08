@@ -21,7 +21,7 @@ export class VerticalLine extends Component<any, any>{
 const TaskList : React.FC<any>  = (props) => {
   const taskViewRef = useRef<HTMLDivElement>(null)
 
-  const { data, itemHeight } = useContext(TimelineContext)
+  const { tasks, itemHeight } = useContext(TimelineContext)
 
   const getContainerStyle = (rows: number) => {
     let new_height = rows > 0 ? rows * ((itemHeight || 0) + 5 ): 10;
@@ -65,7 +65,7 @@ const TaskList : React.FC<any>  = (props) => {
       }
   }, [])
 
-    const containerStyle = getContainerStyle((data || []).length);
+    const containerStyle = getContainerStyle((tasks || []).length);
 
     return (
       <Box background="accent-1" className="timeLine-side">
@@ -84,7 +84,7 @@ const TaskList : React.FC<any>  = (props) => {
           background="accent-1"
           className="timeLine-side-task-viewPort" 
           onScroll={doScroll}
-          data={data}>
+          data={tasks}>
             {(datum: any, ix: number) => renderTaskRow(datum, ix)}
         </List>
       </Box>
