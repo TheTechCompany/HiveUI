@@ -51,7 +51,7 @@ export default class DataController {
     this.upper_limit = end + HORIZON_BUFFER;
     this.upper_data_limit = end + HORIZON_BUFFER_ALERT;
 
-    console.log(this.lower_limit, this.upper_limit)
+    // console.log(this.lower_limit, this.upper_limit)
   };
 
   //OnScroll

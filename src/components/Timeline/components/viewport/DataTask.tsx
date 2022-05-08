@@ -43,7 +43,7 @@ export interface DataTaskState {
   mode: any;
 }
 
-export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
+export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const [hoverEl, setHoverEl] = useState<any>()
 
@@ -54,20 +54,20 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
   const dragging = useRef<boolean>(false);
   const left = useRef<number>(props.left || 0)
   const width = useRef<number>(props.width || 0)
-  
+
   const mode = useRef<number>(MODE_NONE);
 
 
   useEffect(() => {
-    if(props.left){
+    if (props.left) {
       left.current = props.left
     }
   }, [props.left])
 
   useEffect(() => {
-    if(props.width){
+    if (props.width) {
       width.current = props.width
-    } 
+    }
   }, [props.width])
 
   const onCreateLinkMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, position: string) => {
@@ -76,7 +76,7 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
       props.onStartCreateLink?.(props.item, position);
     }
   };
-  
+
   const onCreateLinkMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, position: any) => {
     e.stopPropagation();
     props.onFinishCreateLink(props.item, position);
@@ -86,7 +86,7 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
     e.stopPropagation();
     props.onStartCreateLink?.(props.item, position);
   };
-  
+
   const onCreateLinkTouchEnd = (e: React.TouchEvent<HTMLDivElement>, position: any) => {
     e.stopPropagation();
     props.onFinishCreateLink(props.item, position);
@@ -95,7 +95,7 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
   const updatePosition = () => {
     let new_start_date = DateHelper.pixelToDate(left.current, props.nowposition, props.dayWidth || 0);
     let new_end_date = DateHelper.pixelToDate(left.current + width.current, props.nowposition, props.dayWidth || 0);
-  
+
     props.onUpdateTask(props.item, { start: new_start_date, end: new_end_date });
   }
 
@@ -129,9 +129,14 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
     //the coordinates need to be global
     let changeObj = {
       item: props.item,
-      position: { start: newLeft - props.nowposition, end: newLeft + newWidth - props.nowposition }
+      position: {
+        startInt: newLeft - props.nowposition,
+        start: DateHelper.pixelToDate(newLeft, props.nowposition, props.dayWidth || 0),
+        end: DateHelper.pixelToDate(newLeft + newWidth, props.nowposition, props.dayWidth || 0),
+        endInt: newLeft + newWidth - props.nowposition
+      }
     };
-  
+
     //updatePosition() REMINDER/TODO this will make continuous date updates through props as a node moves, disabled for now to make data linking easier
 
     props.onTaskChanging(changeObj);
@@ -140,7 +145,7 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
     left.current = newLeft;
     width.current = newWidth
   }
-  
+
   const dragEnd = () => {
     props.onChildDrag(false);
     updatePosition()
@@ -151,7 +156,6 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
 
   const doMouseDown = (e: React.MouseEvent<HTMLDivElement>, mode: number) => {
     if (!props.onUpdateTask) return;
-    console.log("doMouseDown")
 
     let host = getHostForElement(e.target as HTMLElement)
 
@@ -182,40 +186,26 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
 
   const doTouchStart = (e: React.TouchEvent<HTMLDivElement>, mode: number) => {
     if (!props.onUpdateTask) return;
-    console.log('start');
     e.stopPropagation();
     dragStart(e.touches[0].clientX, mode);
   };
-  
-  const doTouchMove = (e: any) => {
-    if (!dragging) {
-      console.log('move');
-      e.stopPropagation();
-      dragProcess(e.changedTouches[0].clientX);
-    }
-  }
-  
-  const doTouchEnd = (e: any) => {
-    console.log('end');
-    dragEnd();
-  };
 
-  const generateStripes = (colors: {color: string, percent: number}[]) => {
+
+  const generateStripes = (colors: { color: string, percent: number }[]) => {
     let c = colors.sort((a, b) => b.percent - a.percent)
 
-    if(c.length <= 0) return stringToColor(`${props.item?.name}`)
+    if (c.length <= 0) return stringToColor(`${props.item?.name}`)
 
-    let gradient : any[] = [];
+    let gradient: any[] = [];
     let current_stop = 0;
-  
+
     c.forEach((x, ix) => {
-        gradient.push(`${x.color} ${current_stop * 100}%`)
-        gradient.push(`${x.color} ${(current_stop * 100) + (x.percent * 100)}%`)
-        current_stop += x.percent;
+      gradient.push(`${x.color} ${current_stop * 100}%`)
+      gradient.push(`${x.color} ${(current_stop * 100) + (x.percent * 100)}%`)
+      current_stop += x.percent;
     })
     let output = `linear-gradient(90deg, ${gradient.join(', ')})`
     return output;
-    console.log(output)
   }
 
 
@@ -224,53 +214,52 @@ export const BaseDataTask : React.FC<DataTaskProps> = (props) => {
     let backgroundColor = props.color ? Array.isArray(props.color) ? generateStripes(props.color) : props.color : configStyle.backgroundColor;
 
     // if (this.state.dragging) {
-      return {
-        ...configStyle,
-        background: backgroundColor,
-        opacity: props.opacity || 1,
-        left: left.current,
-        width: width.current,
-        height: props.height - 5,
-      };
+    return {
+      ...configStyle,
+      background: backgroundColor,
+      opacity: props.opacity || 1,
+      left: left.current,
+      width: width.current,
+      height: props.height - 5,
+    };
     // } 
     /*else {
       return { ...configStyle, backgroundColor, left: this.props.left, width: this.props.width, height: this.props.height - 5 };
     }*/
   }
 
-  
+
   const hoverStart = (e: any) => {
     setHoverEl(e.currentTarget)
 
     //      this.setState({hovering: state})
-}
+  }
 
-const hoverEnd = (e: any) => {
+  const hoverEnd = (e: any) => {
     setHoverEl(null)
-}
+  }
 
 
-  console.log({opacity: props.opacity})
   const style = calculateStyle();
-    return (
-      <Popover
-      style={{zIndex: 9999999}}
+  return (
+    <Popover
+      style={{ zIndex: 9999999 }}
       enterExitTransitionDurationMs={300}
       isOpen={props.item?.hoverInfo && hoverEl != null}
       target={hoverEl}
       preferPlace={"above"}
       body={(
-          <Box  
-            style={{zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000'}}
-            color="dark"
-            background={'neutral-2'} 
-            round="xsmall" >
-              {props.item?.hoverInfo}
-          </Box>)} >
+        <Box
+          style={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
+          color="dark"
+          background={'neutral-2'}
+          round="xsmall" >
+          {props.item?.hoverInfo}
+        </Box>)} >
 
       <Box
-                          onMouseEnter={hoverStart}
-                          onMouseLeave={hoverEnd}
+        onMouseEnter={hoverStart}
+        onMouseLeave={hoverEnd}
         className={`${props.className} ${dragging.current ? 'dragging' : ''}`}
         focusIndicator={false}
         elevation={'medium' /*this.props.isSelected ? 'large': 'none'*/}
@@ -291,34 +280,34 @@ const hoverEnd = (e: any) => {
           onMouseDown={(e) => doMouseDown(e, MOVE_RESIZE_LEFT)}
           onTouchStart={(e) => doTouchStart(e, MOVE_RESIZE_LEFT)}
         >
-          <div className="task-handle" style={{ right: 0}} />
+          <div className="task-handle" style={{ right: 0 }} />
           <div className="task-handle-grip" />
 
         </div>
         <div
-            style={{position: 'absolute', left: -4, bottom: 0, top: 0, margin: 'auto 0'}}
-            className="timeLine-main-data-task-side-linker"
-            onMouseUp={(e) => onCreateLinkMouseUp(e, LINK_POS_LEFT)}
-            onTouchEnd={(e) => onCreateLinkTouchEnd(e, LINK_POS_LEFT)}
+          style={{ position: 'absolute', left: -4, bottom: 0, top: 0, margin: 'auto 0' }}
+          className="timeLine-main-data-task-side-linker"
+          onMouseUp={(e) => onCreateLinkMouseUp(e, LINK_POS_LEFT)}
+          onTouchEnd={(e) => onCreateLinkTouchEnd(e, LINK_POS_LEFT)}
         />
 
         <div onClick={() => {
           props.onExpansion?.(!collapsed)
           setCollapsed(!collapsed)
         }} style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'column', overflow: 'hidden' }}>
-            {props.item?.showLabel ? ((typeof(props.item?.showLabel) === 'string') ? props.item.showLabel : props.item?.name) : ''}
-            {/* {props.item?.collapsibleContent && (
+          {props.item?.showLabel ? ((typeof (props.item?.showLabel) === 'string') ? props.item.showLabel : props.item?.name) : ''}
+          {/* {props.item?.collapsibleContent && (
               <Collapsible open={!collapsed}>
                 {props.item.collapsibleContent}
               </Collapsible>
             )} */}
         </div>
         <div
-            style={{position: 'absolute', left: style.width - 4, bottom: 0, top: 0, margin: 'auto 0'}}
-            className="timeLine-main-data-task-side-linker"
-            onMouseDown={(e) => onCreateLinkMouseDown(e, LINK_POS_RIGHT)}
-            onTouchStart={(e) => onCreateLinkTouchStart(e, LINK_POS_RIGHT)}
-          />
+          style={{ position: 'absolute', left: style.width - 4, bottom: 0, top: 0, margin: 'auto 0' }}
+          className="timeLine-main-data-task-side-linker"
+          onMouseDown={(e) => onCreateLinkMouseDown(e, LINK_POS_RIGHT)}
+          onTouchStart={(e) => onCreateLinkTouchStart(e, LINK_POS_RIGHT)}
+        />
         <div
           className="timeLine-main-data-task-side"
           style={{ top: 0, left: style.width, height: style.height }}
@@ -326,12 +315,12 @@ const hoverEnd = (e: any) => {
           onTouchStart={(e) => doTouchStart(e, MOVE_RESIZE_RIGHT)}
         >
           <div className="task-handle-grip" />
-          <div className="task-handle" style={{marginLeft: '100%'}} />
+          <div className="task-handle" style={{ marginLeft: '100%' }} />
         </div>
       </Box>
-      </Popover>
-    );
-  
+    </Popover>
+  );
+
 }
 
 

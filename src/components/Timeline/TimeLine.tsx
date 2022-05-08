@@ -21,6 +21,7 @@ import { Box, Spinner } from 'grommet';
 import styled from 'styled-components'
 import { Moment } from 'moment';
 import { isEqual } from 'lodash';
+import moment from 'moment';
 
 
 
@@ -110,7 +111,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   const [ scrollData, setScrollData ] = useState<any>()
   const [ headerData, setHeaderData ] = useState<any>()
 
-  const [ _data, setData ] = useState<Task[]>(data)
+  const [ _tasks, setTasks ] = useState<Task[]>(data)
   const [ _links, setLinks ] = useState<Link[]>(links)
 
 
@@ -139,10 +140,9 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   //     ON SIZE    //
   ////////////////////
 
-  const onSize = (size: { width: any; height: number; }) => {
+  const onSize = (size: { width: any; height: any; }) => {
     //If size has changed
 
-    console.log(size, dayWidth)
     calculateVerticalScrollVariables(size);
     if (!initialized) {
       // dc.current.initialise(
@@ -160,7 +160,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     let rowInfo = calculateStartEndRows(newNumVisibleRows, data, scrollTop);
 
     setNumVisibleDays(newNumVisibleDays)
-    console.log("DAYS", rowInfo, newNumVisibleRows, rowInfo)
     setNumVisibleRows(newNumVisibleRows)
     setStartRow(rowInfo.start)
     // setEndRow(rowInfo.end)
@@ -177,7 +176,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     if (scrollTop == vertical) return;
     //Check if we have scrolling rows
     let rowInfo = calculateStartEndRows(numVisibleRows, data, vertical);
-    console.log("Vertical change", vertical, rowInfo.start, rowInfo)
     
     setScrollTop(vertical)
 
@@ -193,7 +191,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   const calculateStartEndRows = (numVisibleRows: number, data: Task[], scrollTop: number) => {
     let new_start = Math.trunc(scrollTop / (itemHeight||0));
     let new_end = new_start + numVisibleRows >= data.length ? (data.length || numVisibleRows) : new_start + numVisibleRows;
-    console.log(new_start, numVisibleRows, data.length, data.length, new_start )
+
     return { start: new_start, end: new_end };
   };
 
@@ -237,7 +235,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
     setCurrentDay(currentIndx)
 
-    console.log("new day idx", currentIndx)
 
     let date = new Date()
     let currentDate = date;
@@ -289,34 +286,13 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   const doMouseUp = (e: any) => {
     setDragging(false)
   };
-  const doMouseLeave = (e: any) => {
+  const doMouseLeave = () => {
     // if (!e.relatedTarget.nodeName)
     //     dragging=false;
     setDragging(false)
   };
 
-  const doTouchStart = (e: { touches: { clientX: number; }[]; }) => {
-    setDragging(true)
-    setDraggingPosition(e.touches[0].clientX)
-
-  };
-  const doTouchEnd = (e: any) => {
-    setDragging(false)
-  };
-  const doTouchMove = (e: { touches: { clientX: number; }[]; }) => {
-    if (dragging) {
-      let delta = draggingPosition - e.touches[0].clientX;
-
-      if (delta !== 0) {
-        setDraggingPosition(e.touches[0].clientX)
-        
-        horizontalChange(scrollLeft + delta);
-      }
-    }
-  };
-  const doTouchCancel = (e: any) => {
-    setDragging(false)
-  };
+  
 
 
   //Child communicating states
@@ -334,14 +310,17 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   };
 
   const onStartCreateLink = (task: Task, position: any) => {
-    console.log(`=> Start Link`, task, position);
+
     setInteractiveMode(true)
-    setTaskToCreate({ task: task, position: position })
+
+    setTaskToCreate({ 
+      task: task,
+      position
+    });
    
   };
 
   const onFinishCreateLink = (task: Task, position: any) => {
-    console.log(`End Link`, task, taskToCreate, onCreateLink);
     if (onCreateLink && task &&
       taskToCreate && taskToCreate.task.id != task.id) {
 
@@ -354,27 +333,100 @@ const BaseTimeline : React.FC<TimelineProps> = ({
           target: task.id, //{ task: task, position: position }
           targetHandle: position
         }
-        console.log("New link", newLink)
-      onCreateLink(newLink);
+
+        onCreateLink(newLink);
     }
     setInteractiveMode(false)
     setTaskToCreate(undefined)
     
   };
 
+  const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
+  
+    let newTasks = tasks.slice();
+
+    let updates : any[] = [];
+    let oldTask = data?.find((a) => a.id == item.id);
+
+    let forwardLinks = links?.filter((a) => a.source == item.id);
+
+    if(oldTask && forwardLinks.length > 0){
+      const { start: oldStart, end: oldEnd } = oldTask;
+      const { start, end } = newTasks.find((a) => a.id == item.id);
+
+      // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
+      let endDiff = (end?.getTime() || 0) - (oldEnd?.getTime() || 0)
+
+      forwardLinks.forEach((link) => {
+        let ix = newTasks.map((x) => x.id).indexOf(link.target);
+
+        let targetNode = newTasks.find((a) => a.id == link.target);
+
+        let startUpdate = targetNode?.start;
+        let endUpdate = targetNode?.end;
+
+
+        if(endDiff){
+          startUpdate = new Date((startUpdate?.getTime() || 0) + endDiff);
+          endUpdate = new Date((endUpdate?.getTime() || 0) + endDiff)
+        }
+
+
+
+        updates.push({
+          ...newTasks[ix],
+          start: startUpdate,
+          end: endUpdate
+        })
+
+        newTasks[ix] = {
+          ...newTasks[ix],
+          start: startUpdate,
+          end: endUpdate
+        }
+
+      });
+  
+    }
+    return {tasks: newTasks, links, updates}
+  }
+
   const onTaskChanging = (changingTask: any) => {
-   // console.log("Changing task", changingTask)
-    setChangingTask(changingTask)
+    const { item, position } = changingTask;
+
+    let tasks = _tasks.slice()
+    let links = _links.slice()
+    let ix = tasks.map((x) => x.id).indexOf(item?.id);
+
+    let task = tasks[ix];
+
+    tasks[ix] = {
+      ...tasks[ix],
+      start: changingTask.position.start,
+      end: changingTask.position.end
+    }
+
+    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links}, item)    
+
+    
+
+    setTasks(taskUpdate);
+
+    setChangingTask({
+      ...changingTask,
+      position: {
+        start: changingTask.position.startInt,
+        end: changingTask.position.endInt
+      }
+    });
     
   };
 
   const calcNumVisibleDays = (size: { width: number; }, newDayWidth?: number) => {
-    console.log(size, (newDayWidth || dayWidth))
     return Math.ceil(size.width /(newDayWidth || dayWidth.current)) + BUFFER_DAYS;
   };
 
   const changeMode = (newMode: string) => {
-    console.log("Change mode", newMode)
     if (newMode != _mode) {
       let newDayWidth = getDayWidth(newMode);
       //to recalculate the now position we have to see how mwny scroll has happen
@@ -388,7 +440,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       let scrollLeft = (currentday * newDayWidth + nowposition) % pxToScroll;
       // we recalculate the new scroll Left value
 
-      console.log(newMode, newDayWidth)
       setMode(newMode)
       dayWidth.current = newDayWidth
       setNumVisibleDays(calcNumVisibleDays(size, newDayWidth))
@@ -419,8 +470,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   // };
 
   useEffect(() => {
-    if(data && !isEqual(data, _data)){
-      setData(data)
+    if(data && !isEqual(data, _tasks)){
+      setTasks(data)
       
     }
   }, [JSON.stringify(data)])
@@ -436,24 +487,26 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       changeMode(mode)
     }
   }, [mode])
-  /*  checkMode();
-    checkNeeeData();
-    console.log('On render')
-    if(!size){
-      console.log(state)
-    }*/
+
 
     return (
       <TimelineContext.Provider value={{
-        data: data,
+        tasks: _tasks?.map((x, ix) => ({...x, index: ix})),
         links,
         style: style,
         mode: _mode,
         scrollLeft: scrollLeft,
+        scrollTop: scrollTop,
+        startRow,
+        endRow,
+        nowposition,
+        selectedItem: selectedItem,
+        onSelectItem: onSelectItem,
+
         moveTimeline: horizontalChange,
         changeMode: changeMode,
         dayWidth: dayWidth.current,
-        itemHeight: itemHeight
+        itemHeight: itemHeight,
       }}>
       <Box 
         direction="row"
@@ -466,7 +519,10 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             endRow={endRow}
             selectedItem={selectedItem}
             onSelectItem={_onSelectItem}
-            onUpdateTask={onUpdateTask}
+            onUpdateTask={(task: any, position: any) => {
+           
+              onUpdateTask?.(task, position)
+            }}
             onScroll={verticalChange}
             nonEditable={nonEditableName}
           />
@@ -491,32 +547,36 @@ const BaseTimeline : React.FC<TimelineProps> = ({
         <Box style={{position: 'absolute', width: '100%', height: 'calc(100% - 60px)', zIndex: 9, top: 60, left: 0}}>
           {loading ? <Box style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: "#ffffff42"}} flex align="center" justify="center"><Spinner size="medium" /></Box>: null}
         <DataViewPort
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
-            itemheight={itemHeight}
-            nowposition={nowposition}
-            startRow={startRow}
-            endRow={endRow}
-            data={data}
-            selectedItem={selectedItem}
-            onScroll={scrollData}
-            onMouseDown={doMouseDown}
-            onMouseMove={doMouseMove}
-            onMouseUp={doMouseUp}
-            onMouseLeave={doMouseLeave}
-            onTouchStart={doTouchStart}
-            onTouchMove={doTouchMove}
-            onTouchEnd={doTouchEnd}
-            onTouchCancel={doTouchCancel}
-            onSelectItem={onSelectItem}
-            onUpdateTask={onUpdateTask}
+            onDown={doMouseDown}
+            onMove={doMouseMove}
+            onUp={doMouseUp}
+            onCancel={doMouseLeave}
+            
+            onUpdateTask={(task: any, position: any) => {
+              
+              let tasks = _tasks.slice()
+
+              let ix = tasks.map((x) => x.id).indexOf(task.id);
+              tasks[ix] = {
+                ...tasks[ix],
+                start: position.start,
+                end: position.end
+              }
+              const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task)
+
+              if(updates.length > 0){
+                updates.forEach((update) => {
+                  onUpdateTask?.(update, {start: update.start, end: update.end})
+                })
+              }
+
+              onUpdateTask?.(task, position)
+            }}
             onTaskChanging={onTaskChanging}
+
             onStartCreateLink={onStartCreateLink}
             onFinishCreateLink={onFinishCreateLink}
-            boundaries={{
-              lower: scrollLeft,
-              upper: scrollLeft + size.width
-            }}
+      
             onSize={onSize}
           />
           <LinkViewPort
@@ -524,7 +584,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             scrollTop={scrollTop}
             startRow={startRow}
             endRow={endRow}
-            data={data || []}
             nowposition={nowposition}
             interactiveMode={interactiveMode}
             taskToCreate={taskToCreate}

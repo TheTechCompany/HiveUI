@@ -33,7 +33,7 @@ export interface HeaderProps {
 const Header : React.FC<HeaderProps> = (props) => {
   const headerRef = useRef<HTMLDivElement>(null)
 
-  const { data, mode, dayWidth } = useContext(TimelineContext)
+  const { tasks, mode, dayWidth } = useContext(TimelineContext)
   
   const getFormat = (mode: string, position?: string) => {
     switch (mode) {
@@ -124,9 +124,8 @@ const Header : React.FC<HeaderProps> = (props) => {
   const [ status, setDayStatus ] = useState<any>({})
 
   useEffect(() => {
-    console.log(data)
       setDayStatus({})
-  }, [data])
+  }, [tasks])
 
   useEffect(() => {
     let _status : any = Object.assign({}, status);

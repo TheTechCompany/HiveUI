@@ -3,19 +3,36 @@ import { Link, Task, TimelineStyle } from "../types";
 
 export interface ITimelineContext {
     moveTimeline?: (new_x: number) => void;
-    scrollLeft?: number;
+    scrollLeft: number;
+    scrollTop: number;
+
+    startRow: number;
+    endRow: number;
+
+    nowposition: number;
+
+    selectedItem?: any;
+    onSelectItem?: (item: any) => void;
 
     style?: TimelineStyle
 
     mode?: string;
 
     links?: Link[];
-    data?: Task[];
+    tasks?: Task[];
 
     dayWidth?: number;
-    itemHeight?: number;
+
+    itemHeight: number;
 
     changeMode?: (mode: string) => void;
 }   
 
-export const TimelineContext = React.createContext<ITimelineContext>({})
+export const TimelineContext = React.createContext<ITimelineContext>({
+    itemHeight: 30,
+    scrollLeft: 0,
+    scrollTop: 0,
+    startRow: 0,
+    endRow: 50,
+    nowposition: 0
+})

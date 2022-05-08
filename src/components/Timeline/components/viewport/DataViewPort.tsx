@@ -9,14 +9,34 @@ import { getBackgroundPosition, getBackgroundWidth } from '../../utils'
 import { TimelineContext } from '../../context'
 import styled from 'styled-components'
 import useResizeAware from 'react-resize-aware'
+import { Task } from '../../types';
 
-export const BaseDataViewPort : React.FC<any> = (props) => {
+export interface DataViewPortProps {
+  className?: string;
+
+  onSize?: (dims: {width: number | null, height: number | null}) => void;
+  onStartCreateLink?: (item: any, pos: any) => void;
+  onFinishCreateLink?: (item: any, pos: any) => void;
+
+  onTaskChanging?: (item: any) => void;
+  onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
+
+  mode?: string;
+
+  onDown?: (e: {clientX: number, clientY: number}) => void;
+  onMove?: (e: {clientX: number, clientY: number}) => void;
+  onUp?: (e: {clientX: number, clientY: number}) => void;
+  onCancel?: () => void;
+  
+}
+
+export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const dataViewRef = useRef<HTMLDivElement>(null)
 
   const [ expanded, setExpanded ] = useState<boolean>(false);
 
-  const { data, mode, style, dayWidth, moveTimeline, scrollLeft } = useContext(TimelineContext)
+  const { onSelectItem, selectedItem, nowposition, startRow, endRow, tasks, mode, style, dayWidth, itemHeight, moveTimeline, scrollLeft, scrollTop } = useContext(TimelineContext)
 
   const [ childDragging, setChildDragging ] = useState<boolean>(false) 
   
@@ -30,7 +50,7 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
   const [ resizeListener, sizes ] = useResizeAware(reporter)
 
   const getContainerHeight = (rows: number) => {
-    let new_height = rows > 0 ? rows * props.itemheight : 10;
+    let new_height = rows > 0 ? rows * itemHeight : 10;
     return new_height;
   }
   const onChildDrag = (dragging: boolean) => {
@@ -39,39 +59,39 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
 
   const renderRows = () => {
     let result = [];
-    for (let i = props.startRow; i < props.endRow + 1; i++) {
-      let item = data?.[i];
+    for (let i = startRow; i < endRow + 1; i++) {
+      let item = tasks?.[i];
       if (!item) break;
       //FIXME PAINT IN BOUNDARIES
 
-      console.log({item})
+      // console.log({item})
 
-      let new_position = DateHelper.dateToPixel(item.start, props.nowposition, dayWidth || 0);
-      let new_width = DateHelper.dateToPixel(item.end, props.nowposition, dayWidth || 0) - new_position;
+      let new_position = DateHelper.dateToPixel(item.start, nowposition, dayWidth || 0);
+      let new_width = DateHelper.dateToPixel(item.end, nowposition, dayWidth || 0) - new_position;
 
       result.push(
         <DataRow
-          isSelected={props.selectedItem == item}
+          isSelected={selectedItem == item}
            key={`data-row-${i}`} 
            label={item.name} 
-           top={i * (props.itemheight + 5)} 
+           top={i * (itemHeight + 5)} 
            left={20} 
            expanded={expanded}
-           itemheight={(props.itemheight + 5)}>
+           itemheight={(itemHeight + 5)}>
           <DataTask
             onExpansion={(expanded: boolean) => setExpanded(expanded)}
             item={item}
             label={item.name}
-            nowposition={props.nowposition}
+            nowposition={nowposition}
             dayWidth={dayWidth}
             color={item.color}
             opacity={item.opacity}
             left={new_position}
             width={new_width}
-            height={props.itemheight}
+            height={itemHeight}
             onChildDrag={onChildDrag}
-            isSelected={props.selectedItem == item}
-            onSelectItem={props.onSelectItem}
+            isSelected={selectedItem == item}
+            onSelectItem={onSelectItem}
             onStartCreateLink={props.onStartCreateLink}
             onFinishCreateLink={props.onFinishCreateLink}
             onTaskChanging={props.onTaskChanging}
@@ -85,23 +105,17 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
     return result;
   };
 
-  const doMouseDown = (e: { button: number; }) => {
-    if (e.button === 0 && !childDragging) {
-      props.onMouseDown(e);
+  const onDown = (e: {clientX: number, clientY: number}) => {
+    if(!childDragging){
+      props.onDown?.(e);
     }
-  };
-  const doMouseMove = (e: any) => {
-    props.onMouseMove(e, dataViewRef.current);
-  };
+  }
 
-  const doTouchStart = (e: any) => {
-    if (!childDragging) {
-      props.onTouchStart(e);
-    }
-  };
-  const doTouchMove = (e: any) => {
-    props.onTouchMove(e, dataViewRef.current);
-  };
+  const onMove = (e: {clientX: number, clientY: number}) => {
+    props?.onMove?.(e) //, dataViewRef.current)
+  }
+
+
 
   useEffect(() => {
     if(dataViewRef.current) dataViewRef.current.scrollLeft = 0;
@@ -109,11 +123,11 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
 
   useEffect(() => {
     if (dataViewRef.current) {
-      dataViewRef.current.scrollLeft = props.scrollLeft;
-      dataViewRef.current.scrollTop = props.scrollTop;
-      console.log("Scroll data view", props.scrollTop, props.scrollLeft)
+      dataViewRef.current.scrollLeft = scrollLeft;
+      dataViewRef.current.scrollTop = scrollTop;
+      // console.log("Scroll data view", props.scrollTop, props.scrollLeft)
     }
-  }, [props.scrollLeft, props.scrollTop])
+  }, [scrollLeft, scrollTop])
 
   const backgroundStyle : any = (mode && style?.background) ? style?.background?.(mode, dayWidth || 0) :  {
     background: `linear-gradient(
@@ -136,14 +150,14 @@ export const BaseDataViewPort : React.FC<any> = (props) => {
           //
           moveTimeline?.((scrollLeft || 0) + evt.deltaX)
         }}
-        onMouseDown={doMouseDown}
-        onMouseMove={doMouseMove}
-        onMouseUp={props.onMouseUp}
-        onMouseLeave={props.onMouseLeave}
-        onTouchStart={doTouchStart}
-        onTouchMove={doTouchMove}
-        onTouchEnd={props.onTouchEnd}
-        onTouchCancel={props.onTouchCancel}
+        onMouseDown={(e) => e.button == 0 && onDown(e)}
+        onMouseMove={(e) => onMove(e)}
+        onMouseUp={props.onUp}
+        onMouseLeave={props.onCancel}
+        onTouchStart={(e) => onDown(e.touches?.[0])}
+        onTouchMove={(e) => onMove(e.touches?.[0])}
+        onTouchEnd={(e) => props.onUp?.(e.touches?.[0])}
+        onTouchCancel={props.onCancel}
       >
         {resizeListener}
         <div
