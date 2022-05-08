@@ -1,3 +1,3 @@
-export * from './Timeline'
+export * from './TimeLine'
 
 export * from './components'

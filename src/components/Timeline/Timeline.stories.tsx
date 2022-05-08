@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { Timeline } from './Timeline';
+import { Timeline } from './TimeLine';
 import { Grommet } from 'grommet';
 import { BaseStyle } from '@hexhive/styles';
 import { useState } from 'react';

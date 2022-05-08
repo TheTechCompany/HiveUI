@@ -1,5 +1,5 @@
 import React from 'react';
-import {Timeline} from './Timeline';
+import {Timeline} from './TimeLine';
 import { BUFFER_DAYS, DATA_CONTAINER_WIDTH } from './Const';
 import { shallow, mount } from 'enzyme';
 import { Task } from './types';
