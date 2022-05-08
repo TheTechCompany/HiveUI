@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { throttle } from 'lodash';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { InfiniteCanvasPath, InfiniteCanvasPosition } from '../../types/canvas';
 import { createLine, getHostForElement } from '../../utils';
 import { PathPoint } from './point';
 import { FlowPathSegment } from './segment';
+import { InfiniteCanvasContext } from '../../context/context';
 
 export interface FlowPathProps {
     className?: string;
@@ -20,6 +21,13 @@ export interface FlowPathProps {
 
 export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
     
+    const [ points, setPoints ] = useState(props.points)
+
+    const { getRelativeCanvasPos } = useContext(InfiniteCanvasContext)
+
+    useEffect(() => {
+        setPoints(props.points)
+    }, [props.points])
     
     const generateLine = (points: InfiniteCanvasPosition[], path_render: (points: InfiniteCanvasPosition[], ix: number) => JSX.Element) => {
         let init : InfiniteCanvasPosition[][] = [];
@@ -57,22 +65,39 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
         e.preventDefault()
         e.stopPropagation()
 
-        props.onPointsChanged?.(ix, pos)
+        // props.onPointsChanged?.(ix, pos)
 
         let doc = getHostForElement(e.target as HTMLElement)
 
-        const updatePointPosition = throttle((point: InfiniteCanvasPosition) => {
-            props.onPointsChanged?.(ix, point)
-        }, 100)
+
+        let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
+        // rp = lockToGrid(rp, snapToGrid, grid)
+
+        // let current_path = _paths.current.find((a) => a.id == id)
+
+        // if(!current_path) return;
+        
+        // let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
 
         const mouseMove = (e: MouseEvent) => {
-            updatePointPosition({x: e.clientX, y: e.clientY})
+            let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
+
+            let p = points.slice()
+            p[ix] = {
+                x: rp?.x || 0,
+                y: rp?.y || 0
+            }
+            setPoints(p)
+            // updatePointPosition({x: e.clientX, y: e.clientY})
         }
 
         const mouseUp = (e: MouseEvent) => {
 
+            props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
+
             let target = (e.target as HTMLElement)
             if(target.hasAttribute('data-nodeid')){
+
                 let nodeId = target.getAttribute('data-nodeid') || ''
                 let handleId = target.getAttribute('data-handleid') || ''
 
@@ -91,13 +116,13 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
     return props.editable ? (
         <g className={`${props.className} ${props.selected ? 'selected': ''}`}>
         
-        {generateLine(props.points, (points, ix) => (
+        {generateLine(points, (points, ix) => (
             <FlowPathSegment 
                 onContextMenu={props.onContextMenu}
                 arrow={ix == props.points.length}
                 onMouseDown={(e) => segmentClick(ix, e)} points={points} />
         ))}
-        {generateHandles(props.points, (location, ix) => (
+        {generateHandles(points, (location, ix) => (
             <PathPoint 
                 onContextMenu={props.onContextMenu}
                 onMouseDown={(e) => dragPathPoint(e, ix)}
@@ -117,7 +142,7 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
                 arrow={true}
 
                 onContextMenu={props.onContextMenu}
-                onMouseDown={(e) => segmentClick(0, e)} points={props.points} />
+                onMouseDown={(e) => segmentClick(0, e)} points={points} />
                 </g>
     )    
 }

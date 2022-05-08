@@ -25,7 +25,7 @@ export const usePort = (props : {id?: string}) => {
     useEffect(() => {
         if(position && !isEqual({rotation, ...position}, lastPos) && props.id && ref.current){
             let bounds = ref?.current?.getBoundingClientRect()
-            console.log("HIT", rotation)
+
             reportPosition?.({nodeId: nodeId, handleId: props.id, position: {
                 x: bounds?.x, 
                 y: bounds?.y,
