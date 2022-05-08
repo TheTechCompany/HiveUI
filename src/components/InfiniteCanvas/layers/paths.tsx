@@ -23,8 +23,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
     useEffect(() => {
         if(context.paths && context.nodes && context.ports){
-
-            console.log(context.ports)
             
             let p = context.paths.map((x) => {
                 let points = x.points || [];
@@ -228,7 +226,10 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                             path={path}
                             editable={context.editable}
                             onLinked={(nodeId, handleId) => linkPath(path.id, nodeId, handleId)}
-                            onPointsChanged={(ix, point) => updatePoint(path.id, ix, point)}
+                            onPointsChanged={(ix, point) => {
+                                updatePoint(path.id, ix, point)
+                                console.log("UPDATED POINT", {ix, point})
+                            }}
                             onMouseDown={(ix, e, position) => (e.metaKey || e.ctrlKey) ? addPoint(path.id, ix, e, position) : onSelect(path.id)}
                             points={(path.points || [])} />
                     </>

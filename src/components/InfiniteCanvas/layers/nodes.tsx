@@ -25,6 +25,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         selected,
         factories = {},
         moveNode,
+        updateNode,
         selectNode,
         zoom, 
         assets = {}, 
@@ -36,7 +37,6 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         onRightClick
     } = useContext(InfiniteCanvasContext)
 
-   console.log(offset)
    /* const nodeModels = useMemo(() => {
         let models : any = {};
         nodes.forEach((x) => 
@@ -140,6 +140,10 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
             const mouseUp = (evt: MouseEvent) => {
                 evt.stopPropagation()
+                updateNode?.(elem, {
+                    x: evt.clientX + offsetRect?.x, 
+                    y: evt.clientY + offsetRect?.y
+                })
                 doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
                 doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
             }
