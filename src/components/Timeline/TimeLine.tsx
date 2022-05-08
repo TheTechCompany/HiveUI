@@ -21,6 +21,7 @@ import { Box, Spinner } from 'grommet';
 import styled from 'styled-components'
 import { Moment } from 'moment';
 import { isEqual } from 'lodash';
+import moment from 'moment';
 
 
 
@@ -340,17 +341,77 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     
   };
 
-  const onTaskChanging = (changingTask: any) => {
-    let tasks = _tasks.slice()
-    let id = tasks.map((x) => x.id).indexOf(changingTask.item?.id);
+  const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
+  
+    let newTasks = tasks.slice();
 
-    tasks[id] = {
-      ...tasks[id],
+    let updates : any[] = [];
+    let oldTask = data?.find((a) => a.id == item.id);
+
+    let forwardLinks = links?.filter((a) => a.source == item.id);
+
+    if(oldTask && forwardLinks.length > 0){
+      const { start: oldStart, end: oldEnd } = oldTask;
+      const { start, end } = newTasks.find((a) => a.id == item.id);
+
+      // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
+      let endDiff = (end?.getTime() || 0) - (oldEnd?.getTime() || 0)
+
+      forwardLinks.forEach((link) => {
+        let ix = newTasks.map((x) => x.id).indexOf(link.target);
+
+        let targetNode = newTasks.find((a) => a.id == link.target);
+
+        let startUpdate = targetNode?.start;
+        let endUpdate = targetNode?.end;
+
+
+        if(endDiff){
+          startUpdate = new Date((startUpdate?.getTime() || 0) + endDiff);
+          endUpdate = new Date((endUpdate?.getTime() || 0) + endDiff)
+        }
+
+
+
+        updates.push({
+          ...newTasks[ix],
+          start: startUpdate,
+          end: endUpdate
+        })
+
+        newTasks[ix] = {
+          ...newTasks[ix],
+          start: startUpdate,
+          end: endUpdate
+        }
+
+      });
+  
+    }
+    return {tasks: newTasks, links, updates}
+  }
+
+  const onTaskChanging = (changingTask: any) => {
+    const { item, position } = changingTask;
+
+    let tasks = _tasks.slice()
+    let links = _links.slice()
+    let ix = tasks.map((x) => x.id).indexOf(item?.id);
+
+    let task = tasks[ix];
+
+    tasks[ix] = {
+      ...tasks[ix],
       start: changingTask.position.start,
       end: changingTask.position.end
     }
 
-    setTasks(tasks);
+    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links}, item)    
+
+    
+
+    setTasks(taskUpdate);
+
     setChangingTask({
       ...changingTask,
       position: {
@@ -459,6 +520,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             selectedItem={selectedItem}
             onSelectItem={_onSelectItem}
             onUpdateTask={(task: any, position: any) => {
+           
               onUpdateTask?.(task, position)
             }}
             onScroll={verticalChange}
@@ -491,6 +553,23 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             onCancel={doMouseLeave}
             
             onUpdateTask={(task: any, position: any) => {
+              
+              let tasks = _tasks.slice()
+
+              let ix = tasks.map((x) => x.id).indexOf(task.id);
+              tasks[ix] = {
+                ...tasks[ix],
+                start: position.start,
+                end: position.end
+              }
+              const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task)
+
+              if(updates.length > 0){
+                updates.forEach((update) => {
+                  onUpdateTask?.(update, {start: update.start, end: update.end})
+                })
+              }
+
               onUpdateTask?.(task, position)
             }}
             onTaskChanging={onTaskChanging}
