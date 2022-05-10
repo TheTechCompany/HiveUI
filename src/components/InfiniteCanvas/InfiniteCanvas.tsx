@@ -188,6 +188,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     //TODO memoize
 
     useEffect(() => {
+        console.log("nodes")
         if(Object.keys(_factories).length > 0){
             setNodes(nodes?.map((node) => {
                 let type = node.type;
@@ -312,27 +313,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         onViewportChanged?.({offset: new_offset, zoom: _zoom})
     }
 
-    const _moveNode = (node: string, position: InfiniteCanvasPosition) => {
-        
-        if(node) onSelect?.("node", node)
-
-        let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
-        pos = lockToGrid(pos, snapToGrid || false, grid)
-        if(editable && pos){
-            let fNode = (_nodes || []).find((a) => a.id == node)
-            if(!fNode) return;
-            let updatedNode = moveNode(fNode, pos)
-            
-            let newNodes = _nodes.slice();
-            let ix = newNodes.map(x => x.id).indexOf(node)
-            newNodes[ix] = {
-                ...newNodes[ix],
-                ...updatedNode
-            }
-
-            setNodes(newNodes)
-        }
-    }
 
 
     const dragPort = (e: React.MouseEvent, handleId?: string, nodeId?: string) => {
@@ -569,8 +549,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 },
                 setNodeRefs,
                 dragPort: dragPort,
-
-                moveNode: throttle((node, pos) => _moveNode(node, pos), 100),
                 updateNode: (node, position) => {
                     // if(node) onSelect?.("node", node)
 

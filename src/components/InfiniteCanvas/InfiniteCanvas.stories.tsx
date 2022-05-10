@@ -36,6 +36,8 @@ const ControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
         nodes={nodes}
         paths={pathRef.current}
         onNodeUpdate={(node) => {
+          console.log("onNodeUpdate");
+
           action("onNodesChanged");
           let p = nodes.slice();
           let p_ix = p.map((x) => x.id).indexOf(node.id);

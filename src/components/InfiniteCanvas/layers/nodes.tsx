@@ -1,11 +1,12 @@
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { InfiniteCanvasNode } from '../types/canvas';
+import { InfiniteCanvasNode, InfiniteCanvasPosition } from '../types/canvas';
 import { HMINode } from '../assets/hmi-spec';
 import { getHostForElement } from '../utils';
 import { InfiniteCanvasContext } from '../context/context';
 import { NodeIdContext } from '../context/nodeid';
 import { Box } from 'grommet';
+import { moveNode } from '../utils/canvas';
 
 export interface NodeLayerProps {
     className?: string;
@@ -22,9 +23,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     className
 }) => {
     const {
+        editable,
         selected,
         factories = {},
-        moveNode,
         updateNode,
         selectNode,
         zoom, 
@@ -34,7 +35,8 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         nodeRefs,
         setNodeRefs,
         openContextMenu,
-        onRightClick
+        onRightClick,
+        getRelativeCanvasPos
     } = useContext(InfiniteCanvasContext)
 
    /* const nodeModels = useMemo(() => {
@@ -47,11 +49,42 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     */
 
+
+    const _moveNode = (node: string, position: InfiniteCanvasPosition) => {
+        
+        // if(node) onSelect?.("node", node)
+
+        let pos = getRelativeCanvasPos?.(position)
+        // pos = lockToGrid(pos, snapToGrid || false, grid)
+        if(editable && pos){
+            let fNode = (_nodes || []).find((a) => a.id == node)
+            if(!fNode) return;
+            let updatedNode = moveNode(fNode, pos)
+            
+            let newNodes = _nodes.slice();
+            let ix = newNodes.map(x => x.id).indexOf(node)
+            newNodes[ix] = {
+                ...newNodes[ix],
+                ...updatedNode
+            }
+
+            setNodes(newNodes)
+        }
+    }
+
+    const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([]);
+
+
     const itemRefs = useRef<{[key: string]: HTMLDivElement | null}>({})
 
     const [ hoverEl, setHoverEl ] = useState<any>(null);
 
     const [ hoverNode, setHoverNode ] = useState<any>(null);
+
+    useEffect(() => {
+        setNodes(nodes);
+    }, [nodes])
+
 
     const renderAssetBundle = (key: string, node: InfiniteCanvasNode, selected?: boolean) => {
 
@@ -89,9 +122,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     }
 
     const nodeHover = (target: HTMLDivElement, node_key: any) => {
-        if(nodes && nodes[node_key]){
+        if(_nodes && _nodes[node_key]){
             setHoverEl(target)
-            let node = nodes[node_key]
+            let node = _nodes[node_key]
             node.label = node_key;
             setHoverNode(node)
         }
@@ -132,7 +165,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
             const mouseMove = (evt: MouseEvent) => {
                 evt.stopPropagation()
 
-                moveNode?.(elem, {
+                _moveNode?.(elem, {
                     x: evt.clientX + offsetRect?.x, 
                     y: evt.clientY + offsetRect?.y
                 })
@@ -180,7 +213,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                     <Typography variant="subtitle2">{hoverNode && status && (status[hoverNode.value] || status[hoverNode.label])}</Typography>
                 </div>
             </Popover>*/}
-            {nodes && nodes.map((node) => (
+            {_nodes && _nodes.map((node) => (
                 <div 
                     onContextMenu={(e) => {
                         openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
