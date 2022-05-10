@@ -31,7 +31,8 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         zoom, 
         assets = {}, 
         offset, 
-        nodes = [],
+        nodes:_nodes = [],
+        setNodes,
         nodeRefs,
         setNodeRefs,
         openContextMenu,
@@ -68,11 +69,11 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                 ...updatedNode
             }
 
-            setNodes(newNodes)
+            setNodes?.(newNodes)
         }
     }
 
-    const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([]);
+    // const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([]);
 
 
     const itemRefs = useRef<{[key: string]: HTMLDivElement | null}>({})
@@ -81,9 +82,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     const [ hoverNode, setHoverNode ] = useState<any>(null);
 
-    useEffect(() => {
-        setNodes(nodes);
-    }, [nodes])
+    // useEffect(() => {
+    //     setNodes?.(nodes);
+    // }, [nodes])
 
 
     const renderAssetBundle = (key: string, node: InfiniteCanvasNode, selected?: boolean) => {

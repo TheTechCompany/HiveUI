@@ -507,7 +507,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 
                 factories: _factories,
                 nodes: _nodes,
+                setNodes: setNodes,
                 paths: _paths,
+                setPaths: setPaths,
                 ports: ports,
 
                 assets: assets,

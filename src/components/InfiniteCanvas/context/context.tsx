@@ -13,8 +13,9 @@ export interface IInfiniteCanvasContext {
 
     editable?: boolean;
     nodes?: InfiniteCanvasNode[]
-
+    setNodes?: (nodes: InfiniteCanvasNode[]) => void
     paths?: InfiniteCanvasPath[]
+    setPaths?: (paths: InfiniteCanvasPath[]) => void;
 
     assets?: {
         [key: string]: JSX.Element
