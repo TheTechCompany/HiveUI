@@ -12,24 +12,35 @@ export interface PathLayerProps {
 
 
 export const PathLayer : React.FC<PathLayerProps> = (props) => {
-    const context = useContext(InfiniteCanvasContext)
+    const { 
+        zoom, 
+        offset, 
+        nodes,
+        paths:_paths,
+        ports,
+        updatePathPoint, 
+        linkPath, 
+        selectPath,
+        addPathPoint,
+        openContextMenu,
+        selected,
+        editable
+    } = useContext(InfiniteCanvasContext)
 
-    const zoom = context.zoom;
-    const offset = context.offset
+
+    // const [ paths, setPaths ] = useState<InfiniteCanvasPath[]>([])
     
-    const [ paths, setPaths ] = useState<InfiniteCanvasPath[]>([])
-    
 
 
-    useEffect(() => {
-        if(context.paths && context.nodes && context.ports){
+    const paths = useMemo(() => {
+        if(_paths && nodes && ports){
             
-            let p = context.paths.map((x) => {
+            let p = _paths.map((x) => {
                 let points = x.points || [];
             
                 if(x.sourceHandle){
-                    let node = context.nodes?.find((a) => a.id == x.source)
-                    let port = context?.ports?.[`${x.source}:${x.sourceHandle}`]
+                    let node = nodes?.find((a) => a.id == x.source)
+                    let port = ports?.[`${x.source}:${x.sourceHandle}`]
 
                     if(port && node){
 
@@ -43,8 +54,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                  }
 
                 if(x.targetHandle){
-                    let node = context.nodes?.find((a) => a.id == x.target)
-                    let port = context?.ports?.[`${x.target}:${x.targetHandle}`]
+                    let node = nodes?.find((a) => a.id == x.target)
+                    let port = ports?.[`${x.target}:${x.targetHandle}`]
 
                     if(port && node){
                         let point = {
@@ -62,15 +73,17 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                 }
             })
 
-            setPaths(p)
+            // setPaths(p)
+            return p
         }
-    }, [context.paths, context.nodes, context.ports])
+        return []
+    }, [_paths, nodes, ports])
 
 
    
 
     const addPoint = (path_id: string, ix: number, e: React.MouseEvent, pos: InfiniteCanvasPosition) => {
-        context.addPathPoint?.(path_id, ix, pos)
+        addPathPoint?.(path_id, ix, pos)
         e.stopPropagation()
 
         console.log(e)
@@ -94,15 +107,12 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
     }
 
     const updatePoint = (path_id: string, ix: number, pos: InfiniteCanvasPosition) => {
-        context.updatePathPoint?.(path_id, ix - 1, pos)
+        updatePathPoint?.(path_id, ix - 1, pos)
     }
 
-    const linkPath = (path_id: string, nodeId: string, handleId: string) => {
-        context.linkPath?.(path_id, nodeId, handleId)
-    }
 
     const onSelect = (path_id: string) => {
-        context.selectPath?.(path_id)
+        selectPath?.(path_id)
     }
 
     return (
@@ -116,7 +126,7 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                 transform: `matrix(${zoom}, 0, 0, ${zoom}, ${offset.x}, ${offset.y})`,
                 position: 'absolute'
             }}>
-                {paths.map((path) => 
+                {paths?.map((path) => 
                 (
                     <>
                     {/* {context.selected?.type == 'path' && context.selected.id == path.id && path.menu && (
@@ -134,11 +144,11 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         </Box>
                     )} */}
                           <FlowPath
-                            onContextMenu={(e) => context.openContextMenu?.({x: e.clientX, y: e.clientY}, {type: "path", id: path.id})}
-                            selected={context.selected?.find((a) => a.key == 'path' && a.id == path.id) != null}
+                            onContextMenu={(e) => openContextMenu?.({x: e.clientX, y: e.clientY}, {type: "path", id: path.id})}
+                            selected={selected?.find((a) => a.key == 'path' && a.id == path.id) != null}
                             path={path}
-                            editable={context.editable}
-                            onLinked={(nodeId, handleId) => linkPath(path.id, nodeId, handleId)}
+                            editable={editable}
+                            onLinked={(nodeId, handleId) => linkPath?.(path.id, nodeId, handleId)}
                             onPointsChanged={(ix, point) => {
                                 updatePoint(path.id, ix, point)
                                 console.log("UPDATED POINT", {ix, point})

@@ -141,7 +141,7 @@ Uncontrolled.args = {
 export const Controlled = ControlledTemplate.bind({});
 Controlled.args = {
   grid: { width: 100, height: 100, divisions: 5 },
-  snapToGrid: true,
+  // snapToGrid: true,
   editable: true,
   factories: [new ActionNodeFactory(), new IconNodeFactory()],
   nodes: [

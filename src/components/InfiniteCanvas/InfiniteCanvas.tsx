@@ -168,7 +168,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([])
 
-    const [_paths, setPaths] = useState<InfiniteCanvasPath[]>([])
+    const [ _paths, _setPaths ] = useState<InfiniteCanvasPath[]>([])
+
+    const pathRef = useRef<InfiniteCanvasPath[]>([])
 
     const [_zoom, setZoom] = useState<number>(100)
 
@@ -179,12 +181,17 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const offsetRef = useRef(_offset)
 
+    const setPaths = (paths: InfiniteCanvasPath[]) => {
+        pathRef.current = paths;
+        _setPaths(paths)
+    }
+
     const setOffset = (offset: HMIPosition) => {
         offsetRef.current = offset;
         _setOffset(offset)
     }
 
-
+    console.log({paths})
     //TODO memoize
 
     useEffect(() => {
@@ -334,7 +341,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 points: points
             }
         
-            let p : any[] = _paths?.slice() || [];
+            let p : any[] = pathRef.current?.slice() || [];
             p.push(path)
 
             onPathCreate?.(path)
@@ -342,7 +349,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const updatePathPosition = throttle((point: InfiniteCanvasPosition) => {
       
-        let p = _paths?.slice() || [];
+        let p = pathRef.current?.slice() || [];
         let ix = p.map((x: any) => x.id).indexOf(id)
 
         let path;
@@ -385,7 +392,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let nodeId = target.getAttribute('data-nodeid') || ''
                     let handleId = target.getAttribute('data-handleid') || ''
 
-                    let current_path = _paths?.find((a) => a.id == path.id)
+                    let current_path = pathRef.current?.find((a) => a.id == path.id)
+                    console.log({current_path, paths: pathRef.current, path})
                     if(!current_path) return;
                     onPathUpdate?.(linkPath(current_path, nodeId, handleId))
 
@@ -508,7 +516,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 factories: _factories,
                 nodes: _nodes,
                 setNodes: setNodes,
-                paths: _paths,
+                paths: pathRef.current,
                 setPaths: setPaths,
                 ports: ports,
 
@@ -527,7 +535,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 addPathPoint: (id, ix, point) => {
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     
-                    let current_path = _paths?.find((a) => a.id == id)
+                    let current_path = pathRef.current?.find((a) => a.id == id)
                     if(!current_path) return;
                     onPathUpdate?.(addPathSegment(current_path, ix, rp))
                 },
@@ -535,7 +543,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     rp = lockToGrid(rp, snapToGrid, grid)
 
-                    let current_path = _paths?.find((a) => a.id == id)
+                    let current_path = pathRef.current?.find((a) => a.id == id)
 
                     if(!current_path) return;
                     
@@ -545,7 +553,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
                 },
                 linkPath: (id, node, handle) => {
-                    let current_path = _paths?.find((a) => a.id == id)
+                    let current_path = pathRef.current?.find((a) => a.id == id)
                     if(!current_path) return;
                     onPathUpdate?.(linkPath(current_path, node, handle))
                 },
