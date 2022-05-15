@@ -45,7 +45,9 @@ Primary.args = {
                 id: nanoid(),
                 name:  'Event 1',
             },
-            notes: []
+            notes: [],
+            owner: {id: '101', name: 'Pete'},
+            managers: [{id: '102', name: "John"}]
         }
     ]
 };

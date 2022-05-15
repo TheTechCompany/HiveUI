@@ -8,7 +8,7 @@ export interface ScheduleItem {
     
     project: {displayId: string, name: string, id: string};
     notes?: Array<string | undefined | null>,
-    managers?: Array<{id?: string, name?: string}>;
+    managers?: Array<{id: string, name: string}>;
     owner?: {id: string, name: string};
     date?: Date;
   }

@@ -1,94 +1,85 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
 import { ScheduleItem } from '../types';
-import {FileHex} from '../../../assets';
+import { FileHex } from '../../../assets';
 import { AvatarList } from '../../AvatarList';
 import { stringToColor } from '@hexhive/utils';
 import { useContext } from 'react';
 import { ScheduleViewContext } from '../context';
 
 interface ContentProps {
-    data: ScheduleItem;
+   data: ScheduleItem;
 
-    users: any[];
+   users: any[];
 }
 
-export const Content : React.FC<ContentProps> = ({data, users}) => {
+export const Content: React.FC<ContentProps> = ({ data, users }) => {
 
 
-    const staffNames = () => {
-        const names = data?.people || []
+   const staffNames = () => {
+      const names = data?.people || []
 
-        if(names?.length > 0){
-        return (
-           <Box 
+      if (names?.length > 0) {
+         return (
+            <Box
                align="center"
-               direction="column" 
+               direction="column"
                className="staff-container">
-              {names.map((item: any) => item && (
-                    <Text size='small'>{item?.name}</Text>
-              ))}
-           </Box>);
-        }else{
-           return null;
-        } 
-     }
+               {names.map((item: any) => item && (
+                  <Text size='small'>{item?.name}</Text>
+               ))}
+            </Box>);
+      } else {
+         return null;
+      }
+   }
 
 
    const plantItems = () => {
       const items = (data?.equipment || [])
-      
-      if(items.length > 0){
-      return (
-         <Box direction="column" className="plant-container">
-            <Text weight="bold" size="small" className="plant-container-header">Plant required</Text>
-            {items?.map((item: any) => (
+
+      if (items.length > 0) {
+         return (
+            <Box direction="column" className="plant-container">
+               <Text weight="bold" size="small" className="plant-container-header">Plant required</Text>
+               {items?.map((item: any) => (
                   <Text size='small'>{item?.name}</Text>
-            ))}
-         </Box>
-      );
-      }else{
+               ))}
+            </Box>
+         );
+      } else {
          return null;
       }
    }
 
    const renderInfo = () => {
-    let content = [
-     <AvatarList size={24} users={([data?.owner?.id].concat(data?.managers?.map((x) => x.id || '') || [])).map((x) => {
-        if(users && users.length > 0){
-         let user = users.find((a: any) => a.id == x)
-         return {
-          color: stringToColor(user? user.id : x),
-           name: user? user.name : ''
-         }
-        }else{
-          return {
-            color: '',
-            name: ''
-          }
-        }
-       })} />
-     ]
+      const owners = (data.managers || []).concat(data.owner ? [data.owner] : [])
+      let content = [
+         <AvatarList size={24} users={owners.map((x) => {
+            return {
+               color: stringToColor(x.id),
+               name: x.name
+            }
+         })} />
+      ]
 
-   //   let job = data?.project ? projects?.find((a) => a?.id == data?.project.id) : {files: []}
- 
-     if(data?.files && data?.files.length > 0){
-        content.push(<FileHex height={25} width={25} />)
-     }
-     return content;
- }
+      if (data?.files && data?.files.length > 0) {
+         content.push(<FileHex height={25} width={25} />)
+      }
+      return content;
+   }
 
-    return (
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-            {staffNames()}
-            {plantItems()}
+   return (
+      <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+         {staffNames()}
+         {plantItems()}
 
-            <Box
-                direction="row"
-                align="center"
-                justify="between">
-                {renderInfo()}
-            </Box>
-        </div>
-    );
+         <Box
+            direction="row"
+            align="center"
+            justify="between">
+            {renderInfo()}
+         </Box>
+      </div>
+   );
 }
