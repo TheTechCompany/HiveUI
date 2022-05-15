@@ -1,6 +1,7 @@
 export * from './GraphGrid'
 export * from './FileViewer'
 export * from './FileExplorer'
+export * from './DataTable'
 export * from './Graphs'
 export * from './InfiniteCanvas'
 export * from './Timeline'
@@ -22,4 +23,3 @@ export * from './HeaderBox'
 export * from './ListBox'
 export * from './DateInput'
 export * from './Box';
-export * from './DataTable'
