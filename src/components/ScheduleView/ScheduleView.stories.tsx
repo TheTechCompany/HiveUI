@@ -48,6 +48,18 @@ Primary.args = {
             notes: [],
             owner: {id: '101', name: 'Pete'},
             managers: [{id: '102', name: "John"}]
+        },
+        {
+            id: nanoid(),
+            date: new Date(),
+            project: {
+                displayId: '1',
+                id: nanoid(),
+                name:  'Event 1',
+            },
+            notes: [],
+            createdAt: new Date(),
+            owner: {id: '101', name: 'Pete'},
         }
     ]
 };

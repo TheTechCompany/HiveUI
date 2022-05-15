@@ -66,6 +66,8 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
 
     return props.events?.filter((a) => {
       return moment(a.date).isSame(scheduleDay, 'day')
+    })?.sort((a, b) => {
+      return (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0)
     }).map((item: any, ix: number) => {
       return (
         <li style={{ padding: 0, marginBottom: 4 }}>

@@ -10,6 +10,9 @@ export interface ScheduleItem {
     notes?: Array<string | undefined | null>,
     managers?: Array<{id: string, name: string}>;
     owner?: {id: string, name: string};
+
     date?: Date;
+
+    createdAt?: Date;
   }
   
