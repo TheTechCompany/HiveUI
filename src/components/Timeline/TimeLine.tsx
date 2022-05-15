@@ -474,7 +474,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       setTasks(data)
       
     }
-  }, [JSON.stringify(data)])
+  }, [data])
 
   useEffect(() => {
     if(links && !isEqual(links, _links)){
