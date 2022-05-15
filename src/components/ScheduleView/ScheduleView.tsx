@@ -21,10 +21,6 @@ export interface ScheduleViewProps {
   actions?: {left?: any, right?: any};
   onCreateItem?: (ts: Date) => void;
   onUpdateItem?: (item: any) => void;
-  onDeleteItem?: (item: any) => void;
-
-  onJoinCard?: (item: any) => void;
-  onLeaveCard?: (item: any) => void;
 
   events?: ScheduleItem[];
 
