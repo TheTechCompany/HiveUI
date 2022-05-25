@@ -11,7 +11,6 @@ export const GridList : React.FC<GridListProps> = (props) => {
 		<Box 
 			wrap={true}
 			direction="row">
-			
 			{props.data?.map((item) => props.renderItem?.(item))}
 		</Box>	
 	)
