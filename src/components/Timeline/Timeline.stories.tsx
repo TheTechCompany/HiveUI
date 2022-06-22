@@ -30,13 +30,18 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
       {...args} 
       data={data} 
       onUpdateTask={(task: any, position: any) => {
-        console.log("Updaate")
-        let d = data.slice()
-        let ix = d.map((x: any) => x.id).indexOf(task.id)
-        d[ix].start = position.start;
-        d[ix].end = position.end;
+        // console.log("Updaate")
+        // console.log({task})
 
-        setData(d)
+        setTimeout(() => {
+          let d = data.slice()
+          let ix = d.map((x: any) => x.id).indexOf(task.id)
+          d[ix].start = position.start;
+          d[ix].end = position.end;
+  
+          setData(d)
+        }, 5000)
+   
       } } 
       links={links}
       onCreateLink={(link: any) => {

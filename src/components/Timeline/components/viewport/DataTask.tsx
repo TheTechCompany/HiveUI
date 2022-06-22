@@ -3,7 +3,6 @@ import DateHelper from '../../helpers/DateHelper';
 import { MODE_NONE, MODE_MOVE, MOVE_RESIZE_LEFT, MOVE_RESIZE_RIGHT } from '../../Const';
 import { LINK_POS_LEFT, LINK_POS_RIGHT } from '../../Const';
 import Config from '../../helpers/config/Config';
-import { debounce } from 'lodash';
 import { Box, Text, Collapsible } from 'grommet';
 import { Task } from '../../types';
 import styled from 'styled-components'

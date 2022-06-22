@@ -1,10 +1,10 @@
 import { Box } from 'grommet';
 import React from 'react';
-import { FileViewer } from '../../components';
+import { FileViewer, FileViewerFile } from '../../components';
 import styled from 'styled-components'
 
 export interface FileContentProps {
-    files?: any[];
+    files?: FileViewerFile[];
     token?: string;
     className?: string;
 }

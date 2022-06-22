@@ -1,1 +1,1 @@
-export * from './file-dialog'
+export * from './FileDialog'
