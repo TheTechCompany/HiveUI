@@ -89,7 +89,7 @@ export const NodeOptions = Template.bind({});
 NodeOptions.args = {
   editable: true,
   style: {
-    background: "green",
+    background: "lightgray",
     lineColor: "gray",
   },
   factories: [

@@ -37,7 +37,8 @@ export const GridLayer: React.FC<GridLayerProps> = (props) => {
         let horiz = []
         const w = (grid || {width: 100}).width / (grid?.divisions || 10)
         for (var i = 0; i < (grid?.divisions || 10); i++) {
-            horiz.push(<line stroke={lineColors} x1='0.5' x2="99.5" y1={`${i * w}`} y2={`${i * w}`} />)
+            horiz.push(<circle cx={i*w} cy={i*w} r={1}/>)
+            // horiz.push(<line strokeDasharray={'2 8'} stroke={lineColors} x1='0' x2="100" y1={`${i * w}`} y2={`${i * w}`} />)
         }
         return horiz;
     }
@@ -48,9 +49,27 @@ export const GridLayer: React.FC<GridLayerProps> = (props) => {
         const h = (grid || {height: 100}).height / (grid?.divisions || 10)
 
         for (var i = 0; i < (grid?.divisions || 10); i++) {
-            vert.push(<line stroke={lineColors} x1={`${i *  h}`} x2={`${i * h}`} y1="0.5" y2="99.5" />)
+            vert.push(<circle cx={i*h} cy={i*h}  r={1} />)
+            // vert.push(<line strokeDasharray={'2 8'} stroke={lineColors} x1={`${i *  h}`} x2={`${i * h}`} y1="0" y2="100" />)
         }
         return vert;
+    }
+
+    const renderDots = () => {
+        let dots = [];
+
+        const divisions = grid?.divisions || 10
+
+        const w = (grid || {width: 100}).width / (grid?.divisions || 10)
+        const h = (grid || {height: 100}).height / (grid?.divisions || 10)
+
+        for(var x = 0; x < divisions + 1; x++){
+            for(var y = 0; y < divisions + 1; y++){
+                dots.push(<circle overflow={'visible'} cx={x  * w} cy={y*h} r={1} />)
+            }
+        }
+
+        return dots;
     }
 
     useEffect(() => {
@@ -64,19 +83,22 @@ export const GridLayer: React.FC<GridLayerProps> = (props) => {
 
     return (
         <svg 
+            overflow={'visible'}
             ref={svgRef} style={{flex: 1, backgroundColor: backgroundColor}}>
             <defs>
-                <pattern patternUnits="userSpaceOnUse" width={grid?.width || "100"} height={grid?.height || "100"} viewBox="0 0 100 100" id="cells">
-                    <rect x="0" y="0" width={grid?.width || "100"} height={grid?.height || "100"} fill="none" style={{strokeWidth: 2, stroke: lineColors}}></rect>
-                    {renderHorizontal()}
-                    {renderVertical()}
+                <pattern overflow={"visible"} patternUnits="userSpaceOnUse" width={grid?.width || "100"} height={grid?.height || "100"} viewBox="0 0 100 100" id="cells">
+                    {/* <rect x="0" y="0" width={grid?.width || "100"} height={grid?.height || "100"} fill="none" style={{strokeWidth: 1, stroke: lineColors}}></rect> */}
+                    {renderDots()}
+                    {/* {renderHorizontal()}
+                    {renderVertical()} */}
                 </pattern>
-                <pattern patternUnits="userSpaceOnUse" width={scaledTile} height={scaledTile} viewBox={`0 0 ${scaledTile} ${scaledTile}`} id="cell-rect">
+                <pattern overflow={"visible"}  patternUnits="userSpaceOnUse" width={scaledTile} height={scaledTile} viewBox={`0 0 ${scaledTile} ${scaledTile}`} id="cell-rect">
                     <rect 
                         x="-100" 
                         y="-100" 
                         width="300" 
                         height="300" 
+                        overflow={'visible'}
                         style={{
                             fill: "url(#cells)",
                             transformOrigin: '0 0',
@@ -87,7 +109,7 @@ export const GridLayer: React.FC<GridLayerProps> = (props) => {
                 </pattern>
             </defs>
 
-            <rect height="100%" width="100%" fill="url(#cell-rect)" />
+            <rect overflow={'visible'} height="100%" width="100%" fill="url(#cell-rect)" />
         </svg>
     )
 }
