@@ -16,6 +16,10 @@ export interface IFileExplorerContext {
     navigate?: (id: string) => void;
 
     actions?: IAction[]
+
+    triggerRenameFile?: (file: IFile) => void;
+    triggerMoveFile?: (file: IFile) => void;
+    triggerDeleteFile?: (file: IFile) => void;
 }
 
 export const FileExplorerContext = React.createContext<IFileExplorerContext>({})

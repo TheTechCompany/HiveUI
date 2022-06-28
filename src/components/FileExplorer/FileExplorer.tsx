@@ -20,6 +20,10 @@ import { MissingPreview } from './components/missing-preview'
 import { UploadDrawer } from './components/upload-drawer'
 import _ from 'lodash'
 import { history as historyRef, listenHistory } from './context/history'
+import { RenameModal } from './modals/rename-modal'
+import { MoveModal } from './modals/move-modal'
+import { DeleteModal } from './modals/delete-modal'
+import { Divider, Menu, MenuItem } from '@mui/material'
 
 export interface FileExplorerProps {
     files?: IFile[] | IFile
@@ -43,9 +47,16 @@ export interface FileExplorerProps {
     selected?: string[];
     onSelect?: (id: string) => void;
     onDeselect?: (id: string) => void;
+
+    onCreateFolder?: (folderName: string) => void;
+    onRename?: (file: IFile, newName: string) => void;
+    onMove?: (file: IFile, newPath: string) => void;
+    onDelete?: (file: IFile) => void;
 }
 
 export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
+    
+    const [anchorPos, setAnchorPos] = useState<{ top: number, left: number }>()
     
 //    console.log("Histroy",  historyRef.index, historyRef.)
     const modes = [{key: 'list', icon: <List />}, {key: 'thumbnail', icon: <AppsRounded />}, {key: 'grid', icon: <Apps />}];
@@ -56,6 +67,11 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const [ breadcrumbs, setBreadcrumbs ] = useState<Breadcrumb[]>([])
 
     const [ view, setView ] = useState<string>('list');
+
+    const [ createFolderOpen, openCreateFolder] = useState<boolean>(false)
+    const [ renameModalOpen, openRenameModal ] = useState(false)
+    const [ moveModalOpen, openMoveModal ] = useState(false);
+    const [ deleteModalOpen, openDeleteModal ] = useState(false);
 
     useEffect(() => {
         console.log({path: props.path})
@@ -121,6 +137,8 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
    
 
+    const [ selectedFile, setSelectedFile ] = useState<IFile>()
+
     return (
         <FileExplorerContext.Provider value={{
             navigate: onNavigate,
@@ -131,10 +149,91 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
             selectFile: (id, checked) => id && ((checked) ? props.onSelect?.(id) : props.onDeselect?.(id)),
             view, 
             setView,
-            actions: props.actions || [{key: 'download', icon: <DownloadOption />, disabled: (state) => (state.files?.length || 0) < 2}, {key: 'upload', icon: <UploadOption />}, {key: 'convert', icon: <Update />}, {key: 'organise', icon: <FormFolder />}]
+            actions: props.actions || [{key: 'download', icon: <DownloadOption />, disabled: (state) => (state.files?.length || 0) < 2}, {key: 'upload', icon: <UploadOption />}, {key: 'convert', icon: <Update />}, {key: 'organise', icon: <FormFolder />}],
+            triggerRenameFile: (file) => {
+                setSelectedFile(file)
+                openRenameModal(true);
+            },
+            triggerMoveFile: (file) => {
+                setSelectedFile(file)
+                openMoveModal(true)
+            },
+            triggerDeleteFile: (file) => {
+                setSelectedFile(file)
+                openDeleteModal(true)
+            }
         }}>
-            <FolderModal open={false} />
+            <FolderModal 
+                onClose={() => {
+                    openCreateFolder(false)
+                    setSelectedFile(undefined)
+                }} 
+                onSubmit={(folderName) => {
+                    props.onCreateFolder?.(folderName)
+                    openCreateFolder(false);
+                    setSelectedFile(undefined)
+                }}
+                open={createFolderOpen} />
+            <MoveModal 
+                selected={selectedFile}
+                onClose={() => {
+                    openMoveModal(false)
+                    setSelectedFile(undefined)
+                
+                }}  
+                onSubmit={(newLocation) => {
+                    if(selectedFile) props.onMove?.(selectedFile, newLocation)
+                    openMoveModal(false)
+                    setSelectedFile(undefined)
+
+                }}
+                open={moveModalOpen} />
+            <DeleteModal 
+                selected={selectedFile}
+                onClose={() => {
+                    openDeleteModal(false)
+                    setSelectedFile(undefined)
+                }} 
+                onSubmit={() => {
+                    if(selectedFile) props.onDelete?.(selectedFile)
+                    openDeleteModal(false)
+                    setSelectedFile(undefined)
+
+                }} 
+                open={deleteModalOpen} />
+            <RenameModal  
+                selected={selectedFile}
+                onClose={() => {
+                    openRenameModal(false)
+                    setSelectedFile(undefined)
+                }} 
+                onSubmit={(newName) => {
+                    setSelectedFile(undefined)
+                    if(selectedFile) props.onRename?.(selectedFile, newName)
+                    openRenameModal(false)
+                }}
+                open={renameModalOpen} />
+
+            <Menu
+              anchorReference={'anchorPosition'}
+              anchorPosition={anchorPos}
+              open={Boolean(anchorPos)}
+              onClose={() => setAnchorPos(undefined)}
+            >
+              <MenuItem onClick={() => {
+                openCreateFolder(true)
+                setAnchorPos(undefined)
+              }}>New Folder</MenuItem>
+              {/* <MenuItem onClick={() => {
+                setAnchorPos(undefined)
+              }} style={{ color: 'red' }}>Delete</MenuItem> */}
+            </Menu>
+            
             <Box 
+                onContextMenu={(evt) => {
+                    evt.preventDefault()
+                    setAnchorPos({ top: evt.clientY, left: evt.clientX })
+                }}
                 overflow={"hidden"}
                 elevation="small"
                 focusIndicator={false}

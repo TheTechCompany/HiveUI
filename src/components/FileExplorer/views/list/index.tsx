@@ -1,28 +1,73 @@
-import { Box, ListItemText, List, Checkbox, Button, Typography, IconButton, ListItem, ListItemButton } from '@mui/material';
+import { Box, ListItemText, List, Checkbox, Button, Typography, IconButton, ListItem, ListItemButton, Menu, MenuItem, Divider } from '@mui/material';
 import { Folder, MoreVert, More } from '@mui/icons-material';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useFileExplorer } from '../../context';
 import { IFile } from '../../types/file';
 import { humanFileSize } from '../../utils';
+import _ from 'lodash';
 
 export interface ListViewProps {
 }
  // onClickItem={({item}: any) => selectFile?.(item)}
 export const ListView : React.FC<ListViewProps> = (props) => {
-    const { files, navigate, selectFile, clickFile, selected } = useFileExplorer()
+    const { files, navigate, selectFile, clickFile, selected,
+        triggerRenameFile,
+        triggerMoveFile,
+        triggerDeleteFile 
+    } = useFileExplorer()
+
+    const [anchorPos, setAnchorPos] = useState<{ top: number, left: number }>()
+
+    const [anchorEl, setAnchorEl] = useState<any>(null)
+    const [ selectedFile, setSelectedFile ] = useState<IFile | null>(null);
 
     return (
         <Box>
+            <Menu
+                anchorReference={'anchorEl'}
+                anchorEl={anchorEl}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                open={Boolean(anchorEl)}
+                // anchorPosition={anchorPos}
+                onClose={() => setAnchorEl(null)}
+                >
+                <MenuItem onClick={() => {
+                    if(selectedFile) triggerRenameFile?.(selectedFile)
+                    setAnchorEl(null)
+                }}>Rename</MenuItem>
+                <MenuItem onClick={() => {
+                    if(selectedFile) triggerMoveFile?.(selectedFile)
+                    setAnchorEl(null)
+                }}>Move</MenuItem>
+                <Divider />
+                <MenuItem onClick={() => {
+                    if(selectedFile) triggerDeleteFile?.(selectedFile)
+                    setAnchorEl(null)
+                }} sx={{color:"red"}}>Delete</MenuItem>
+            </Menu>
             <List>
                 {files?.map((datum: IFile) => (
-                    <ListItemButton
+                    <ListItem
                         dense
+                        secondaryAction={(
+                            <IconButton sx={{zIndex: 9}} onClick={(e) => {
+                                setAnchorEl(e.target)
+                                setSelectedFile(datum)
+                                // setAnchorPos({top: e.clientY, left: e.clientX});
+
+                            }}>
+                                <MoreVert />
+                            </IconButton>
+                        )}
+                        >
+                    <ListItemButton
                         onClick={() => {
 
                         }}
-                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer'}}
+                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative'}}
                       >
-                          <Box style={{display: 'flex', alignItems: 'center', padding: 4, marginRight: 5}}>
+                          <Box style={{display: 'flex', alignItems: 'center', padding: '4px', marginRight: '5px'}}>
                           {datum.isFolder ? <Folder /> :  undefined}
 
                           </Box>
@@ -44,12 +89,11 @@ export const ListView : React.FC<ListViewProps> = (props) => {
 
                             <Box style={{display: 'flex', alignItems: 'center'}}>
                                 <Typography>{humanFileSize(datum.size || 0)}</Typography>
-                                <IconButton>
-                                    <MoreVert />
-                                </IconButton>
+                               
                             </Box>
                         </Box>
                     </ListItemButton>
+                    </ListItem>
                 ))}
             </List>
         </Box>
