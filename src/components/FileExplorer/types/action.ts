@@ -7,6 +7,7 @@ export interface IAction {
     icon?: JSX.Element;
     label: string;
     sx?: SxProps<Theme>;
+    seperator?: "top" | "bottom";
     onClick?: (file: IFile) => void;
     disabled?: boolean | ((state: IFileExplorerContext) => boolean)
 }

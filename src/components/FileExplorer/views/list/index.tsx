@@ -39,6 +39,8 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                 onClose={() => setAnchorEl(null)}
                 >
                 {actions?.map((action) => (
+                    <>
+                    {action.seperator == 'top' && <Divider />}
                     <MenuItem 
                         sx={action.sx}    
                         onClick={() => {
@@ -48,6 +50,8 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                             {action.icon}
                             {action.label}
                     </MenuItem>
+                    {action.seperator == 'bottom' && <Divider />}
+                    </>
                 ))}
                 {/* <MenuItem onClick={() => {
                     
