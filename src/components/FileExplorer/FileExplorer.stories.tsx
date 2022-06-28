@@ -35,6 +35,16 @@ Files.args = {
     ]
 }
 
+export const FileActions = Template.bind({})
+FileActions.args = {
+  files: [
+    {name: 'Test.pdf', size: 2200},
+  ],
+  actions: [
+    {key: 'download', label: 'Download', onClick: (file) => console.log("Download", file)}
+  ]
+}
+
 export const Folders = Template.bind({});
 Folders.args = {
   onNavigate: (id) => console.log({id}),

@@ -1,8 +1,12 @@
+import { SxProps, Theme } from "@mui/material";
 import { IFileExplorerContext } from "../context";
+import { IFile } from "./file";
 
 export interface IAction {
     key: string;
-    icon: JSX.Element;
-    onClick?: () => void;
+    icon?: JSX.Element;
+    label: string;
+    sx?: SxProps<Theme>;
+    onClick?: (file: IFile) => void;
     disabled?: boolean | ((state: IFileExplorerContext) => boolean)
 }

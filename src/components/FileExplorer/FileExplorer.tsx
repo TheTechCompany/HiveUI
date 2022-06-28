@@ -149,7 +149,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
             selectFile: (id, checked) => id && ((checked) ? props.onSelect?.(id) : props.onDeselect?.(id)),
             view, 
             setView,
-            actions: props.actions || [{key: 'download', icon: <DownloadOption />, disabled: (state) => (state.files?.length || 0) < 2}, {key: 'upload', icon: <UploadOption />}, {key: 'convert', icon: <Update />}, {key: 'organise', icon: <FormFolder />}],
+            actions: props.actions || [],
             triggerRenameFile: (file) => {
                 setSelectedFile(file)
                 openRenameModal(true);

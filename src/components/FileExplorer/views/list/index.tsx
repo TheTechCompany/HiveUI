@@ -10,7 +10,13 @@ export interface ListViewProps {
 }
  // onClickItem={({item}: any) => selectFile?.(item)}
 export const ListView : React.FC<ListViewProps> = (props) => {
-    const { files, navigate, selectFile, clickFile, selected,
+    const { 
+        files, 
+        navigate, 
+        selectFile, 
+        clickFile, 
+        selected,
+        actions,
         triggerRenameFile,
         triggerMoveFile,
         triggerDeleteFile 
@@ -32,6 +38,20 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                 // anchorPosition={anchorPos}
                 onClose={() => setAnchorEl(null)}
                 >
+                {actions?.map((action) => (
+                    <MenuItem 
+                        sx={action.sx}    
+                        onClick={() => {
+                            if(selectedFile) action?.onClick?.(selectedFile)
+                            setAnchorEl(null)
+                        }}>
+                            {action.icon}
+                            {action.label}
+                    </MenuItem>
+                ))}
+                {/* <MenuItem onClick={() => {
+                    
+                }}>Download</MenuItem>
                 <MenuItem onClick={() => {
                     if(selectedFile) triggerRenameFile?.(selectedFile)
                     setAnchorEl(null)
@@ -44,18 +64,16 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                 <MenuItem onClick={() => {
                     if(selectedFile) triggerDeleteFile?.(selectedFile)
                     setAnchorEl(null)
-                }} sx={{color:"red"}}>Delete</MenuItem>
+                }} sx={{color:"red"}}>Delete</MenuItem> */}
             </Menu>
             <List>
                 {files?.map((datum: IFile) => (
                     <ListItem
                         dense
-                        secondaryAction={(
+                        secondaryAction={(actions || []).length > 0 && (
                             <IconButton sx={{zIndex: 9}} onClick={(e) => {
                                 setAnchorEl(e.target)
                                 setSelectedFile(datum)
-                                // setAnchorPos({top: e.clientY, left: e.clientX});
-
                             }}>
                                 <MoreVert />
                             </IconButton>
