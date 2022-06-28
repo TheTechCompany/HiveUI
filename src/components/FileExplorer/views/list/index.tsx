@@ -53,9 +53,6 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                     {action.seperator == 'bottom' && <Divider />}
                     </>
                 ))}
-                {/* <MenuItem onClick={() => {
-                    
-                }}>Download</MenuItem>
                 <MenuItem onClick={() => {
                     if(selectedFile) triggerRenameFile?.(selectedFile)
                     setAnchorEl(null)
@@ -68,7 +65,7 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                 <MenuItem onClick={() => {
                     if(selectedFile) triggerDeleteFile?.(selectedFile)
                     setAnchorEl(null)
-                }} sx={{color:"red"}}>Delete</MenuItem> */}
+                }} sx={{color:"red"}}>Delete</MenuItem>
             </Menu>
             <List>
                 {files?.map((datum: IFile) => (

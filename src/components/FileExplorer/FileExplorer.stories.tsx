@@ -41,7 +41,8 @@ FileActions.args = {
     {name: 'Test.pdf', size: 2200},
   ],
   actions: [
-    {key: 'download', label: 'Download', onClick: (file) => console.log("Download", file)}
+    {key: 'download', label: 'Download', onClick: (file) => console.log("Download", file)},
+    {key: 'delete', label: "Delete", onClick: (file) => {}, sx: {color: 'red'}, seperator: 'top'}
   ]
 }
 
