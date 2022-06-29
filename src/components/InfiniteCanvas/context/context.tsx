@@ -6,6 +6,7 @@ import { AbstractWidgetFactory } from '../models/abstract-widget-factory';
 export interface IInfiniteCanvasContext {
     style?: {
         lineColor?: string;
+        pathColor?: string;
         dotColor?: string;
         background: string;
     }; 

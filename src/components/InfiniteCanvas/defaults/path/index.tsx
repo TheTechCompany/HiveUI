@@ -6,6 +6,7 @@ import { createLine, getHostForElement } from '../../utils';
 import { PathPoint } from './point';
 import { FlowPathSegment } from './segment';
 import { InfiniteCanvasContext } from '../../context/context';
+import { style } from '@mui/system';
 
 export interface FlowPathProps {
     className?: string;
@@ -23,7 +24,7 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
     
     const [ points, setPoints ] = useState(props.points)
 
-    const { getRelativeCanvasPos } = useContext(InfiniteCanvasContext)
+    const { getRelativeCanvasPos, style } = useContext(InfiniteCanvasContext)
 
     useEffect(() => {
         setPoints(props.points)
@@ -133,14 +134,13 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
           <defs>
             <marker id='head' orient='auto' markerWidth='16' markerHeight='32'
                     refX='12' refY='5'>
-                <path d='M 0 0 L 10 5 L 0 10 z' fill='gray' />
+                <path d='M 0 0 L 10 5 L 0 10 z' fill={style?.pathColor || 'gray'} />
             </marker>
         </defs>  
         </g>) : (
             <g className={`${props.className} ${props.selected ? 'selected': ''}`}>
             <FlowPathSegment 
                 arrow={true}
-
                 onContextMenu={props.onContextMenu}
                 onMouseDown={(e) => segmentClick(0, e)} points={points} />
                 </g>

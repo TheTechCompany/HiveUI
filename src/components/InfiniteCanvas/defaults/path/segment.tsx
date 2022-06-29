@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import styled from 'styled-components'
+import { InfiniteCanvasContext } from '../../context/context';
 import { InfiniteCanvasPosition } from '../../types/canvas';
 import { createLine } from '../../utils';
 
@@ -18,6 +19,9 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
         if(props.d) return props.d;
         if(props.points) return createLine(props.points)
     }, [props.d, props.points])
+
+    const { style } = useContext(InfiniteCanvasContext)
+
     return (
         <g 
             onContextMenu={props.onContextMenu}
@@ -25,8 +29,8 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
              onMouseDown={props.onMouseDown}>
 
             {/* <path d={d} className={"flow-path__pipe-border"}  /> */}
-            <path d={d} className={"flow-path__pipe"}  />
-            <path d={d} className={"flow-path"} {...{"marker-end": "url(#head)"}} />
+            <path d={d} style={{stroke: style?.pathColor}} className={"flow-path__pipe"}  />
+            <path d={d} style={{stroke: style?.pathColor}} className={"flow-path"} {...{"marker-end": "url(#head)"}} />
 
             <path d={d} className={"flow-path__highlight"} />
           

@@ -24,7 +24,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
         addPathPoint,
         openContextMenu,
         selected,
-        editable
+        editable,
+        style
     } = useContext(InfiniteCanvasContext)
 
 

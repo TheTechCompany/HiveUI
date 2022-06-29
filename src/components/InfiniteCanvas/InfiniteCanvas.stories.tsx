@@ -91,7 +91,8 @@ NodeOptions.args = {
   style: {
     background: "#fff8f2",
     lineColor: "gray",
-    dotColor: 'gray'
+    dotColor: 'gray',
+    pathColor: 'blue'
   },
   factories: [
     new ActionNodeFactory(),
@@ -144,6 +145,10 @@ Controlled.args = {
   grid: { width: 100, height: 100, divisions: 5 },
   // snapToGrid: true,
   editable: true,
+  style: {
+    background: 'lightgray',
+    pathColor: 'blue'
+  },
   factories: [new ActionNodeFactory(), new IconNodeFactory()],
   nodes: [
     {
