@@ -213,7 +213,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         setPaths(paths || [])
     }, [paths])
   
-
     useEffect(() => {
         if(zoom){
             setZoom(zoom)
@@ -221,9 +220,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     }, [zoom])
 
     useEffect(() => {
-        if(offset){
+        if(offset && (offset.x != _offset.x || offset.y != _offset.y)){
             console.log("Set")
-         //   setOffset(offset)
+           setOffset(offset)
         }
     }, [offset])
 
