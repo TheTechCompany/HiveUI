@@ -5,7 +5,8 @@ import { AbstractWidgetFactory } from '../models/abstract-widget-factory';
 
 export interface IInfiniteCanvasContext {
     style?: {
-        lineColor: string;
+        lineColor?: string;
+        dotColor?: string;
         background: string;
     }; 
     snapToGrid?: boolean;

@@ -49,7 +49,8 @@ export interface Block {
 export interface InfiniteCanvasProps {
     style?: {
         background: string,
-        lineColor: string
+        lineColor?: string,
+        dotColor?: string
     };
     className?: string;
 
