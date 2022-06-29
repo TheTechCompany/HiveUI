@@ -22,7 +22,7 @@ export interface RetractingPortProps {
 }
 
 export const BaseRetractingPort : React.FC<RetractingPortProps> = (props) => {
-    const { isPortDragging, editable } = useContext(InfiniteCanvasContext)
+    const { isPortDragging, editable, style } = useContext(InfiniteCanvasContext)
 
     const { extraProps, dragPort } = usePort({id: props.id})
 
@@ -32,8 +32,9 @@ export const BaseRetractingPort : React.FC<RetractingPortProps> = (props) => {
                 <div 
                     {...extraProps}
                     className="connector" 
+                    style={{backgroundColor: style?.portDotColor || style?.portColor}}
                     onMouseDown={(e) => dragPort?.(e)} />
-                <div className="retractor" />
+                <div className="retractor" style={{backgroundColor: style?.portColor}} />
         </div>
     )
 }

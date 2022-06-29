@@ -9,6 +9,8 @@ export interface IInfiniteCanvasContext {
         pathColor?: string;
         dotColor?: string;
         background: string;
+        portColor?: string;
+        portDotColor?: string;
     }; 
     snapToGrid?: boolean;
     grid?: {width: number, height: number, divisions: number};

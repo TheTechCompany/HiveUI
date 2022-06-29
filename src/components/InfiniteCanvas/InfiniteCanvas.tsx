@@ -51,7 +51,9 @@ export interface InfiniteCanvasProps {
         background: string,
         pathColor?: string,
         dotColor?: string,
-        lineColor?: string
+        lineColor?: string,
+        portColor?: string,
+        portDotColor?: string
     };
     className?: string;
 

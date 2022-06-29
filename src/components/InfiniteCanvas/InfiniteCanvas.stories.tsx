@@ -147,8 +147,11 @@ Controlled.args = {
   editable: true,
   style: {
     background: 'lightgray',
-    pathColor: 'blue'
+    pathColor: 'blue',
+    portColor: "gray",
+    portDotColor: 'gray'
   },
+  snapToGrid: true,
   factories: [new ActionNodeFactory(), new IconNodeFactory()],
   nodes: [
     {
