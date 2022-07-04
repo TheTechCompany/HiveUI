@@ -104,6 +104,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
               opacity={child_task.opacity}
               width={new_width}
               left={new_position}
+              height={itemHeight}
               label={child_task.name}
               onChildDrag={onChildDrag}
               isSelected={selectedItem == child_task}
