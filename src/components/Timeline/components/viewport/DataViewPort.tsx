@@ -76,7 +76,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
             setCreatingTask({...task, index: i})
 
             if(finished){
-              await onCreateTask?.(task)
+              await onCreateTask?.(task, i)
               setCreatingTask(null);
             }
           }}
@@ -173,7 +173,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
           onDragCreate={async (task: any, finished: boolean) => {
             setCreatingTask({...task, index: i})
             if(finished){
-              await onCreateTask?.(task)
+              await onCreateTask?.(task, i)
               setCreatingTask(null)
             }
           }}

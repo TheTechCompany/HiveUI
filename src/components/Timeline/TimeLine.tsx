@@ -44,7 +44,7 @@ export type TimelineProps = {
   onDateChange?: (date: Date) => void;
 
 
-  onCreateTask?: (task: Task) => Promise<void>;
+  onCreateTask?: (task: Task, row: number) => Promise<void>;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
   onCreateLink?: (link: Link) => void;
   onSelectItem?: (item: Task) => void;
