@@ -72,11 +72,12 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
       result.push(
         <DataRow
-          onDragCreate={(task: any, finished: boolean) => {
+          onDragCreate={async (task: any, finished: boolean) => {
             setCreatingTask({...task, index: i})
 
             if(finished){
-              onCreateTask?.(task)
+              await onCreateTask?.(task)
+              setCreatingTask(null);
             }
           }}
           isSelected={selectedItem == item}
@@ -86,6 +87,35 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
            left={20} 
            expanded={expanded}
            itemheight={(itemHeight + 5)}>
+
+          {(item.children || []).length > 0 ? item.children?.map((child_task, ix) => {
+
+          let new_position = DateHelper.dateToPixel(child_task.start, nowposition, dayWidth || 0);
+          let new_width = DateHelper.dateToPixel(child_task.end, nowposition, dayWidth || 0) - new_position;
+
+            
+            return  (
+              
+            <DataTask 
+              item={child_task}
+              nowposition={nowposition}
+              dayWidth={dayWidth}
+              color={child_task.color}
+              opacity={child_task.opacity}
+              width={new_width}
+              left={new_position}
+              label={child_task.name}
+              onChildDrag={onChildDrag}
+              isSelected={selectedItem == child_task}
+              onSelectItem={onSelectItem}
+              onStartCreateLink={props.onStartCreateLink}
+              onFinishCreateLink={props.onFinishCreateLink}
+              onTaskChanging={props.onTaskChanging}
+              onUpdateTask={props.onUpdateTask}
+              >
+                {' '}
+            </DataTask>)
+          }) : (
           <DataTask
             onExpansion={(expanded: boolean) => setExpanded(expanded)}
             item={item}
@@ -107,6 +137,8 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
           >
             {' '}
           </DataTask>
+          )}
+
           {i == (creatingTask as any)?.index && 
             <DataTask 
             pointerEvents='none'
@@ -138,10 +170,11 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
     return (
       <DataRow
-          onDragCreate={(task: any, finished: boolean) => {
+          onDragCreate={async (task: any, finished: boolean) => {
             setCreatingTask({...task, index: i})
             if(finished){
-              onCreateTask?.(task)
+              await onCreateTask?.(task)
+              setCreatingTask(null)
             }
           }}
           isSelected={selectedItem == item}

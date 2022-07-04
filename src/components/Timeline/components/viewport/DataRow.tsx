@@ -71,6 +71,7 @@ export default (props: any) => {
             element.addEventListener('mousemove', mouseMove);
 
             element.addEventListener('mouseup', mouseUp);
+
           }}
           className="timeLine-main-data-row"
           style={{ 

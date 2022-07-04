@@ -44,7 +44,7 @@ export type TimelineProps = {
   onDateChange?: (date: Date) => void;
 
 
-  onCreateTask?: (task: Task) => void;
+  onCreateTask?: (task: Task) => Promise<void>;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
   onCreateLink?: (link: Link) => void;
   onSelectItem?: (item: Task) => void;
@@ -116,8 +116,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const [ _tasks, setTasks ] = useState<Task[]>(data)
   const [ _links, setLinks ] = useState<Link[]>(links)
-
-  const creating = useRef<{task?: Task}>({})
 
 
   useEffect(() => {
@@ -493,16 +491,11 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     }
   }, [mode])
 
-  console.log({task: creating.current.task})
-
 
     return (
       <TimelineContext.Provider value={{
-        onDragCreate: (task: Task, finished: boolean) => {
-          creating.current.task = task;
-        },
         onCreateTask,
-        tasks: _tasks?.map((x, ix) => ({...x, index: ix})).concat(creating.current?.task ? [{...creating.current.task, index: _tasks.length}] : []),
+        tasks: _tasks?.map((x, ix) => ({...x, index: ix})),
         links,
         style: style,
         mode: _mode,

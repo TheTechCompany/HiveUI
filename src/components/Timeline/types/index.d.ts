@@ -16,10 +16,14 @@ export type Task = {
     id?: string | number;
     start?: Date;
     end?: Date;
+
+    children?: Task[]
+
     name?: string;
     color?: string | {color: string, percent: number}[];
     opacity?: number;
     collapsibleContent?: any;
+    
     hoverInfo?: any;
     showLabel?: boolean | string;
 };

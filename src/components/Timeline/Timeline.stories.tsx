@@ -75,6 +75,27 @@ WithItems.args = {
   }
 };
 
+export const WithMultipleItems = Template.bind({});
+WithMultipleItems.args = {
+  date: new Date(),
+  data: [
+    {
+      id: '1', start: new Date(2022, 6, 1), end: new Date(2022, 6, 6), name: "Item 0", color: 'red', showLabel: true, 
+      children: [,
+        {id: '2', start: new Date(2022, 6, 1), end: new Date(2022, 6, 5), name: "Item 1", color: 'red', showLabel: true},
+        {id: '4', start: new Date(2022, 6, 6), end: new Date(2022, 6, 12), name: "Item 2", color: 'red', showLabel: true}
+      ]
+    }
+  ],
+  primary: true,
+  color: 'green',
+  size: '10px',
+  dayStatus: (day: Date) => {
+    // console.log("Day", day)
+    return 'red';
+  }
+};
+
 export const HeaderColors = Template.bind({});
 HeaderColors.args = {
   date: new Date(),

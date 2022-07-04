@@ -14,7 +14,7 @@ export interface ITimelineContext {
     selectedItem?: any;
     onSelectItem?: (item: any) => void;
 
-    onCreateTask?: (task: Task) => void;
+    onCreateTask?: (task: Task) => Promise<void>;
     onDragCreate?: (task: Task, finished: boolean) => void;
 
     style?: TimelineStyle
