@@ -20,7 +20,7 @@ import { getDayWidth } from './utils';
 import { Box, Spinner } from 'grommet';
 import styled from 'styled-components'
 import { Moment } from 'moment';
-import { isEqual } from 'lodash';
+import { debounce, isEqual } from 'lodash';
 import moment from 'moment';
 
 
@@ -43,9 +43,12 @@ export type TimelineProps = {
   date?: Date;
   onDateChange?: (date: Date) => void;
 
+
+  onCreateTask?: (task: Task) => void;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
   onCreateLink?: (link: Link) => void;
   onSelectItem?: (item: Task) => void;
+  
   onHorizonChange?: (start: Date, end: Date) => void;
   onNeedData?: any;
 
@@ -58,7 +61,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   data = [],
   links = [],
   loading = false,
-
+  onCreateTask,
   onDateChange,
   onUpdateTask,
   onCreateLink,
@@ -113,6 +116,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const [ _tasks, setTasks ] = useState<Task[]>(data)
   const [ _links, setLinks ] = useState<Link[]>(links)
+
+  const creating = useRef<{task?: Task}>({})
 
 
   useEffect(() => {
@@ -488,10 +493,16 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     }
   }, [mode])
 
+  console.log({task: creating.current.task})
+
 
     return (
       <TimelineContext.Provider value={{
-        tasks: _tasks?.map((x, ix) => ({...x, index: ix})),
+        onDragCreate: (task: Task, finished: boolean) => {
+          creating.current.task = task;
+        },
+        onCreateTask,
+        tasks: _tasks?.map((x, ix) => ({...x, index: ix})).concat(creating.current?.task ? [{...creating.current.task, index: _tasks.length}] : []),
         links,
         style: style,
         mode: _mode,

@@ -36,10 +36,11 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const [ expanded, setExpanded ] = useState<boolean>(false);
 
-  const { onSelectItem, selectedItem, nowposition, startRow, endRow, tasks, mode, style, dayWidth, itemHeight, moveTimeline, scrollLeft, scrollTop } = useContext(TimelineContext)
+  const { onSelectItem, onCreateTask, selectedItem, nowposition, startRow, endRow, tasks, mode, style, dayWidth, itemHeight, moveTimeline, scrollLeft, scrollTop } = useContext(TimelineContext)
 
   const [ childDragging, setChildDragging ] = useState<boolean>(false) 
   
+  const [ creatingTask, setCreatingTask ] = useState<Task | null>(null);
 
   const reporter = (target?: HTMLElement | null) => {
     let dimensions = {width: target?.clientWidth || null, height: target?.clientHeight || null}
@@ -71,6 +72,13 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
       result.push(
         <DataRow
+          onDragCreate={(task: any, finished: boolean) => {
+            setCreatingTask({...task, index: i})
+
+            if(finished){
+              onCreateTask?.(task)
+            }
+          }}
           isSelected={selectedItem == item}
            key={`data-row-${i}`} 
            label={item.name} 
@@ -99,11 +107,83 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
           >
             {' '}
           </DataTask>
+          {i == (creatingTask as any)?.index && 
+            <DataTask 
+            pointerEvents='none'
+            item={creatingTask || undefined}
+            width={DateHelper.dateToPixel(creatingTask?.end, nowposition, dayWidth || 0) - DateHelper.dateToPixel(creatingTask?.start, nowposition, dayWidth || 0)}
+            left={DateHelper.dateToPixel(creatingTask?.start, nowposition, dayWidth || 0)}
+            height={itemHeight}
+            />
+          }
         </DataRow>
       );
     }
     return result;
   };
+
+  const renderCreateRow = () => {
+
+    const i = (tasks?.length || 0);
+
+    let item = {
+      name: '',
+      color: 'gray',
+
+    };
+
+
+    let new_position = DateHelper.dateToPixel(creatingTask?.start, nowposition, dayWidth || 0);
+    let new_width = DateHelper.dateToPixel(creatingTask?.end, nowposition, dayWidth || 0) - new_position;
+
+    return (
+      <DataRow
+          onDragCreate={(task: any, finished: boolean) => {
+            setCreatingTask({...task, index: i})
+            if(finished){
+              onCreateTask?.(task)
+            }
+          }}
+          isSelected={selectedItem == item}
+           key={`data-row-${i}`} 
+           label={item.name} 
+           top={i * (itemHeight + 5)} 
+           left={20} 
+           expanded={expanded}
+           itemheight={(itemHeight + 5)}>
+
+            <DataTask />
+            {(creatingTask as any)?.index == i && <DataTask
+              pointerEvents='none'
+              item={creatingTask || undefined}
+              width={new_width}
+              left={new_position}
+              height={itemHeight}
+              />}
+          {/* <DataTask
+            onExpansion={(expanded: boolean) => setExpanded(expanded)}
+            item={item}
+            label={item.name}
+            nowposition={nowposition}
+            dayWidth={dayWidth}
+            color={item.color}
+            opacity={item.opacity}
+            left={new_position}
+            width={new_width}
+            height={itemHeight}
+            onChildDrag={onChildDrag}
+            isSelected={selectedItem == item}
+            onSelectItem={onSelectItem}
+            onStartCreateLink={props.onStartCreateLink}
+            onFinishCreateLink={props.onFinishCreateLink}
+            onTaskChanging={props.onTaskChanging}
+            onUpdateTask={props.onUpdateTask}
+          >
+            {' '}
+          </DataTask> */}
+        </DataRow>
+    )
+  }
 
   const onDown = (e: {clientX: number, clientY: number}) => {
     if(!childDragging){
@@ -169,6 +249,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
             maxWidth: DATA_CONTAINER_WIDTH }}
         >
           {renderRows()}
+          {renderCreateRow()}
         </div>
       </div>
     );

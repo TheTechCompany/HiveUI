@@ -6,6 +6,7 @@ import { Grommet } from 'grommet';
 import { BaseStyle } from '@hexhive/styles';
 import { useState } from 'react';
 import moment from 'moment';
+import { Task } from './types';
 
 export default {
   title: 'Components/Timeline',
@@ -77,6 +78,9 @@ WithItems.args = {
 export const HeaderColors = Template.bind({});
 HeaderColors.args = {
   date: new Date(),
+  onCreateTask: (task: Task) => {
+    console.log({task})
+  },
   data: [
     {
       id: '1', 

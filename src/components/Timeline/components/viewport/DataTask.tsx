@@ -33,6 +33,7 @@ export interface DataTaskProps {
   className?: string;
 
   onExpansion?: (expanded: boolean) => void;
+  pointerEvents?: string;
 }
 
 export interface DataTaskState {
@@ -229,6 +230,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
 
   const hoverStart = (e: any) => {
+    e.stopPropagation()
     setHoverEl(e.currentTarget)
 
     //      this.setState({hovering: state})
@@ -271,6 +273,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           ...style,
           top: 3,
           display: 'flex',
+          pointerEvents: props.pointerEvents
         }}
       >
         <div
