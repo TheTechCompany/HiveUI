@@ -57,10 +57,6 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                     if(selectedFile) triggerRenameFile?.(selectedFile)
                     setAnchorEl(null)
                 }}>Rename</MenuItem>
-                <MenuItem onClick={() => {
-                    if(selectedFile) triggerMoveFile?.(selectedFile)
-                    setAnchorEl(null)
-                }}>Move</MenuItem>
                 <Divider />
                 <MenuItem onClick={() => {
                     if(selectedFile) triggerDeleteFile?.(selectedFile)
