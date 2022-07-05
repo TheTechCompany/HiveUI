@@ -1,6 +1,7 @@
 import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import React, { useCallback } from "react";
-import { DndProvider, useDrop, useDrag } from "react-dnd";
+import ReactDND from "react-dnd";
+
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Form } from "./components/Form";
 import { FormBuilderElement, FormElement } from "./components/FormElement";
@@ -66,7 +67,7 @@ export const FormBuilder : React.FC<FormBuilderProps> = (props) => {
             updateForm: updateForm,
             elements: elements
         }}>
-        <DndProvider backend={HTML5Backend}>
+        <ReactDND.DndProvider backend={HTML5Backend}>
        
             <Box sx={{display: 'flex', flex: 1}} >
 
@@ -75,7 +76,7 @@ export const FormBuilder : React.FC<FormBuilderProps> = (props) => {
                 <FormOptions />
 
             </Box>
-        </DndProvider>
+        </ReactDND.DndProvider>
         </FormBuilderProvider>
     )
 }

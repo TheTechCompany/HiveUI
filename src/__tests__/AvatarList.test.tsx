@@ -3,7 +3,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import { AvatarList } from "../components";
+import { AvatarList } from "../components/AvatarList";
 
 describe("AvatarList", () => {
   test("check if avatar initials render", () => {

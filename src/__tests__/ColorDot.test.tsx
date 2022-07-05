@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ColorDot } from "..";
+import { ColorDot } from "../components/ColorDot";
 
 describe("ColorDot", () => {
   test("renders at specified size", () => {

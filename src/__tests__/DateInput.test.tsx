@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 
 import {render, fireEvent, waitFor, screen} from '@testing-library/react'
-import { DateInput } from '..'
+import { DateInput } from '../components/DateInput'
 
 import '@testing-library/jest-dom'
 
