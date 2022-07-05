@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Previous } from 'grommet-icons'
 import { BaseModal } from '../../modals/base-modal'
 import { Breadcrumbs } from './components/breadcrumbs';
@@ -6,20 +6,25 @@ import { FileExplorerContext } from './context';
 import { DEFAULT_ICONS } from './defaults/defaultIcons';
 import { IFile } from './types/file';
 import { ListView } from './views/list';
-import { Box, Button } from 'grommet';
+import { FileExplorer } from './FileExplorer';
+import { Dialog, Box, Button, DialogTitle } from '@mui/material';
 
 export interface FileExplorerModalProps {
     open: boolean;
     onClose?: () => void;
     files?: IFile[];
 
-    onSubmit?: () => void;
+    onSubmit?: (path: string) => void;
 
-    cwd?: {name: string, id: string}[];
+    title?: string;
+
+    path?: string;
+    onPathChange?: (path: string) => void;
+
     selected?: string[]
     onClick?: (file: IFile) => void;
-    onSelect?: (id: string) => void;
-    onDeselect?: (id: string) => void;
+    onSelect?: (selected: string[]) => void;
+    // onDeselect?: (id: string) => void;
     onBack?: () => void;
 }
 export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) => {
@@ -31,43 +36,61 @@ export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) =>
         }
     }
 
+    const [ selected, setSelected ] = useState<any[]>([])
     
+    const selectFolder = () => {
+        props.onSubmit?.(props.path || '/')
+    }
+
     return (
         <FileExplorerContext.Provider value={{
             files: props.files?.map(formatFile) || [],
             selected: props.selected,
             clickFile: props.onClick,
-            selectFile: (id, checked) => id && ((checked) ? props.onSelect?.(id) : props.onDeselect?.(id)),
+            // selectFile: (id, checked) => id && ((checked) ? props.onSelect?.(id) : props.onDeselect?.(id)),
             
             // actions: props.actions || [{key: 'download', icon: <DownloadOption />, disabled: (state) => (state.files?.length || 0) < 2}, {key: 'upload', icon: <UploadOption />}, {key: 'convert', icon: <Update />}, {key: 'organise', icon: <FormFolder />}]
         }}>
-        <BaseModal 
-          
+        <Dialog 
+            fullWidth
+            open={props.open}
+            onClose={props.onClose}>
+            
+            <DialogTitle>{props.title || "File Explorer"}</DialogTitle>
+{/*           
             title="File Explorer"
             open={props.open}
             onSubmit={props.onSubmit}
-            onClose={props.onClose}>
-           
-           <Box 
-             width={{min: "large"}}
-            direction="row"
-            align="center">
-            <Button onClick={props.onBack} icon={<Previous size="20px" />} />
-            <Breadcrumbs 
-                breadcrumbs={props.cwd || []}
-                onBreadcrumbClick={(crumb) => {
-
-                }}
-                />
+            onClose={props.onClose}> */}
+           <Box sx={{height: '50vh', display: 'flex'}}>
+                <FileExplorer   
+                    files={props.files}
+                    path={props.path || '/'}
+                    onNavigate={(path) => {
+                        props.onPathChange?.(path)
+                    }}
+                    onSelect={(id) => {
+                        let _selected = [...new Set([...selected, id])]
+                        setSelected(_selected)
+                        props.onSelect?.(_selected)
+                    }}
+                    onDeselect={(id) => {
+                        let _selected = selected.slice();
+                        let ix = _selected.indexOf(id);
+                        if(ix > -1){
+                            _selected.splice(ix, 1)
+                        }
+                        setSelected(_selected)
+                        props.onSelect?.(_selected)
+                    }}
+                    selected={props.selected}
+                        />
             </Box>
-            <Box
-               height={{min: '33vh'}}
-                >
-                <ListView />
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', padding: '6px'}}>
+                <Button onClick={props.onClose}>Close</Button>
+                <Button onClick={selectFolder} variant="contained">Select</Button>
             </Box>
-
-
-        </BaseModal>
+        </Dialog> 
         </FileExplorerContext.Provider>
     )
 }
