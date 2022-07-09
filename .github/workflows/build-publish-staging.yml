@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - staging
-    paths: ["src/components/**", "src/views/**", "src/modals/**", "src/hooks/**"]
+    paths: ["packages/hexhive-styles/src/**", "packages/hexhive-ui/src/components/**", "packages/hexhive-ui/src/views/**", "packages/hexhive-ui/src/modals/**", "packages/hexhive-ui/src/hooks/**"]
 
 jobs:
   build-and-deploy:
@@ -11,42 +11,32 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
-      
-  
-      - name: git config
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+       
+    - name: "Use NodeJS 16"
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        registry-url: 'https://registry.npmjs.org'
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
+    - name: Install dependencies
+      run: |
+        yarn
+        npx lerna bootstrap --no-ci
 
-      - name: Setup NPM Token
-        run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+    - name: Build # Build all packages
+      run: npx lerna run build
 
-      - name: Install  deps
-        run: yarn
-      
-      - name: Test
-        run: yarn test
+    - name: "Version and publish" # Interesting step
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "${{ github.actor}}@users.noreply.github.com"
 
-      - name: Build
-        run: yarn build
+        if [ ${{ github.ref }} = refs/heads/staging ]; then
+          npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes
+        else
+          npx lerna version --conventional-commits --conventional-graduate --yes
+        fi
 
-      - name: Get version
-        run: |
-         echo "PKG_VERSION=$(cat package.json \
-          | grep version \
-          | head -1 \
-          | awk -F: '{ print $2 }' \
-          | sed 's/[",]//g')" >> $GITHUB_ENV
-        
-      - name: Release
-        run: |
-          if [[ "$PKG_VERSION" =~ ^.*alpha.*$ ]]; then
-            npm run release -- --preRelease=alpha
-          else
-            npm run release -- prepatch --preRelease=alpha
-          fi
+        npx lerna publish from-git --yes

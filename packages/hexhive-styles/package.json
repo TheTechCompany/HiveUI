@@ -1,0 +1,24 @@
+{
+  "name": "@hexhive/styles",
+  "version": "1.0.0",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@emotion/react": "^11.9.3",
+    "@mui/material": "^5.8.7",
+    "typescript": "^4.7.4"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.9.3",
+    "@mui/material": "^5.8.7"
+  }
+}
