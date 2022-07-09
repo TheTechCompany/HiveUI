@@ -38,8 +38,8 @@ export const DeleteModal : React.FC<DeleteModalProps> = (props) => {
                     onClick={submit} 
                     variant="contained" 
                     color="error">
-                        Delete
-                        {loading ? <CircularProgress size={20} /> : null}
+
+                        {loading ? <CircularProgress size={20} /> : "Delete"}
                 </Button>
             </DialogActions>
         </Dialog>

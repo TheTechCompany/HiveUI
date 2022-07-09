@@ -31,7 +31,11 @@ Files.args = {
     files: [
         {name: 'Test.pdf', size: 22000},
         {name: 'Test.pdf', size: 22000},
-    ]
+    ],
+    loading: true,
+    onCreateFolder: async () => {
+      await new Promise((resolve) => setTimeout(() => resolve(true), 2000))
+    }
 }
 
 export const FileActions = Template.bind({})

@@ -1,4 +1,4 @@
-import { Dialog, DialogActions, Button, TextField, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Dialog, DialogActions, Button, TextField, DialogContent, DialogTitle, Typography, CircularProgress } from '@mui/material';
 import React, { useState } from 'react'
 import { BaseModal } from '../../../../modals'
 import { IFile } from '../../types/file';
@@ -12,6 +12,7 @@ export interface RenameModalProps {
 
 export const RenameModal : React.FC<RenameModalProps> = (props) => {
 
+    const [ loading, setLoading ] = useState(false);
     const [ name, setName ] = useState('');
 
     const submit = async () => {
@@ -31,7 +32,10 @@ export const RenameModal : React.FC<RenameModalProps> = (props) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose}>Close</Button>
-                <Button onClick={submit} variant="contained">Rename</Button>
+                <Button
+                    disabled={loading}
+                    onClick={submit} 
+                    variant="contained">{loading ? <CircularProgress size={20} /> : "Rename"}</Button>
             </DialogActions>
         </Dialog>
     )

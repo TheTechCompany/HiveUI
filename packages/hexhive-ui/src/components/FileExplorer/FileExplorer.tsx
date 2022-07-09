@@ -19,12 +19,12 @@ import { UploadDrawer } from './components/upload-drawer'
 import _ from 'lodash'
 import { history as historyRef, listenHistory } from './context/history'
 import { RenameModal } from './modals/rename-modal'
-import { MoveModal } from './modals/move-modal'
 import { DeleteModal } from './modals/delete-modal'
-import { Divider, Menu, MenuItem, Box, Button, Paper, IconButton, ToggleButtonGroup, ToggleButton } from '@mui/material'
+import { Divider, Menu, MenuItem, Box, Button, Paper, IconButton, ToggleButtonGroup, ToggleButton, CircularProgress, Typography } from '@mui/material'
 
 export interface FileExplorerProps {
     files?: IFile[] | IFile
+    loading?: boolean;
 
     refetchFiles?: (path: string) => IFile[];
 
@@ -242,6 +242,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                     {...getRootProps()}
                     sx={{
                         border: isDragActive ? '1px solid #dfdfdf' : 'undefined',
+                        position: 'relative',
                         overflow: 'auto',
                         padding: '6px',
                         display: 'flex', 
@@ -253,6 +254,21 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                         props.previewEngines?.find((a) => a.filetype == (Array.isArray(props.files) ? props.files?.find((b) => b.id == props.preview)?.name?.split('.')[1] : props.files?.name?.split('.')[1]) )?.component({file: Array.isArray(props.files) ? props.files?.[0] : props.files}) || <MissingPreview file={Array.isArray(props.files) ? props.files?.[0] : props.files} /> :
                         views[view]
                     }
+                    {props.loading && <div style={{
+                        position: 'absolute', 
+                        top: 0, 
+                        right: 0, 
+                        left: 0, 
+                        bottom: 0, 
+                        background: "#dfdfdf42",
+                        flexDirection: 'column',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <CircularProgress />    
+                        <Typography>Loading ...</Typography>
+                    </div>}
                 </Box>
                 {(props.uploading || []).length > 0 && <UploadDrawer />}
 
