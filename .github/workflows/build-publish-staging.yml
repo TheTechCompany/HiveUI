@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install
+          yarn
           npx lerna bootstrap --no-ci
 
       - name: Build # Build all packages
