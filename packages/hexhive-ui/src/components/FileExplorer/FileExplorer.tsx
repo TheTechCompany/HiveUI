@@ -203,9 +203,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                 openCreateFolder(true)
                 setAnchorPos(undefined)
               }}>New Folder</MenuItem>
-              {/* <MenuItem onClick={() => {
-                setAnchorPos(undefined)
-              }} style={{ color: 'red' }}>Delete</MenuItem> */}
+   
             </Menu>
             
             <Paper 
