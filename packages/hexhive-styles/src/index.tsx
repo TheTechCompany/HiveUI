@@ -13,7 +13,8 @@ export const globalTheme = createTheme({
         main: "#87927e"
       },
       navigation: {
-        main: '#e3d1c7'
+        main: '#e3d1c7',
+        dark: '#b39f7d'
       }
     }
   })
@@ -55,10 +56,8 @@ export const HexHiveTheme = createTheme({
             padding: '6px',
             color: globalTheme.palette.navigation.main,
             minHeight: '36px',
-           
             '&.Mui-selected': {
               color: globalTheme.palette.navigation.main
-              
             }
           }
         
@@ -98,12 +97,4 @@ export const HexHiveTheme = createTheme({
         }
       }
     }
-    // palette: {
-    //   // primary: {
-    //   //   main: '',
-    //   // },
-    //   // secondary: {
-    //   //   main: ''
-    //   // }
-    // }
   });
