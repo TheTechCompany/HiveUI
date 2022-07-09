@@ -37,9 +37,9 @@ jobs:
           git config user.email "${{ github.actor}}@users.noreply.github.com"
 
           if [ ${{ github.ref }} = refs/heads/staging ]; then
-            npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes --no-verify-access
+            npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes 
           else
-            npx lerna version --conventional-commits --conventional-graduate --yes --no-verify-access
+            npx lerna version --conventional-commits --conventional-graduate --yes
           fi
 
-          npx lerna publish from-git --yes
+          npx lerna publish from-git --no-verify-access --yes 
