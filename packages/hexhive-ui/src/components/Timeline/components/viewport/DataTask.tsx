@@ -3,14 +3,13 @@ import DateHelper from '../../helpers/DateHelper';
 import { MODE_NONE, MODE_MOVE, MOVE_RESIZE_LEFT, MOVE_RESIZE_RIGHT } from '../../Const';
 import { LINK_POS_LEFT, LINK_POS_RIGHT } from '../../Const';
 import Config from '../../helpers/config/Config';
-import { Box } from '@mui/material';
+import { Box, Popover } from '@mui/material';
 import { Task } from '../../types';
 import styled from 'styled-components'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { getHostForElement, stringToColor } from '@hexhive/utils';
 import { useRef } from 'react';
-import Popover from 'react-popover';
 
 export interface DataTaskProps {
   dayWidth?: number;
@@ -243,19 +242,22 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const style = calculateStyle();
   return (
+    <>
     <Popover
       style={{ zIndex: 9999999 }}
-      enterExitTransitionDurationMs={300}
-      isOpen={props.item?.hoverInfo && hoverEl != null}
-      target={hoverEl}
-      preferPlace={"above"}
-      body={(
+      // enterExitTransitionDurationMs={300}
+      open={props.item?.hoverInfo && hoverEl != null}
+      anchorEl={hoverEl}
+      // preferPlace={"above"}
+      >
+        
         <Box
           sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
           >
           {props.item?.hoverInfo}
-        </Box>)} >
+        </Box>
 
+      </Popover>
       <Box
         onMouseEnter={hoverStart}
         onMouseLeave={hoverEnd}
@@ -316,7 +318,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           <div className="task-handle" style={{ marginLeft: '100%' }} />
         </div>
       </Box>
-    </Popover>
+      </>
   );
 
 }

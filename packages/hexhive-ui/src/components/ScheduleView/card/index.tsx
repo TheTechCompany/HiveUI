@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography, Popover } from "@mui/material";
 import { useState } from "react";
-import Popover from "react-popover";
 import { Content } from "./content";
 import { Footer } from "./footer";
 import { Header } from "./header";
@@ -43,15 +42,16 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, onClic
             sx={{display: 'flex', flex: 1}}>
 
             <Popover
-                enterExitTransitionDurationMs={300}
-                isOpen={(data?.notes || []).length > 0 && hoverEl != null}
-                target={hoverEl}
-                preferPlace={"right"}
-                body={(
+                // enterExitTransitionDurationMs={300}
+                open={(data?.notes || []).length > 0 && hoverEl != null}
+                anchorEl={hoverEl}
+                // preferPlace={"right"}
+            >
+               
                     <Box >
                         <ul style={{ listStyle: 'none', paddingLeft: 0 }}>{data.notes?.map((x) => (<li>{x}</li>))}</ul>
-                    </Box>)} >
-
+                    </Box>
+            </Popover>
                 <Box
                     sx={{display: 'flex', flexDirection: 'column', flex: 1}}
                     aria-owns={hoverEl != null ? 'mouse-over-notes' : undefined}
@@ -80,7 +80,6 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ data, onMove, onClic
                     <Footer
                         data={data} />
                 </Box>
-            </Popover>
         </Paper>
     );
 }
