@@ -14,7 +14,7 @@ export const globalTheme = createTheme({
       },
       navigation: {
         main: '#e3d1c7',
-        dark: '#b39f7d'
+        // dark: '#b39f7d'
       }
     }
   })
