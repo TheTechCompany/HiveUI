@@ -18,6 +18,9 @@ jobs:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Setup NPM Token
+        run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+
       - name: Install dependencies
         run: |
           yarn

@@ -1,6 +1,6 @@
 {
   "name": "@hexhive/styles",
-  "version": "1.0.0",
+  "version": "0.0.13",
   "description": "",
   "publishConfig": {
     "access": "public"
