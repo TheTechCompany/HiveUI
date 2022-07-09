@@ -1,20 +1,23 @@
 import React from 'react';
+import { TreeItem } from '@mui/lab'
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { Add, KeyboardArrowDown as CaretDownFill, ChevronRight as CaretRightFill } from '@mui/icons-material';
 import styled from 'styled-components';
 
-const TreeNode : React.FC<any> = (props) => {
+export const TreeNode : React.FC<any> = (props) => {
 	return (
-		<Box 
-			sx={{
-				display: 'flex',
-				flexDirection: 'row',
-				alignItems: 'center',
-				bgcolor: props.node.isSelected() ? 'neutral-2' : ''
-			}}
+		<TreeItem
+			nodeId={props.id}
+			label={props.label}
+			// sx={{
+			// 	display: 'flex',
+			// 	flexDirection: 'row',
+			// 	alignItems: 'center',
+			// 	bgcolor: props.node.isSelected() ? 'neutral-2' : ''
+			// }}
 			className={props.className}>
-
-						<Box 
+				{props.children}
+						{/* <Box 
 							sx={{
 								display: 'flex'
 							}}>
@@ -39,16 +42,7 @@ const TreeNode : React.FC<any> = (props) => {
 							onClick={() => props.onCreate?.(props.node)} 
 							className="create-action" >
 							<Add />
-					</IconButton>
-		</Box>
+					</IconButton> */}
+		</TreeItem>
 	)
 }
-
-export const HyperTreeNode = styled(TreeNode)`
-	.create-action{
-		display: none;
-	}
-	&:hover > .create-action{
-		display: flex;
-	}
-`

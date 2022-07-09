@@ -19,17 +19,19 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup NPM Token
-        run: yarn config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+        run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: |
-          yarn
+          npm install
           npx lerna bootstrap --no-ci
 
       - name: Build # Build all packages
         run: npx lerna run build
 
       - name: "Version and publish" # Interesting step
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor}}@users.noreply.github.com"

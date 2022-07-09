@@ -1,39 +1,44 @@
 import React from 'react';
-import Tree, { useTreeState, IUseTreeState } from 'react-hyper-tree';
-import { Box } from '@mui/material';
-import { HyperTreeNode } from './HyperTreeNode'
+import { TreeView } from '@mui/lab'
+import { Box, SxProps, Theme } from '@mui/material';
+import { TreeNode } from './HyperTreeNode'
+import { ChevronRight, ExpandMore } from '@mui/icons-material';
 
-export interface HyperTreeProps {
+export interface TreeItem {
+	id: string;
+	label: string;
+	children?: TreeItem[];
+}
+
+export interface TreeViewProps {
 	id: string,
-	data: IUseTreeState["data"];
+	data: TreeItem[];
 
 	onSelect?: (node: any) => void;
 	onCreate?: (node: any) => void;
+
+	sx?: SxProps<Theme>;
 }
 
-export const HyperTree : React.FC<HyperTreeProps> = (props) => {
-	const { required, handlers } = useTreeState({
-		data: props.data,
-		defaultOpened: true,
-		id: props.id
-	})
+export const HyperTree : React.FC<TreeViewProps> = (props) => {
+
+	const renderItem = (item: TreeItem) => {
+		let children = (item.children || []).map(renderItem);
+
+		return (
+			<TreeNode id={item.id} label={item.label}>
+				{children}
+			</TreeNode>
+		)
+	}
 	return (
-		<Box >
-			<Tree
-			 disableTransitions
-			 horizontalLineStyles={{
-			   stroke: 'black',
-			   strokeWidth: 1,
-			   strokeDasharray: '1 1',
-			 }}
-			 verticalLineStyles={{
-			   stroke: 'black',
-			   strokeWidth: 1,
-			   strokeDasharray: '1 1',
-			 }}
-				{...required}
-				{...handlers} 
-				
+			<TreeView
+				defaultCollapseIcon={<ExpandMore />}
+				defaultExpandIcon={<ChevronRight />}
+				sx={props.sx}
+			>
+				{props.data?.map(renderItem)}
+{/* 				
 				renderNode={(node) => {
 					console.log(node)
 					return (
@@ -42,8 +47,9 @@ export const HyperTree : React.FC<HyperTreeProps> = (props) => {
 						props.onSelect?.(node.node)
 					}} onCreate={props.onCreate} />
 				)
-				}}
-			/>
-		</Box>
+				}} */}
+			
+
+		</TreeView>
 	)
 }
