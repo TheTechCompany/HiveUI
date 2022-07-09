@@ -12,31 +12,31 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
        
-    - name: "Use NodeJS 16"
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-        registry-url: 'https://registry.npmjs.org'
+      - name: "Use NodeJS 16"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
 
-    - name: Install dependencies
-      run: |
-        yarn
-        npx lerna bootstrap --no-ci
+      - name: Install dependencies
+        run: |
+          yarn
+          npx lerna bootstrap --no-ci
 
-    - name: Build # Build all packages
-      run: npx lerna run build
+      - name: Build # Build all packages
+        run: npx lerna run build
 
-    - name: "Version and publish" # Interesting step
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: |
-        git config user.name "${{ github.actor }}"
-        git config user.email "${{ github.actor}}@users.noreply.github.com"
+      - name: "Version and publish" # Interesting step
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor}}@users.noreply.github.com"
 
-        if [ ${{ github.ref }} = refs/heads/staging ]; then
-          npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes
-        else
-          npx lerna version --conventional-commits --conventional-graduate --yes
-        fi
+          if [ ${{ github.ref }} = refs/heads/staging ]; then
+            npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes
+          else
+            npx lerna version --conventional-commits --conventional-graduate --yes
+          fi
 
-        npx lerna publish from-git --yes
+          npx lerna publish from-git --yes
