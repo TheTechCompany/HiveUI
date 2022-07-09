@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - staging
-    paths: ["packages/hexhive-styles/src/**", "packages/hexhive-ui/src/components/**", "packages/hexhive-ui/src/views/**", "packages/hexhive-ui/src/modals/**", "packages/hexhive-ui/src/hooks/**"]
+    paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/**", "packages/hexhive-ui/src/components/**", "packages/hexhive-ui/src/views/**", "packages/hexhive-ui/src/modals/**", "packages/hexhive-ui/src/hooks/**"]
 
 jobs:
   build-and-deploy:
