@@ -193,11 +193,13 @@ export const BasePlanningModal : React.FC<PlanningModalProps> = (props) => {
                       <Event style={{marginRight: 8}}/>
                       <FormControl 
                         value={planType} 
+                        valueKey={'label'}
                         options={[
                             {color: '#3f51b5', label: 'Job Planning'}, 
                             {color: '#b5b13f', label: 'Quote Planning'}, 
                             {color: '#b53f49', label: "Design Planning"}]}
-                        onChange={(e) => setPlanType(`${e.target.value}`)}>
+                        onChange={(e) => setPlanType(`${e.target.value}`)}
+                        >
                             {({datum})=> (
                                 <Box>
                                     <ColorDot color={datum.color} size={12}/>

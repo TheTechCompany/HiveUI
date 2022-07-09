@@ -6,6 +6,7 @@ export interface FormControlProps {
 	options?: any[];
 	valueKey?: string;
 	labelKey?: string;
+	children?: ((item: any) => JSX.Element);
 	value?: any;
 	onChange?: (value: any) => void;
 	multiple?: boolean;
@@ -27,9 +28,13 @@ export const FormControl : React.FC<FormControlProps> = (props) => {
 					 props.onChange?.(event.target.value)
 			 	}}>
 				{props.options?.map((option, index) => {
-					return (
+					return typeof(props.labelKey) == "string" ? (
 						<MenuItem value={option?.[props.valueKey || 'id']}>
 							<Typography>{option[props.labelKey || 'name']}</Typography>
+						</MenuItem>
+					) : (
+						<MenuItem value={option?.[props.valueKey || 'id']}>
+							{props.children?.(option)}
 						</MenuItem>
 					)
 				})}
