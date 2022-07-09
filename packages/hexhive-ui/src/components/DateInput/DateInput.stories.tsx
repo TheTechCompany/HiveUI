@@ -29,5 +29,6 @@ const Template: ComponentStory<typeof DateInput> = (args) => {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  format: 'DD/MM/yyyy'
+  format: 'DD/MM/yyyy',
+  label: "Date Picker"
 };

@@ -175,14 +175,12 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                             <Box>
                                 <Typography>Start Date</Typography>
                                 <DateInput
-                                    
-                                    inline={false}
-                                    calendarProps={{
-                                        daysOfWeek: true
-                                    }}
+                                    //                                     calendarProps={{
+                                    //     daysOfWeek: true
+                                    // }}
                                     value={plan.startDate} 
                              
-                                    onChange={({ value }) => {
+                                    onChange={( value ) => {
                                         // let startDate = new Date(value.toLocaleString());
                                         // let v = moment(value).format('dd/mm/yyyy').toString()
                                         try{    
@@ -205,13 +203,13 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                             <Box>
                                 <Typography>End Date</Typography>
                                 <DateInput
-                                    inline={false}
-                                    calendarProps={{
-                                        daysOfWeek: true
-                                    }}
+                                    // inline={false}
+                                    // calendarProps={{
+                                    //     daysOfWeek: true
+                                    // }}
                                     value={plan.endDate}
                                      
-                                    onChange={({ value }) => {
+                                    onChange={( value ) => {
                                         // let v = moment(value).format('dd/mm/yyyy')
                                         try{    
                                             setPlan({ ...plan, endDate: value.toLocaleString() })

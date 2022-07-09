@@ -23,7 +23,7 @@ export const DateInput : React.FC<DateInputProps> = (props) => {
                 inputFormat={props.format || longDateFormat || 'DD/MM/yyyy'}
                 value={props.value}
                 label={props.label}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField size="small" {...params} />}
                 onChange={(value) => {
                     console.log({value, onChange: props.onChange})
                     props.onChange?.(new Date(value?.valueOf() || '').toISOString())
