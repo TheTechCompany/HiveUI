@@ -212,9 +212,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                     setAnchorPos({ top: evt.clientY, left: evt.clientX })
                 }}
                 sx={{bgcolor: 'primary.light', flex: 1, display: 'flex', position: 'relative', flexDirection: 'column'}}>
-                {/* <ActionHeader
-                    onNext={goNext}
-                    onPrev={goPrev}/> */}
+               
                 <Box   
                     sx={{alignItems: 'center', justifyContent: 'space-between', display: 'flex', flexDirection: 'row', marginLeft: '6px', marginRight: '6px'}}>
                 <Breadcrumbs 
