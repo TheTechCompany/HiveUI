@@ -37,10 +37,10 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                 // anchorPosition={anchorPos}
                 onClose={() => setAnchorEl(null)}
                 >
-                {actions?.map((action) => (
-                    <>
-                    {action.seperator == 'top' && <Divider />}
-                    <MenuItem 
+                {actions?.map((action) => [
+                    
+                    action.seperator == 'top' && <Divider />,
+                    (<MenuItem 
                         sx={action.sx}    
                         onClick={() => {
                             if(selectedFile) action?.onClick?.(selectedFile)
@@ -48,10 +48,9 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                         }}>
                             {action.icon}
                             {action.label}
-                    </MenuItem>
-                    {action.seperator == 'bottom' && <Divider />}
-                    </>
-                ))}
+                    </MenuItem>),
+                    action.seperator == 'bottom' && <Divider />
+                    ]).filter((a) => a != undefined)}
                 <MenuItem                 
                     onClick={() => {
                     if(selectedFile) triggerRenameFile?.(selectedFile)

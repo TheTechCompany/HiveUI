@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, List } from '@mui/material';
 
 import styled from 'styled-components'
 import { matchPath } from 'react-router-dom';
@@ -59,7 +59,7 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
         style={{padding: '10%'}}
         className="sidebar-header-image" >
       </Button> } */}
-      <Box 
+      <List 
         sx={{
           display: 'flex',
           flexDirection: getDirection()
@@ -77,7 +77,7 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
         ))}
      
 
-      </Box>
+      </List>
 
     </Box>
   );

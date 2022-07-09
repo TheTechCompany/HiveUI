@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import { useMatch, useResolvedPath } from 'react-router-dom';
 import { useViewport } from '../../hooks';
@@ -20,7 +20,8 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
 
     const iconSize = isMobile ? '50px' : '20px';
     return (
-        <Box 
+        <ListItem
+            button 
             onClick={props.onClick}
             sx={{
                 display: 'flex',
@@ -38,12 +39,13 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
                     justifyContent: 'center',
                     width: iconSize,
                     height: iconSize,
+                    marginRight: '6px',
                     padding: isMobile ? '8px' : undefined
                 }}>
                  {props.icon}
             </Box>
             {!props.minified && <Typography>{props.label}</Typography>}
 
-        </Box>
+        </ListItem>
     )
 }
