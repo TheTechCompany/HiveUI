@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import {FolderZip, CopyAll as Multiple} from '@mui/icons-material'
 import React from 'react';
 import { DocViewer } from './DocViewer';
+import styled from 'styled-components'
 
 export interface FileViewerFile {
     url?: string;
@@ -13,21 +14,16 @@ export interface FileViewerProps {
     files: FileViewerFile[]
 
     token?: string;
+    className?: string;
 }
 
-export const FileViewer: React.FC<FileViewerProps> = ({
+export const BaseFileViewer: React.FC<FileViewerProps> = ({
     files = [],
-    token
+    token,
+    className
 }) => {
-    if (files && files.length == 1) {
-        let file = files[0]
-        let mimetype = file.mimeType ? file.mimeType : 'text/plain'
-        console.log(file)
-        let url = file.url // `${process.env.REACT_APP_API && process.env.REACT_APP_API.length > 0 ? process.env.REACT_APP_API : window.location.origin}/api/files/${file.id}${file?.extension ? file?.extension : ''}?access_token=${token}`;
 
-        let main = mimetype.split('/')[0];
-        let sub = mimetype.split('/')[1];
-
+    const getContent = (main: string, sub: string, url: string) => {
         switch (main) {
             case "video":
                 return (
@@ -42,7 +38,6 @@ export const FileViewer: React.FC<FileViewerProps> = ({
                     case "spreadsheet":
                     case "vnd.openxmlformats-officedocument.wordprocessingml.document":
                     case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                        console.log(url, `${main}/${sub}`)
                         return (
                             <DocViewer
                                 documentUrl={url}
@@ -65,10 +60,32 @@ export const FileViewer: React.FC<FileViewerProps> = ({
             default:
                 return null;
         }
+    }
+    
+    if (files && files.length == 1) {
+        let file = files[0]
+        let mimetype = file.mimeType ? file.mimeType : 'text/plain'
+        console.log(file)
+        let url = file.url // `${process.env.REACT_APP_API && process.env.REACT_APP_API.length > 0 ? process.env.REACT_APP_API : window.location.origin}/api/files/${file.id}${file?.extension ? file?.extension : ''}?access_token=${token}`;
 
+        let main = mimetype.split('/')[0];
+        let sub = mimetype.split('/')[1];
+
+        const content = getContent(main, sub, url || '')
+
+        return (
+            <Box
+                sx={{display: 'flex', flex: 1}}
+                className={className} >
+                {content}
+            </Box>
+        )
+        
+       
     } else {
         return (
             <Box
+                className={className}
                 sx={{
                     flex: 1,
                     display: 'flex',
@@ -85,3 +102,9 @@ export const FileViewer: React.FC<FileViewerProps> = ({
         return null;
     }
 }
+
+export const FileViewer = styled(BaseFileViewer)`
+    #react-doc-viewer {
+        flex: 1
+    }
+`
