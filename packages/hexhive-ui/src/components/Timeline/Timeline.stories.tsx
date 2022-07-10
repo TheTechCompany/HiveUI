@@ -111,7 +111,7 @@ HeaderColors.args = {
       id: '2', 
       start: new Date(2021, 6, 12), 
       end: new Date(2021, 10, 12),
-      name: "Item 1", 
+      name: "Item 2 with really long title almost too long now", 
       color: 'red', 
       showLabel: true
     },

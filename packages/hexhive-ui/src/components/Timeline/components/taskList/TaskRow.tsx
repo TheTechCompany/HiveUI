@@ -13,6 +13,13 @@ export class TaskRow extends Component<any, any> {
         this.props.onUpdateTask(this.props.item, { name: value });
       }
     };
+
+    get label() {
+      if(this.props.label?.length > 30){
+        return this.props.label?.substring(0, 30) + "...";
+      }
+      return this.props.label;
+    }
   
     render() {
       return (
@@ -37,11 +44,11 @@ export class TaskRow extends Component<any, any> {
         }} />
   {/* this.props.nonEditable */}
           {true ? (
-            <Box  sx={{display: 'flex', justifyContent: 'flex-start'}}  tabIndex={this.props.index} >
-              <Typography >{this.props.label}</Typography>
+            <Box sx={{display: 'flex', whiteSpace: 'no-wrap', justifyContent: 'flex-start'}}  tabIndex={this.props.index} >
+              <Typography  textOverflow={'ellipsis'} fontSize={"10px"} >{this.label}</Typography>
             </Box>
           ) : (
-            <ContentEditable value={this.props.label} index={this.props.index} onChange={this.onChange} />
+            <ContentEditable value={this.label} index={this.props.index} onChange={this.onChange} />
           )}
         </Box>
       );
