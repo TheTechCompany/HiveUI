@@ -33,7 +33,7 @@ const NoteTab: React.FC<NoteTabProps> = (props) => {
   return (
     <Box gap="xsmall" pad="xsmall" overflow={"auto"} height={{min: '50vh'}} className="note-tab">
 
-        {props.data.map((item: any, index: number) => (
+        {props.data?.map((item: any, index: number) => (
           <Box direction="row" align="center">
             <TextField
               key={`${index}`}
