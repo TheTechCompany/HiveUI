@@ -6,7 +6,7 @@ import { DEFAULT_ICONS } from './defaults/defaultIcons';
 import { IFile } from './types/file';
 import { ListView } from './views/list';
 import { FileExplorer } from './FileExplorer';
-import { Dialog, Box, Button, DialogTitle, ThemeProvider } from '@mui/material';
+import { Dialog, Box, Button, DialogTitle, CircularProgress, ThemeProvider } from '@mui/material';
 // import {}
 
 export interface FileExplorerModalProps {
@@ -14,7 +14,7 @@ export interface FileExplorerModalProps {
     onClose?: () => void;
     files?: IFile[];
 
-    onSubmit?: (path: string) => void;
+    onSubmit?: (path: string) => Promise<void>;
 
     title?: string;
 
@@ -29,6 +29,8 @@ export interface FileExplorerModalProps {
 }
 export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) => {
   
+    const [ loading, setLoading ] = useState(false);
+
     const formatFile = (file: IFile) => {
         return {
             ...file,
@@ -38,8 +40,10 @@ export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) =>
 
     const [ selected, setSelected ] = useState<any[]>([])
     
-    const selectFolder = () => {
-        props.onSubmit?.(props.path || '/')
+    const selectFolder = async () => {
+        setLoading(true);
+        await props.onSubmit?.(props.path || '/')
+        setLoading(false)
     }
 
     return (
@@ -89,7 +93,7 @@ export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) =>
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', padding: '6px'}}>
                 <Button onClick={props.onClose}>Close</Button>
-                <Button onClick={selectFolder} variant="contained">Select</Button>
+                <Button onClick={selectFolder} disabled={loading} variant="contained">{loading ? <CircularProgress size="20px" /> : "Select"}</Button>
             </Box>
         </Dialog> 
         // </FileExplorerContext.Provider>

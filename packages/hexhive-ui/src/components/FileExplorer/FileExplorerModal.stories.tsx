@@ -46,5 +46,8 @@ FileActions.args = {
   files: [
     {name: 'Test.pdf', size: 2200},
   ],
- 
+  onSubmit: async (path: string) => {
+    console.log(path)
+    await new Promise((resolve) => setTimeout(() => resolve(true), 1000))
+  }
 }
