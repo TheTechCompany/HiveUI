@@ -1,7 +1,7 @@
 import React, { ReducerAction } from 'react';
 
 import { DateInput, FormControl } from '../../components';
-import { Box, Button, Dialog, IconButton, Select, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogTitle, Divider, IconButton, Paper, Select, Typography } from '@mui/material'
 import { useState } from 'react';
 import { People, Notes, Add, Close } from '@mui/icons-material';
 import moment from 'moment';
@@ -139,26 +139,25 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
     }
 
     return  (
-        <Dialog open={props.open}
+        <Dialog 
+            open={props.open}
             onClose={onClose}
-            >
+            maxWidth='md'>
+            <DialogTitle>Capacity Plan</DialogTitle>
             <Box
                 >
 
-                <Box
-                   >
-                    {/* Header */}
-                    <Typography fontWeight="bold">Capacity Plan</Typography>
-                </Box>
                 <Box>
                         
                     {/* Content */}
-                    <Box>
-                        {props.type == "Projects" && <Box >
-                            <Typography >Project</Typography>
+                    <Box sx={{paddingLeft: '6px', paddingRight: '6px'}}>
+                        {props.type == "Projects" && 
                             <FormControl
+                                placeholder="Project"
+                                fullWidth
+                                valueKey='id'
                                 // onSearch={(searchString) => { setSearch(searchString) }}
-                                onChange={({option}) => { setPlan({ ...plan, project: option.id }) }}
+                                onChange={(option) => { setPlan({ ...plan, project: option }) }}
                                 value={plan.project}
                                 // labelKey={(item) => item.id + ' - ' + item.name}
                                 // valueKey={{key: "id", reduce: true}}
@@ -169,12 +168,11 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                                         <Typography>{option.id} - {option.name}</Typography>
                                     </Box>
                                 )}
-                            </FormControl>
-                        </Box>}
-                        <Box >
+                            </FormControl>}
+                        <Box sx={{display: 'flex', marginTop: '8px', marginBottom: '8px'}}>
                             <Box>
-                                <Typography>Start Date</Typography>
                                 <DateInput
+                                    label='Start Date'
                                     //                                     calendarProps={{
                                     //     daysOfWeek: true
                                     // }}
@@ -189,7 +187,7 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                                             
                                         }
                                     }}
-                                    format="dd/mm/yyyy" />
+                                    format="dd/MM/yyyy" />
                             </Box>
 
                             {/*
@@ -201,8 +199,8 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                                      value instanceof Date ? value : new Date(value as string)
                             */}
                             <Box>
-                                <Typography>End Date</Typography>
                                 <DateInput
+                                    label='End Date'
                                     // inline={false}
                                     // calendarProps={{
                                     //     daysOfWeek: true
@@ -217,18 +215,21 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                                             
                                         }
                                     }}
-                                    format="dd/mm/yyyy" />
+                                    format="dd/MM/yyyy" />
                             </Box>
                         </Box>
                     </Box>
-                    <Box 
+                    <Divider />
+                    <Box
+                        sx={{display: 'flex', marginTop: '8px'}} 
                        >
-                        <Box>
-                            {tab_options.map((x, ix) => <IconButton sx={{background: ix == tab ? '#dfdfdf': undefined}} onClick={() => setTab(ix)} >{x}</IconButton>)}
-                            
-                        </Box>
+                        <Paper sx={{bgcolor: 'secondary.main', display: 'flex', flexDirection: 'column'}}>
+                            {tab_options.map((x, ix) => <IconButton sx={{color: 'white', background: ix == tab ? '#dfdfdf': undefined}} onClick={() => setTab(ix)} >{x}</IconButton>)}
+                        </Paper>
                     <Box
                         sx={{
+                            padding: '3px',
+                            flex: 1,
                             display: 'flex',
                             oveflow: 'auto',
                             minHeight: '30vh',
@@ -242,12 +243,12 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
                     </Box>
                     </Box>
                 </Box>
-                <Box >
+                <DialogActions >
                     {/* Actions */}
                     {props.selected ? (<Button color="error" onClick={onDelete}>Delete</Button>) : null}
                     <Button onClick={onClose}>Close</Button>
-                    <Button color="primary" onClick={onSubmit} >Save</Button>
-                </Box>
+                    <Button variant='contained' color="primary" onClick={onSubmit} >Save</Button>
+                </DialogActions>
             </Box>
         </Dialog>
     );

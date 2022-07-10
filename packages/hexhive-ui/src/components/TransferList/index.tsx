@@ -19,7 +19,15 @@ export interface TransferListProps {
 }
 
 // import './index.css';
-export const TransferList : React.FC<TransferListProps> = (props) => {  
+export const TransferList : React.FC<TransferListProps> = ({
+  options = [],
+  selected = [],
+  onAdd,
+  onRemove,
+  assignedKey,
+  assignedList = [],
+  labelKey = 'name'
+}) => {  
   const [ selectedLeft, setLeft ] = useState<any[]>([])
   const [ selectedRight, setRight ] = useState<any[]>([])
 
@@ -49,9 +57,9 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
   const checkAssigned = (item: any) => { 
     var num = 0;
 
-    props.assignedList.forEach((x) => {
+    assignedList.forEach((x) => {
       x.forEach((y) => {
-        if(y[props.assignedKey] == item[props.assignedKey])
+        if(y[assignedKey] == item[assignedKey])
           num ++;
       });
     });
@@ -70,7 +78,7 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
   }
 
   const _renderOptions = () => {
-    return not(props.options, props.selected).map((x, ix) => [(
+    return not(options, selected).map((x, ix) => [(
       <Box
         sx={{display: 'flex'}}
         key={'options' + ix}
@@ -81,15 +89,15 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
           tabIndex={-1}
            />
         <Typography>
-          {x[props.labelKey || '']}
+          {x[labelKey || '']}
         </Typography>
-        {(props.assignedList) ? checkAssigned(x) : null}
+        {(assignedList) ? checkAssigned(x) : null}
       </Box>
     ), (<Box />)])
   }
 
   const _renderSelection = () => {
-    return props.selected.map((x, ix) => (
+    return selected.map((x, ix) => (
       <Box
         sx={{display: 'flex'}}
         key={'selection' + ix}
@@ -98,19 +106,19 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
           checked={selectedRight.includes(x)}
           tabIndex={-1}
            />
-        <Typography>{x[props.labelKey || '']}</Typography>
+        <Typography>{x[labelKey || '']}</Typography>
       </Box>
     ))
   }
   
 
   const _addToOutput = () => {
-    props.onAdd?.(selectedLeft);
+    onAdd?.(selectedLeft);
     setLeft([])
   }
 
   const _addToInput = () => {
-    props.onRemove?.(selectedRight);
+    onRemove?.(selectedRight);
     setRight([])
   }
 
@@ -123,13 +131,19 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
 
     return (
       <Box 
-        sx={{display: 'flex'}}>
-        <Box sx={{display: 'flex', overflow: 'auto'}}>
+        sx={{display: 'flex',flex: 1}}>
+        <Box sx={{display: 'flex', flex: 1, overflow: 'auto'}}>
           <List
+            sx={{flex: 1}}
             >
-            {not(props.options, props.selected).map((item: any) => (
-              <ListItem button onClick={() => _addToSelection(item)} sx={{display: 'flex', alignItems: 'center'}}>
-                <Checkbox checked={selectedLeft.map((x) => x.id)?.indexOf(item.id) > -1} onChange={(e) => _addToSelection(item)} />
+            {not(options, selected).map((item: any) => (
+              <ListItem 
+                  dense
+                  button onClick={() => _addToSelection(item)} sx={{display: 'flex', alignItems: 'center'}}>
+                <Checkbox 
+                  size="small" 
+                  checked={selectedLeft.map((x) => x.id)?.indexOf(item.id) > -1} 
+                  onChange={(e) => _addToSelection(item)} />
                 <Typography>{item.name}</Typography>
               </ListItem>
             ))}
@@ -156,15 +170,18 @@ export const TransferList : React.FC<TransferListProps> = (props) => {
               <Previous />
           </IconButton>
         </Box>
-        <Box sx={{display: 'flex', overflow: 'auto'}}>
-          <List>
-            {props.selected.map((item) => (
+        <Box sx={{display: 'flex', flex: 1, overflow: 'auto'}}>
+          <List 
+            sx={{flex: 1}}
+            >
+            {selected.map((item) => (
 
               <ListItem  
+                dense
                 onClick={() => _addToDeselection(item)}
                 button sx={{display: 'flex', alignItems: 'center'}}>
                 <Checkbox checked={selectedRight.map((x) => x.id).indexOf(item.id) > -1} onChange={(e) => _addToDeselection(item)}/>
-                <Typography>{item[props.labelKey || '']}</Typography>
+                <Typography>{item[labelKey || '']}</Typography>
               </ListItem>
             ))}
           </List>

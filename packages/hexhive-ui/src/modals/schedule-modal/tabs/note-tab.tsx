@@ -1,6 +1,7 @@
 import React from 'react'
-import { List, Box, Button, TextField, IconButton } from '@mui/material';
+import { List, Box, TextInput } from 'grommet';
 
+import { IconButton, Button, TextareaAutosize, TextField, Typography } from '@mui/material'
 import { Close, Add } from '@mui/icons-material'
 
 export interface NoteTabProps {
@@ -30,28 +31,34 @@ const NoteTab: React.FC<NoteTabProps> = (props) => {
   }
 
   return (
-    <Box sx={{overflow: 'auto', minHeight: '50vh'}} className="note-tab">
-      <List>
-          {props.data?.map((datum, index) => (
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
-              <TextField
-                autoFocus
-                value={datum}
-                placeholder="Enter note here..."
-                onKeyDown={(e) => { if (e.key == 'Enter') { _insertEmpty() } }}
-                onChange={(e) => _onChange(index, e.target.value)}
-              />
-              <IconButton onClick={() => _removeItem(index)} >
-                <Close />
-              </IconButton>
-            </Box>
-          ))}
-        
-      </List>
+    <Box gap="xsmall" pad="xsmall" overflow={"auto"} height={{min: '50vh'}} className="note-tab">
+
+        {props.data.map((item: any, index: number) => (
+          <Box direction="row" align="center">
+            <TextField
+              key={`${index}`}
+              multiline
+              // autoFocus
+              fullWidth
+              // focusIndicator={false}
+              value={item}
+              placeholder="Enter note here..."
+              // onKeyDown={(e) => { if (e.key == 'Enter') { _insertEmpty() } }}
+              onChange={(e) => _onChange(index, e.target.value)}
+            />
+            <IconButton
+              onClick={() => _removeItem(index)}
+              >
+              <Close />
+            </IconButton>
+          </Box>
+        ))}
       <Button
-        onClick={_insertEmpty}
-        startIcon={<Add />} 
-      >Add Note</Button>
+        endIcon={<Add fontSize="small" />}
+        sx={{alignItems: 'center'}}
+        onClick={_insertEmpty}>
+          Add Note  
+      </Button>
     </Box>
   );
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Add } from '@mui/icons-material';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
 import { CapacityItem } from '../CapacityItem';
 
 export const CapacityTab = ({
@@ -16,12 +16,13 @@ export const CapacityTab = ({
                 sx={{
                     display: 'flex',
                     minHeight: 'min-content',
-                flexDirection: "row",
-                alignItems:"center",
-                justifyContent:"space-between"
+                    flexDirection: "row",
+                    alignItems:"center",
+                    justifyContent:"space-between"
                 }}>
                 <Typography fontWeight="bold">Capacity</Typography>
                 <IconButton
+                    size="small"
                     onClick={addCapacityItem}
                 >
                     <Add />
@@ -29,15 +30,16 @@ export const CapacityTab = ({
             </Box>
             <Box
                 gap="xsmall"
-                height={'min-content'}
-                overflow={'scroll'}>
-                {plan.items?.map((x: any, ix: number) => (
+                sx={{minHeight: '20vh', maxHeight: '40vh'}}
+                overflow={'auto'}>
+                {plan.items?.map((x: any, ix: number) => [
                     <CapacityItem
                         item={x}
                         type={type}
                         removeCapacityItem={() => removeCapacityItem(ix)}
-                        updateCapacityItem={(key, value) => updateCapacityItem(ix, key, value)} />
-                ))}
+                        updateCapacityItem={(key, value) => updateCapacityItem(ix, key, value)} />,
+                    <Divider />
+                ])}
             </Box>
 
         </>

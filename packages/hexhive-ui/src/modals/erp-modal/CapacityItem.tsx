@@ -13,31 +13,40 @@ export interface CapacityItemProps {
 
 export const CapacityItem : React.FC<CapacityItemProps> = (props) => {
     return (
-        <Box sx={{minHeight: '45px', display: 'flex', alignItems: 'center'}}>
-        <Box sx={{display: 'flex'}}>
-             <FormControl
-                onChange={({option}) => props.updateCapacityItem('type', option)}
-                value={props.item.type}
-                placeholder="Type"
-                options={["Welder", "Fabricator", "Skilled Labourer", "Civil Subcontractor", "TA"]} />
+        <Box sx={{minHeight: '45px', marginTop: '4px', marginBottom: '4px', display: 'flex', alignItems: 'center'}}>
+            <Box sx={{display: 'flex', flex: 1}}>
+                <FormControl
+                    fullWidth
+                    size="small"
+                    onChange={(option) => props.updateCapacityItem('type', option)}
+                    value={props.item.type}
+                    placeholder="Type"
+                    valueKey='id'
+                    labelKey='label'
+                    options={["Welder", "Fabricator", "Skilled Labourer", "Civil Subcontractor", "TA"].map((x) => ({id: x, label: x}))} />
+            </Box>
+            <Box sx={{display: 'flex', flex: 1}}>
+                <FormControl 
+                    fullWidth
+                    size="small"
+                    value={props.item.location}
+                    onChange={(option) => props.updateCapacityItem('location', option)}
+                    placeholder="Location"
+                    valueKey='id'
+                    labelKey='label'
+                    options={["Site", "Workshop"].map((x) => ({id: x, label: x}))} />
+            </Box>
+            <Box sx={{display: 'flex', flex: 1}}>
+                <TextField  
+                    type="number"
+                    size="small"
+                    value={props.item.estimate}
+                    onChange={(e) => props.updateCapacityItem('estimate', parseFloat(e.target.value))}
+                    label={props.type == "Projects" ? "Estimated hours" : "People"} />
+            </Box>
+            <IconButton onClick={() => props.removeCapacityItem()} >
+                <Close />
+            </IconButton>
         </Box>
-        <Box sx={{display: 'flex'}}>
-            <FormControl 
-                value={props.item.location}
-                onChange={({option}) => props.updateCapacityItem('location', option)}
-                placeholder="Location"
-                options={["Site", "Workshop"]} />
-        </Box>
-        <Box sx={{display: 'flex'}}>
-            <TextField  
-                type="number"
-                value={props.item.estimate}
-                onChange={(e) => props.updateCapacityItem('estimate', parseFloat(e.target.value))}
-                placeholder={props.type == "Projects" ? "Estimated hours" : "People"} />
-        </Box>
-        <IconButton onClick={() => props.removeCapacityItem()} >
-            <Close />
-        </IconButton>
-    </Box>
     );
 }

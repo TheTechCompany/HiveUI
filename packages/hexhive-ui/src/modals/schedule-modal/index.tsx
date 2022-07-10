@@ -1,382 +1,240 @@
-import React, { Component, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
-import {AvatarList} from '../../components/AvatarList'; 
+import { AvatarList } from '../../components/AvatarList'
+import { Box, Button as GButton, Text, Select, Tab, Tabs } from 'grommet';
+import { PeopleTab } from './tabs/people-tab';
+import { EquipmentTab } from './tabs/equipment-tab';
+import NoteTab from './tabs/note-tab';
+import moment from 'moment';
 
-import { CloneTab } from './tabs/clone-tab'
-import { AddTab } from './tabs/add-tab'
+import { Autocomplete, Dialog, Button, DialogContent, TextField } from '@mui/material';
+import { ScheduleModalHeader } from './header';
+import { CloneTab } from './tabs/clone-tab';
+import { TabHeader } from './tabheader';
+import { stringToColor } from '@hexhive/utils';
 
-import { Dialog, Button, Box, Typography } from '@mui/material';
-import { ManagerList } from '../../components/ManagerList';
-import { getManagers, isJoined } from './utils';
+export interface ScheduleItem {
+    id?: string;
+    project?: { id: string };
+    people?: { id: string }[];
+    equipment?: string[];
+    notes?: string[];
 
-// import './index.css';
-// import { cloneSchedule, getScheduledDates, isJoined, joinCard, leaveCard, removeSchedule, saveSchedule } from './utils';
-// import { getManagers } from './utils';
-
-// import { ManagerList } from '../../manager-list';
-
-var moment = require('moment');
-var closeCallback;
-
+    owner?: {id: string, name: string}
+    managers?: {id: string, name: string}[]
+}
 
 export interface ScheduleModalProps {
+    open: boolean;
+    onClose?: () => void;
+    onSubmit?: (item: any) => void;
+    onDelete?: () => void;
 
-  timestamp?: Date;
+    onJoin?: () => void;
+    onLeave?: () => void;
 
-  projects: any[];
-  people: any[];
-  equipment: any[];
+    selected?: any;
 
-  scheduledJobs?: any[];
+    date?: Date;
 
-  open: boolean;
-  onClose?: () => void; 
+    projects?: any[]
+    people?: any[];
+    equipment?: any[];
 
-  user?: any;
-  users?: any;
-
-  item?: ISchedule
-
-  onSaveItem: (item: any, ts: Date) => void;
-  onCloneItem: (item: any, currentDates: Date[], cloneDates: Date[]) => void;
-  onCreateItem: (item: any, ts: Date) => void;
-  onDeleteItem: (item: any) => void;
-  
-  onJoinCard?: () => void;
-  onLeaveCard?: () => void;
 }
 
-export interface ISchedule {
-  id?: string;
+export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
 
-  people?: Array<{id?: string, name?: string}>
-  equipment?: Array<string | undefined | null>
+    const [item, setItem] = useState<ScheduleItem>({})
 
-  files?: any[];
-  
-  project: {displayId: string, name: string, id: string};
-  notes?: Array<string | undefined | null>,
-  managers?: Array<{id?: string, name?: string}>;
-  owner?: {id: string, name: string};
-  date?: Date;
-}
-
-export const ScheduleModal : React.FC<ScheduleModalProps> = (props) => {
-
-  console.log("Schedule modal user", props.user)
-  const [ mode, setMode ]= useState<string>('create')
-
-  const stateMode : "Clone" | "Edit" | "Create" = useMemo(() => {
-    return (mode === 'clone') ? 'Clone': (mode === 'edit') ? 'Edit' :  'Create';
-  }, [mode])
-
-  const [ dialogOpen, setDialogOpen ] = useState<boolean>(false)
-
-  const [ tab, setTab ] = useState<number>(0)
-  const [ date, setDate ] = useState<Date>(new Date())
-  
-  const [ timestamp, setTimestamp ] = useState<Date>(props.timestamp || new Date())
-
-  const [item, setItem] = useState<ISchedule>()
-
-  const [ managerList, setManagerList ] = useState<{
-    add?: string[];
-    remove?: string[];
-  }>({})
-
-  const [ existingDates, setExistingDates ] = useState<Date[]>([])
-  const [ cloneSelection, setCloneSelection ] = useState<Date[]>([])
-
-  useEffect(() => {
-    if(props.timestamp){
-      setTimestamp(props.timestamp)
-    }
-  }, [props.timestamp])
-
-  useEffect(() => {
-    if(props.item){
-      setItem(props.item)
-    }
-  }, [props.item])
-
-  useEffect(() => {
-    console.log(props.item)
-    if(props.item && props.item.id){
-      setMode('edit')
-    }
-    if(props.item && props.item.id && item?.id !== props.item?.id){
-      console.log("SCHEDULe")
-      // getScheduledDates(props.item.job.id || '').then((dates) => {
-      //   console.log("DATES", dates)
-      //   setExistingDates(dates)
-      //   setCloneSelection(dates)
-      // })
-    }
-  }, [props.item?.id])
-  
- /* constructor(props){ 
-    super(props);
-    closeCallback = props.closeCallback;
-    /*One of the props I pass in is an array of the already scheduled jobs
-     * for the day called scheduledJobs
-    this.state = {
-      activeTab: 0,
-      mode: 'create',
-      date: new Date(),
-      jobs : [],
-      jobEmployees : [],
-      jobPlants : [],
-      notes : [],
-      jobId : null,
-      todaysSchedule : [],
-      ...props,
-      startDateRange : moment(props.timestamp).toISOString(),
-      endDateRange : moment(props.timestamp).toISOString(),
-      cloneSelected: [],
-      currentItems: [],
-      temporaryManagers: [],
-      temporaryRemovedManagers: []
-    };
-  }*/
-
-/*
-  componentDidMount(){
-       utils.staff.getAll().then((res) => {
-      this.setState({ employees: res });
-    });*/
-    /*    utils.plant.getAll().then((res) => {
-      this.setState({ plants: res });
-    });
-
-*/
-
-
-  /*
-
-  componentWillMount(){
-    utils.job.fetchJobs(this.state.timestamp, 7).then((res) => {
-      for(var i = 0; i < res.length; i++){
-        this.state.scheduledJobs.forEach((x) => {
-          if(typeof res[i] != 'undefined' && x.job === res[i].JobID){
-            res.splice(i, 1);
-          }
+    useEffect(() => {
+        setItem({
+            ...props.selected,
+            // project: props.selected?.project?.id
         });
-      }
-      this.setState({ 
-        jobs: res 
-      });
-    });
-  }*/
 
- /* componentWillReceiveProps(newProps){
-    if(this.props !== newProps){
-      this.setState({
-        ...newProps,
-        endDateRange : moment(newProps.timestamp).toISOString()
-      });
+        setCloneDates([]);
+
+    }, [props.selected]);
+
+
+    const [ cloneDates, setCloneDates ] = useState<Date[]>([]);
+
+    const [ cloneTab, openCloneTab ] = useState(false);
+
+    const [projectSearchString, setProjectSearchString] = useState('')
+
+    const [activeTab, setActiveTab] = useState('people')
+
+    const canEdit = () => {
+        return !props.selected || props.selected.canEdit
     }
 
-
-    if (newProps.jobData && newProps.jobData !== {}){
-      let j = newProps.jobData;
-      this.setState({
-        _id : j._id,
-      temporaryManagers: [],
-      temporaryRemovedManagers: [],
-        itemId: j.id,
-        jobId: (j.job && j.job.id) ? j.job.id: {},
-        jobEmployees: j.employees,
-        jobPlants: j.plant,
-        notes: j.notes,
-        timestamp: j.date,
-        mode: 'edit'
-      });
-      if(newProps.jobData.job){
-        utils.job.getDates(newProps.jobData.job.id).then((dates) => {
-          var ObjDates = [];
-          var Obj = [];
-          dates.forEach((x) =>{
-            ObjDates.push(new Date(x));
-            Obj.push(new Date(x));
-          });
-          this.setState({
-            cloneSelected : ObjDates,
-            currentItems : Obj
-          });
-        });
-      }
-    } else {
-      this.componentWillMount()
-    }
-  }
-*/
-
-
-
-  const renderClone = (stateMode : string) => {
-    if(stateMode === 'Edit'){
-      return (	
-        <Button  onClick = {()=> {setMode('clone')}} >Clone</Button>
-      ); 
-    }
-    else if(stateMode === 'Clone'){
-      return (
-        <Button onClick = {()=> {setMode('edit')}}>Edit</Button>
-      );
-    }
-    else{
-      return null;
-    }
-  }
-
-  const renderRemove = (stateMode: string) => {
-    if(stateMode === 'Edit'){
-      return (
-        <Button color="error" onClick={() => {
-          if(item?.id){
-            props.onDeleteItem?.(item)
-            //  removeSchedule(item?.id)
-          }
-          onClose()
-        }}>Delete</Button>
-      );
-    }else{
-      return null;
-    }
-  }
-
-
-
-  const onSave = async () => {
-    console.log(item, mode)
-    if(item){
-      let output : any = Object.assign({}, item)
-    
-      if(output?.project?.id){
-        output.project = item.project.id;
-
-      }
-console.log(output)
-      if(mode === 'clone'){
-        props.onCloneItem(output, existingDates, cloneSelection)
-        // await cloneSchedule(item, existingDates, cloneSelection)
-      }else{
-        if(stateMode == 'Create'){
-          props.onCreateItem(output, timestamp)
-        }else{
-          props.onSaveItem(output, timestamp)
+    useEffect(() => {
+        if(!props.open){
+            openCloneTab(false);
         }
-        // await saveSchedule(stateMode, item, timestamp)
-      }
-      onClose()
+    }, [props.open]);
+
+    console.log({ item })
+    const renderActiveTab = () => {
+        switch (activeTab) {
+            case 'people':
+                return (
+                    <PeopleTab
+                        labelKey='name'
+                        selected={item.people}
+                        onChange={(people) => {
+                            console.log({ people })
+                            setItem({ ...item, people: people })
+                        }}
+                        options={props.people?.filter((a) => (item.people || []).map((x: any) => x.id).indexOf(a.id) < 0)}
+                    />
+                );
+            case 'equipment':
+                return (
+                    <EquipmentTab
+                        labelKey='name'
+                        selected={item.equipment}
+                        onChange={(equipment) => {
+                            setItem({...item, equipment: equipment})
+                        }}
+                        options={props.equipment?.filter((a) => (item.equipment || []).map((x: any) => x.id).indexOf(a.id) < 0) || []}
+                    />
+                );
+            case 'notes':
+                return (
+                    <NoteTab 
+                        data={item.notes || []}
+                        onChange={(notes: any) => {
+                            setItem({...item, notes: notes})   
+                        }}
+                        />
+                )
+        }
     }
-  }
 
- 
-
-  const renderMemberButton = () => {
-    const toggle = async () => {
-      if(joined && item?.id){
-        props.onLeaveCard?.();
-
-        // const {add, remove } = await leaveCard(item?.id, props.user, managerList.add, managerList.remove)
-        // setManagerList({
-        //   add,
-        //   remove
-        // })
-      }else if(!joined && item?.id){
-        props.onJoinCard?.();
-        // const { add, remove } = await joinCard(item?.id, props.user, managerList.add, managerList.remove)
-        // setManagerList({
-        //   add,
-        //   remove
-        // })
-      }
+    const onSubmit = () => {
+        if(cloneTab){
+            props.onSubmit?.({
+                cloneDates
+            })
+        }else{
+            console.log(item)
+            props.onSubmit?.({
+                ...item,
+                project: item?.project?.id
+            })
+        }
     }
+
+    const filterProjects = (item: any) => {
+        if (!projectSearchString) return true;
+        if (projectSearchString.length == 0) return true;
+        if (item?.name?.indexOf(projectSearchString) > -1 || item?.displayId?.indexOf(projectSearchString) > -1) return true;
+        return false;
+    }
+
+    const owners = (item.managers || []).concat(item.owner ? [item.owner] : []).map((x) => ({
+        color: stringToColor(x.id),
+        name: x.name
+    }))
+
     return (
-      <Button onClick={toggle} >{ joined ? "Leave" : "Join"}</Button>
-    );
-  }
+        <Dialog
+            maxWidth='md'
+            title={`Schedule - ${moment(props.date).format('DD/MM/yy')}`}
+            open={props.open}
 
-  const onClose = () => {    
-    props.onClose?.()
+            onClose={props.onClose}
+        >
+            <Box
+                direction='column'
+                flex
+                style={{ minHeight: '60vh', maxHeight: '70vh' }}>
+                {/* onDelete={props.selected && props.onDelete}
+            onSubmit={onSubmit} */}
+                <Box     
+                    align='center'
+                    pad="xsmall" 
+                    direction='row' 
+                    background={'accent-2'} 
+                    justify="between">
+                    <Text>Create schedule for {moment(props.date).format('DD/MM/yy')}</Text>
+                    
+                    <Box gap="xsmall" direction='row' align='center'>
+                        
+                        { props.selected &&
+                        <><AvatarList size={25} users={owners} />
+                        <GButton 
+                            onClick={() => {
+                                if(canEdit()){
+                                    props.onLeave?.()
+                                }else{
+                                    props.onJoin?.()
+                                }
 
-    setItem(undefined)
-    setExistingDates([])
-    setCloneSelection([])
-    setManagerList({})
-    setMode('create')
-  }
+                                // props.onLeave()
+                            }}
+                            hoverIndicator
+                            plain
+                            style={{padding: 6, borderRadius: 3}}
+                            label={canEdit() ? "Leave" : "Join"} /></>}
+                    </Box>
+                </Box>
 
-  const joined = isJoined({id: props.user?.id}, item || null, managerList?.add || [], managerList?.remove || [])
+                <Box
+                    elevation='small'
 
-  
-  
-    return (
-      <Dialog
-        open={props.open} 
-        style={{zIndex: 99, boxShadow: '5px 5px 15px -5px #323a3c', overflow: 'hidden'}}
-        onClose={onClose}> 
-      <Box>
-        
-        <Box>
-          <Box>
-          <Typography>
-              {stateMode} Schedule Item for {moment(timestamp).format('DD/MM/YYYY')}
-          </Typography>
-          
-          </Box>
-          <Box>
-            {stateMode == 'Edit' && item?.owner?.id !== props.user?.id && renderMemberButton() }
+                    gap="xsmall"
+                    background={'accent-1'}
+                    width={'xlarge'}
+                >
+                <ScheduleModalHeader
+                    item={item}
+                    onChange={(item) => setItem(item)}
+                    projects={props.projects}
+                   
+                />
 
-            <ManagerList 
-              users={props.users}
-              managers={getManagers(item?.owner?.id || props.user?.id || '', item?.managers?.map((x) => x.id) || [], managerList.add, managerList.remove)}/>
-          </Box>
-        </Box>
+                {!cloneTab && <TabHeader 
+                 setActiveTab={setActiveTab}
+                 activeTab={activeTab}
+                 />}
+                 </Box>
+                <Box flex background={'neutral-2'}>
+                    <Box
+                        height={{ max: '50vh' }}
+                        flex>
 
-        <Box 
-  >
-            {!(stateMode === 'Edit' || stateMode === 'Create') ? (
-                <CloneTab
-                   selected={cloneSelection}
-                   onSelect={(dates) => setCloneSelection(dates)} /> 
-            ) : (
-                <AddTab
-                  item={item}
-                  onChange={(_item) => {
-                    console.log({...item, ..._item})
-                    setItem({...item, ..._item})
-                  }}
-                  jobs={props.projects}
-                  plants={props.equipment}
-                  people={props.people} /> 
-            )}
-        </Box>
-        <Box >
-          {joined && renderRemove(stateMode)}
-          {joined && renderClone(stateMode)}
-          <Button onClick = {onClose}>Close</Button>
-            {(joined || stateMode === "Create") && (<Button color="primary" onClick={onSave}>{
-              (stateMode === 'Edit' || stateMode === 'Clone') ? ((stateMode == 'Clone') ? "Save Cloned Items" : "Save Changes") : "Create"
-            }</Button>)}
-        </Box>
-        </Box>   
-      </Dialog>
-    ) ;
-  
+                        {cloneTab ? (
+                            <CloneTab 
+                                project={props.selected?.project}
+                                selected={cloneDates}
+                                onSelect={(dates) => {
+                                    setCloneDates(dates);
+                                }} />
+                        ) : renderActiveTab()}
 
+                    </Box>
+                    <Box gap="xsmall" pad="xsmall" direction='row' justify='between'>
+                        <Box direction='row' align='center'>
+                            {props.selected && canEdit() && <Button variant="outlined" onClick={() => openCloneTab(!cloneTab)}>{cloneTab ? "Edit" : "Clone"}</Button>}
+                        </Box>
+                        <Box direction='row' align='center'>
+                            {props.selected && canEdit() && !cloneTab && <Button 
+                                disabled={!canEdit()}
+                                onClick={props.onDelete} style={{color: 'red'}}>Delete</Button>}
+                            <Button onClick={props.onClose}>Close</Button>
+                            <Button 
+                                disabled={!canEdit()}
+                                onClick={onSubmit} variant="contained" >{cloneTab ? "Clone" : "Save"}</Button>
+                        </Box>
+                    </Box>
+                </Box>
 
+            </Box>
+
+        </Dialog>
+    )
 }
-
-// export default connect((state : StoreState) => {
-//   console.log(state.schedule)
-// //  jobs: (state.schedule.jobs || {list: []}).list,
-
-// return {
-//   user: state.auth.user,
-//   users: state.schedule.users.list,
-//   people: state.schedule.employees.list,
-//   plants: state.schedule.plant.list
-// }
-// })(ScheduleModal);
