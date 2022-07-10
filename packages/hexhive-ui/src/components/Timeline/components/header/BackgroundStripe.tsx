@@ -4,7 +4,7 @@ export const BackgroundStripe = (props: any) => {
     return (
         <Box 
             sx={{
-                bgcolor: props.background,
+                background: props.background,
                 border: props.border
             }}
             style={{

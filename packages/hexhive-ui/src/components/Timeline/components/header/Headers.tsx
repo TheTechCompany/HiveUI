@@ -151,6 +151,9 @@ const Header : React.FC<HeaderProps> = (props) => {
   // })
 
 
+  const neutral1 = 'rgb(243, 230, 220)';
+  const light1 = 'rgb(234, 217, 206)'
+
   //TODO change type to enum of options
   const renderHeaderRows = (top : string, middle: string, bottom: string) => {
     let result : any = { top: [], middle: [], bottom: [], background: [] };
@@ -190,12 +193,12 @@ const Header : React.FC<HeaderProps> = (props) => {
         lastLeft.bottom = box.left + box.width;
         if (bottom == 'shorttime' || bottom == 'fulltime') {
           let stripes = Array.apply(null, Array(24)).map(function () {}).map((x, ix) => (
-            <BackgroundStripe key={`tile-${i}-${ix}`} background={ix % 2 == 0 ? 'light-1' : 'neutral-1'} left={box.left + ((box.width / 24) * ix)} width={box.width / 24} />
+            <BackgroundStripe key={`tile-${i}-${ix}`} background={ix % 2 == 0 ? light1 : neutral1} left={box.left + ((box.width / 24) * ix)} width={box.width / 24} />
           ))
           result.background.push(stripes)
           result.bottom.push(renderTime(box.left, box.width, bottom, i));
         } else {
-          result.background.push(<BackgroundStripe key={`tile-${i}`} left={box.left} width={box.width} border={{size: !(currentDate.isoWeekday() == 6 || currentDate.isoWeekday() == 7) && 'xsmall', color: '#00000020'}} background={currentDate.isoWeekday() == 6 || currentDate.isoWeekday() == 7 ? 'light-1' : 'neutral-1'} />)
+          result.background.push(<BackgroundStripe key={`tile-${i}`} left={box.left} width={box.width} border={`${'1px'} solid #00000020`} background={currentDate.isoWeekday() == 6 || currentDate.isoWeekday() == 7 ? light1 : neutral1} />)
           result.bottom.push(<HeaderItem
             date={currentDate}
             dayInfo={props.dayInfo}
@@ -207,7 +210,7 @@ const Header : React.FC<HeaderProps> = (props) => {
     }
 
     return (
-      <div className="timeLine-main-header-container" style={{ width: DATA_CONTAINER_WIDTH, maxWidth: DATA_CONTAINER_WIDTH }}>
+      <Box className="timeLine-main-header-container" style={{ width: DATA_CONTAINER_WIDTH, maxWidth: DATA_CONTAINER_WIDTH }}>
         <Box 
           
           className="header-top">
@@ -226,7 +229,7 @@ const Header : React.FC<HeaderProps> = (props) => {
         <Box className="header-bottom" style={{height: '100%', ...Config.values.header.bottom.style}}>
           {result.background}
         </Box>
-      </div>
+      </Box>
     );
   };
 
@@ -270,7 +273,7 @@ const Header : React.FC<HeaderProps> = (props) => {
 export default styled(Header)`
 .header-top {
   height: 20px;
-
+  color: white;
   border-bottom: solid 0.5px silver;
 }
 

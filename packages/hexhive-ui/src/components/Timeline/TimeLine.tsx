@@ -539,7 +539,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
         <div className="timeLine-main">
          
-        <Box style={{position: 'absolute', height: '100%', width: '100%', top: 0, left: 0}} className="header-container">
+        <Box style={{position: 'absolute', display: 'flex', height: '100%', width: '100%', top: 0, left: 0}} className="header-container">
           <Header
               dayStatus={dayStatus}
               dayInfo={dayInfo}
@@ -550,7 +550,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
               scrollLeft={scrollLeft}
             />
         </Box>
-        <Box style={{position: 'absolute', width: '100%', height: 'calc(100% - 60px)', zIndex: 9, top: 60, left: 0}}>
+        <Box style={{position: 'absolute', display: 'flex', width: '100%', height: 'calc(100% - 60px)', zIndex: 9, top: 60, left: 0}}>
           {loading ? <Box style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: "#ffffff42"}} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}><CircularProgress size="medium" /></Box>: null}
         <DataViewPort
             onDown={doMouseDown}
@@ -618,7 +618,6 @@ export const Timeline = styled(BaseTimeline)`
   display: flex;
   flex-direction: row;
   flex: 1;
-  border: solid 1px rgb(207, 207, 205);
   font-size: 12px;
   user-select: none;
   -moz-user-select: none;

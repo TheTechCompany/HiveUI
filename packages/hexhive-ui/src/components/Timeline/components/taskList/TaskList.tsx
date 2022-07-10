@@ -1,4 +1,4 @@
-import { Box, List } from '@mui/material';
+import { Box, Divider, List } from '@mui/material';
 import React, { Component, useEffect } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
@@ -74,16 +74,16 @@ const TaskList : React.FC<any>  = (props) => {
           sx={{
             height: '60px',
             display: 'flex',
+            background: '#333',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '4px'
           }}>
-          <div>{Config.values.taskList.title.label}</div>
+          {/* <div>{Config.values.taskList.title.label}</div> */}
         </Box>
         <List 
           className="timeLine-side-task-viewPort" 
           onScroll={doScroll}>
-            {tasks?.map((datum, ix) => renderTaskRow(datum, ix))}
+            {tasks?.map((datum, ix) => [renderTaskRow(datum, ix), <Divider />])}
         </List>
       </Box>
     );

@@ -23,14 +23,14 @@ export interface HeaderItemProps{
 
     const ref = useRef<HTMLDivElement | null>(null)
       return (
-        <div
-          ref={(r) => ref.current = r}
+        <Box
+          ref={ref}
           className={props.className}
           style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            background: props.background,
+            backgroundColor: props.background,
             borderLeft: 'solid 1px rgb(216, 217, 218)',
             position: 'absolute',
             height: 20,
@@ -53,7 +53,7 @@ export interface HeaderItemProps{
             }
           }}
         >
-          <div>{props.label}</div>
+          <Typography fontSize="12px">{props.label}</Typography>
 
         <Popover
           open={hovering}
@@ -69,7 +69,7 @@ export interface HeaderItemProps{
                 </Box>
               </Box>
           </Popover>
-        </div>
+        </Box>
       );
     
   }

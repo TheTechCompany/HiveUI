@@ -15,6 +15,7 @@ export const ScheduleHeader : React.FC<ScheduleHeaderProps> = (props) => {
     return (
         <Box
             sx={{
+                bgcolor: 'secondary.main',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column'
@@ -38,7 +39,7 @@ export const ScheduleHeader : React.FC<ScheduleHeaderProps> = (props) => {
                 {props.actions && (props.actions.right || <div />)}
             </Box>
             <Box
-                sx={{display: 'flex', justifyContent: 'space-between'}}
+                sx={{display: 'flex', paddingTop: '3px', paddingBottom: '3px', bgcolor: 'secondary.dark', justifyContent: 'space-between'}}
                 className="week-header__days">
                 <DayHeader />
             </Box>
