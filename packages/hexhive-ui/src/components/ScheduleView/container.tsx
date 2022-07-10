@@ -7,7 +7,8 @@ export const ScheduleContainer : React.FC<any> = (props) => {
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                flex: 1
+                flex: 1,
+                background: '#efefef'
             }}>
         
             <Box sx={{display: 'flex'}}>
