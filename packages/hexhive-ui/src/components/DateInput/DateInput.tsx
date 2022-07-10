@@ -18,7 +18,6 @@ export const DateInput : React.FC<DateInputProps> = (props) => {
 	const longDateFormat = moment.localeData(locale).longDateFormat('L').toLowerCase();
 
     return (
-        <Box>
             <DesktopDatePicker
                 inputFormat={props.format || longDateFormat || 'DD/MM/yyyy'}
                 value={props.value}
@@ -30,6 +29,5 @@ export const DateInput : React.FC<DateInputProps> = (props) => {
                     // if(!props.onChange): (value) => {}}
                 }}
                 />
-        </Box>
     )
 }
