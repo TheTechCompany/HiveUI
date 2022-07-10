@@ -18,20 +18,30 @@ export default (props: any) => {
       return (
         <Box
           onMouseEnter={(e: any) => {
+            console.log(e.target)
+            console.log(e.target.classList.contains('timeline-data-task'))
 
-            setHoverAnchor({x: e.layerX, y: e.layerY})
-            const moveAnchor = (e: any) => {
-              // console.log({e})
+            if(!e.target.classList.contains('timeline-data-task')){
               setHoverAnchor({x: e.layerX, y: e.layerY})
-            }
-            e.currentTarget.addEventListener('mousemove', moveAnchor)
+              const moveAnchor = (e: any) => {
+                // console.log({e})
+                if(e.target.classList.contains('timeline-data-task')){
+                  e.currentTarget.removeEventListener('mousemove', moveAnchor);
+                  e.currentTarget.removeEventListener('mouseleave', mouseLeave)
+                  setHoverAnchor(null)
+                }else{
+                  setHoverAnchor({x: e.layerX, y: e.layerY})
+                }
+              }
+              e.currentTarget.addEventListener('mousemove', moveAnchor)
 
-            const mouseLeave = (e: any) => {
-              setHoverAnchor(null)
-              e.currentTarget.removeEventListener('mousemove', moveAnchor);
-              e.currentTarget.removeEventListener('mouseleave', mouseLeave)
+              const mouseLeave = (e: any) => {
+                setHoverAnchor(null)
+                e.currentTarget.removeEventListener('mousemove', moveAnchor);
+                e.currentTarget.removeEventListener('mouseleave', mouseLeave)
+              }
+              e.currentTarget.addEventListener('mouseleave', mouseLeave)
             }
-            e.currentTarget.addEventListener('mouseleave', mouseLeave)
           }}
           onMouseLeave={() => {
             setHoverAnchor(null)

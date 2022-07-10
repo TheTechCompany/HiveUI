@@ -3,7 +3,7 @@ import DateHelper from '../../helpers/DateHelper';
 import { MODE_NONE, MODE_MOVE, MOVE_RESIZE_LEFT, MOVE_RESIZE_RIGHT } from '../../Const';
 import { LINK_POS_LEFT, LINK_POS_RIGHT } from '../../Const';
 import Config from '../../helpers/config/Config';
-import { Box, Popover } from '@mui/material';
+import { Box, Popover, Tooltip } from '@mui/material';
 import { Task } from '../../types';
 import styled from 'styled-components'
 import { useState } from 'react';
@@ -230,6 +230,8 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const hoverStart = (e: any) => {
     e.stopPropagation()
+    // e.stopImmediatePropagation()
+    // e.preventDefault()
     setHoverEl(e.currentTarget)
 
     //      this.setState({hovering: state})
@@ -242,22 +244,24 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const style = calculateStyle();
   return (
-    <>
-    <Popover
-      style={{ zIndex: 9999999 }}
-      // enterExitTransitionDurationMs={300}
-      open={props.item?.hoverInfo && hoverEl != null}
-      anchorEl={hoverEl}
-      // preferPlace={"above"}
-      >
-        
+
+    <Tooltip
+      // style={{ zIndex: 9999999 }}
+      // // enterExitTransitionDurationMs={300}
+      // open={props.item?.hoverInfo && hoverEl != null}
+      // anchorEl={hoverEl}
+      title={(
         <Box
           sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
           >
           {props.item?.hoverInfo}
         </Box>
+      )}
+      // preferPlace={"above"}
+      >
+        
+       
 
-      </Popover>
       <Box
         onMouseEnter={hoverStart}
         onMouseLeave={hoverEnd}
@@ -294,7 +298,17 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
         <div onClick={() => {
           props.onExpansion?.(!collapsed)
           setCollapsed(!collapsed)
-        }} style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'column', overflow: 'hidden' }}>
+        }} 
+        className={`timeline-data-task`}  
+        style={{
+           display: 'flex', 
+           flex: 1, 
+           justifyContent: 'center', 
+           alignItems: 'center', 
+           flexDirection: 'column',
+           overflow: 'hidden' ,
+           
+          }}>
           {props.item?.showLabel ? ((typeof (props.item?.showLabel) === 'string') ? props.item.showLabel : props.item?.name) : ''}
           {/* {props.item?.collapsibleContent && (
               <Collapsible open={!collapsed}>
@@ -318,7 +332,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           <div className="task-handle" style={{ marginLeft: '100%' }} />
         </div>
       </Box>
-      </>
+      </Tooltip>
   );
 
 }
