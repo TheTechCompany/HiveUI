@@ -20,7 +20,7 @@ export const Header : React.FC<HeaderProps> = ({data, moveUp, moveDown}) => {
               background: color,
               display: 'flex', 
               alignItems: 'center', 
-              justifyContent: 'cen ter',
+              justifyContent: 'center',
               paddingLeft: '8px'
            }}>
           <Typography fontSize="small" style={{color: 'white'}}>{data.project.displayId}</Typography>

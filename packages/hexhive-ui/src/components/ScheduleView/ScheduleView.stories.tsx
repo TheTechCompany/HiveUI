@@ -35,7 +35,7 @@ Primary.args = {
     events: [
         {
             id: nanoid(),
-            date: new Date(),
+            date: new Date(2022, 6, 9),
             project: {
                 displayId: '1',
                 id: nanoid(),

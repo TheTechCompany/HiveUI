@@ -125,7 +125,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = (props) => {
       var currentMonth = today.getMonth() + 1;
       week.push((
         <Box
-          sx={{display: 'flex', flex: 1}}
+          sx={{display: 'flex', flex: 1, marginRight: '4px', marginLeft: '4px'}}
           className={(currentDay == renderTime(i, 'DD') && currentMonth == renderTime(i, 'MM')) ? ' week-day week-day-current' : 'week-day'}>
           <ul style={{ display: 'flex', flex: 1, flexDirection: 'column', listStyle: 'none', padding: 0 }} className='week-day-content'>
             {dayItems}
