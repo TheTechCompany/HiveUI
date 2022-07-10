@@ -26,7 +26,7 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
             sx={{
                 display: 'flex',
                 flexDirection:'row',
-                padding: '3px',
+                padding: '6px',
                 alignItems: 'center',
                 justifyContent: props.minified ? 'center' : undefined,
                 background: isActive  ? 'gray' : 'transparent'
