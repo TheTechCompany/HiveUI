@@ -1,7 +1,12 @@
 import { Box, Button } from 'grommet'
 import React from 'react'
 
-export const TabHeader = (props) => {
+export interface TabHeaderProps {
+    activeTab?: string;
+    setActiveTab?: (item: string) => void;
+}
+
+export const TabHeader : React.FC<TabHeaderProps> = (props) => {
     const menu = [
         'People',
         'Equipment',
@@ -23,7 +28,7 @@ export const TabHeader = (props) => {
                         style={{ padding: 6, borderRadius: 3, color: '#2b2b2b' }}
                         hoverIndicator
                         label={item}
-                        onClick={() => props.setActiveTab(item.toLowerCase())} />
+                        onClick={() => props.setActiveTab?.(item.toLowerCase())} />
                 ))}
 
             </Box>
