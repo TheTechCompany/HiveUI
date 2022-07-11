@@ -361,7 +361,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       console.log({oldTask})
 
       if(!oldEnd) return;
-      
+
       // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
       let endDiff = (new Date(end)?.getTime() || 0) - (new Date(oldEnd)?.getTime() || 0)
 
@@ -414,7 +414,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       end: changingTask.position.end
     }
 
-    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links}, item)    
+    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links}, item)  || {tasks: []}  
 
     
 
@@ -573,7 +573,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
                 start: position.start,
                 end: position.end
               }
-              const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task)
+              const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task) || {updates: []}
 
               if(updates.length > 0){
                 updates.forEach((update) => {
