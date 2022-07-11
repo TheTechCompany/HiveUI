@@ -360,6 +360,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
       console.log({oldTask})
 
+      if(!oldEnd) return;
+      
       // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
       let endDiff = (new Date(end)?.getTime() || 0) - (new Date(oldEnd)?.getTime() || 0)
 
