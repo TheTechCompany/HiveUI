@@ -19,6 +19,8 @@ export interface KanbanColumnProps {
     useClone?: boolean,
     isScrollable?: boolean;
     renderCard?: any;
+
+    onCreateCard?: () => void;
 }
 
 export const KanbanColumn : React.FC<KanbanColumnProps> = ({
@@ -30,6 +32,7 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
     useClone,
     isScrollable,
     renderCard,
+    onCreateCard,
     menu = []
 }) => {
     return (
@@ -81,6 +84,7 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
                  <KanbanList 
                     droppableId={`${index}`}
                     renderCard={renderCard} 
+                    onCreateCard={onCreateCard}
                     items={items.filter((a) => (!ttl || (Date.now() - dateFromObjectID(a.id).getTime()) < ttl))}/>
 
                 </Box>

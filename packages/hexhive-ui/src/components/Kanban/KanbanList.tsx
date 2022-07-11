@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import React from 'react';
 import { Draggable, DraggableProvided, DraggableStateSnapshot, Droppable, DroppableProps, DroppableProvided } from 'react-beautiful-dnd';
 import { KanbanListItem } from './KanbanListItem';
@@ -7,6 +7,7 @@ export interface KanbanListProps{
     items?: {id: string}[];
     renderCard?: any;
     droppableId?: string;
+    onCreateCard?: () => void;
 }
 
 export const KanbanList :  React.FC<KanbanListProps> = (props) => {
@@ -47,6 +48,7 @@ export const KanbanList :  React.FC<KanbanListProps> = (props) => {
             )} 
             </Draggable>
         )}
+        <Button size='small' sx={{textTransform: 'none'}} onClick={props.onCreateCard}>Add task</Button>
         {dropProvided.placeholder}
         </Box>
             )}
