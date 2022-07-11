@@ -1,13 +1,14 @@
 import { Box, Button } from '@mui/material';
 import React from 'react';
 import { Draggable, DraggableProvided, DraggableStateSnapshot, Droppable, DroppableProps, DroppableProvided } from 'react-beautiful-dnd';
-import { KanbanListItem } from './KanbanListItem';
 
 export interface KanbanListProps{ 
     items?: {id: string}[];
     renderCard?: any;
     droppableId?: string;
     onCreateCard?: () => void;
+    onSelectCard?: (item: any) => void;
+
 }
 
 export const KanbanList :  React.FC<KanbanListProps> = (props) => {
@@ -36,12 +37,13 @@ export const KanbanList :  React.FC<KanbanListProps> = (props) => {
                 dragSnapshot: DraggableStateSnapshot,
             ) => (
                 <Box
-                sx={{
-                    border: `${dragSnapshot.isDragging ? '2px' : '0px'} solid lightblue`
-                }}
-                ref={dragProvided.innerRef}
-                {...dragProvided.draggableProps}
-                {...dragProvided.dragHandleProps}
+                    onClick={() => props.onSelectCard?.(item)}
+                    sx={{
+                        border: `${dragSnapshot.isDragging ? '2px' : '0px'} solid lightblue`
+                    }}
+                    ref={dragProvided.innerRef}
+                    {...dragProvided.draggableProps}
+                    {...dragProvided.dragHandleProps}
                     >
                     {props?.renderCard?.(item) || 'div'}
                 </Box>

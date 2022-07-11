@@ -31,6 +31,7 @@ export interface BaseKanbanProps {
   columns?: Array<KColumn>;
 
   onCreateCard?: (column: string) => void;
+  onSelectCard?: (item: any) => void;
 }
 export const Kanban: React.FC<BaseKanbanProps> = ({
   containerHeight,
@@ -41,6 +42,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   onDrag,
   onCreateColumn,
   onCreateCard,
+  onSelectCard,
   columns = [],
 }) => {
   const onDragEnd = (result: DropResult) => {
@@ -92,6 +94,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
               isCombineEnabled={isCombineEnabled}
               useClone={useClone}
               onCreateCard={onCreateCard}
+              onSelectCard={onSelectCard}
               renderCard={renderCard}
             />
           ))}

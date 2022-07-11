@@ -21,6 +21,8 @@ export interface KanbanColumnProps {
     renderCard?: any;
 
     onCreateCard?: (column: string) => void;
+    onSelectCard?: (item: any) => void;
+
 }
 
 export const KanbanColumn : React.FC<KanbanColumnProps> = ({
@@ -33,6 +35,7 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
     isScrollable,
     renderCard,
     onCreateCard,
+    onSelectCard,
     menu = []
 }) => {
     return (
@@ -85,6 +88,7 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
                     droppableId={`${index}`}
                     renderCard={renderCard} 
                     onCreateCard={() => onCreateCard?.(title)}
+                    onSelectCard={onSelectCard}
                     items={items.filter((a) => (!ttl || (Date.now() - dateFromObjectID(a.id).getTime()) < ttl))}/>
 
                 </Box>

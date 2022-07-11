@@ -27,6 +27,7 @@ WithCards.args = {
       title: "column",
       rows: [
         {
+          id: '2',
           name: "two",
         },
       ],
@@ -36,9 +37,11 @@ WithCards.args = {
       title: "column2",
       rows: [
         {
+          id: '3',
           name: "three",
         },
-        {
+        { 
+          id: '4',
           name: "fsdf",
         },
       ],
