@@ -345,17 +345,20 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   };
 
   const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
-  
+    
+    
     let newTasks = tasks.slice();
 
     let updates : any[] = [];
-    let oldTask = data?.find((a) => a.id == item.id);
+    let oldTask = _tasks?.find((a) => a.id == item.id);
 
     let forwardLinks = links?.filter((a) => a.source == item.id);
 
     if(oldTask && forwardLinks.length > 0){
       const { start: oldStart, end: oldEnd } = oldTask;
       const { start, end } = newTasks.find((a) => a.id == item.id);
+
+      console.log({oldTask})
 
       // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
       let endDiff = (end?.getTime() || 0) - (oldEnd?.getTime() || 0)

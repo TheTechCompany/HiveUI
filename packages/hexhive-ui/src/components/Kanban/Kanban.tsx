@@ -30,7 +30,7 @@ export interface BaseKanbanProps {
   onCreateColumn?: () => void;
   columns?: Array<KColumn>;
 
-  onCreateCard?: () => void;
+  onCreateCard?: (column: string) => void;
 }
 export const Kanban: React.FC<BaseKanbanProps> = ({
   containerHeight,

@@ -18,9 +18,7 @@ export default (props: any) => {
       return (
         <Box
           onMouseEnter={(e: any) => {
-            console.log(e.target)
-            console.log(e.target.classList.contains('timeline-data-task'))
-
+    
             if(!e.target.classList.contains('timeline-data-task')){
               setHoverAnchor({x: e.layerX, y: e.layerY})
               const moveAnchor = (e: any) => {

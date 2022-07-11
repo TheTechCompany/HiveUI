@@ -57,6 +57,14 @@ Primary.args = {
 export const WithItems = Template.bind({});
 WithItems.args = {
   date: new Date(),
+  links: [
+    {
+      id: '4',
+      source: '1',
+      target: '2',
+
+    }
+  ],
   data: [
     {id: '1', start: new Date(), end: new Date(2022, 4, 10), name: "Item 1", color: 'red', showLabel: true},
     {id: '2', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true},
@@ -98,27 +106,34 @@ HeaderColors.args = {
   onCreateTask: (task: Task) => {
     console.log({task})
   },
+  links: [
+    {
+      id: '1',
+      source: '2',
+      target: '1'
+    }
+  ],
   data: [
     {
       id: '1', 
-      start: new Date(2021, 7, 12), 
-      end: new Date(2021, 11, 12),
+      start: new Date(2022, 7, 12), 
+      end: new Date(2022, 11, 12),
       name: "Item 1", 
       color: 'red', 
       showLabel: true
     },
     {
       id: '2', 
-      start: new Date(2021, 6, 12), 
-      end: new Date(2021, 10, 12),
+      start: new Date(2022, 6, 12), 
+      end: new Date(2022, 10, 12),
       name: "Item 2 with really long title almost too long now", 
       color: 'red', 
       showLabel: true
     },
     {
       id: '3', 
-      start: new Date(2021, 5, 12),
-      end: new Date(2021, 9, 12),
+      start: new Date(2022, 5, 12),
+      end: new Date(2022, 9, 12),
       name: "Item 1", 
       color: 'red', 
       showLabel: true
