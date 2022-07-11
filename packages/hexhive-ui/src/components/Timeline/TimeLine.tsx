@@ -375,8 +375,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
 
         if(endDiff){
-          startUpdate = new Date((startUpdate?.getTime() || 0) + endDiff);
-          endUpdate = new Date((endUpdate?.getTime() || 0) + endDiff)
+          startUpdate = new Date((new Date(startUpdate)?.getTime() || 0) + endDiff);
+          endUpdate = new Date((new Date(endUpdate)?.getTime() || 0) + endDiff)
         }
 
 
