@@ -361,7 +361,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       console.log({oldTask})
 
       // let startDiff = (start?.getTime() || 0) - (oldStart?.getTime() || 0)
-      let endDiff = (end?.getTime() || 0) - (oldEnd?.getTime() || 0)
+      let endDiff = (new Date(end)?.getTime() || 0) - (new Date(oldEnd)?.getTime() || 0)
 
       forwardLinks.forEach((link) => {
         let ix = newTasks.map((x) => x.id).indexOf(link.target);
