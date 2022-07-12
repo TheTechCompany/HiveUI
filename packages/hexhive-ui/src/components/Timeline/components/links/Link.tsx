@@ -47,6 +47,7 @@ class Link extends Component<any, any>{
 
   render() {
     let pathColor = this.props.isSelected ? Config.values.links.selectedColor : Config.values.links.color;
+    console.log({props: this.props})
     return (
       <g className="timeline-link">
         <path
@@ -63,6 +64,7 @@ class Link extends Component<any, any>{
         <path
           pointerEvents="stroke"
           onMouseDown={this.onSelect}
+          // stroke={"white"}
           stroke={pathColor}
           d={this.getPath()}
           strokeLinejoin="round"

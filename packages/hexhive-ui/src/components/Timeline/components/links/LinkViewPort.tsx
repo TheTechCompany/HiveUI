@@ -68,7 +68,7 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
         item={link}
         start={{ x: startPosition.x, y: startPosition.y }}
         end={{ x: endPosition.x, y: endPosition.y }}
-        isSelected={props.selectedItem == link}
+        isSelected={props.selectedItem?.id == link.id}
         onSelectItem={props.onSelectItem}
       />
     );

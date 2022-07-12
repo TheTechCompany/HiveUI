@@ -21,11 +21,15 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
 
   const [ links, setLinks ] = useState<any[]>(args.links || []);
 
+  const [ selectedItem, setSelectedItem ] = useState<any>();
+
   console.log({links});
   
  return <Timeline 
       {...args} 
       data={data} 
+      selectedItem={selectedItem}
+      onSelectItem={(item: any) => setSelectedItem(item)}
       onUpdateTask={(task: any, position: any) => {
         // console.log("Updaate")
         // console.log({task})
