@@ -136,7 +136,11 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                             <TableRow 
                                 hover
                                 onClick={() => {
-                                    clickFile?.(file)
+                                    if(file.isFolder && file.name){
+                                        navigate?.(file.name)
+                                    }else{
+                                        clickFile?.(file)
+                                    }
                                 }}
                                 sx={{cursor: 'pointer'}}
                                 key={file.id}>
