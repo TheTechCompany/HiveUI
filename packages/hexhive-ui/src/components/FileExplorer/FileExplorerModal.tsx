@@ -74,19 +74,9 @@ export const FileExplorerModal : React.FC<FileExplorerModalProps> = ( props ) =>
                     onNavigate={(path) => {
                         props.onPathChange?.(path)
                     }}
-                    onSelect={(id) => {
-                        let _selected = [...new Set([...selected, id])]
-                        setSelected(_selected)
-                        props.onSelect?.(_selected)
-                    }}
-                    onDeselect={(id) => {
-                        let _selected = selected.slice();
-                        let ix = _selected.indexOf(id);
-                        if(ix > -1){
-                            _selected.splice(ix, 1)
-                        }
-                        setSelected(_selected)
-                        props.onSelect?.(_selected)
+                    onSelectionChange={(ids) => {
+                        setSelected(ids)
+                        props.onSelect?.(ids)
                     }}
                     selected={props.selected}
                         />
