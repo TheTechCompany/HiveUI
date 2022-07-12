@@ -268,7 +268,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
         }}
         style={{
           ...style,
-          top: 3,
+          top: 5,
           display: 'flex',
           pointerEvents: props.pointerEvents
         }}
