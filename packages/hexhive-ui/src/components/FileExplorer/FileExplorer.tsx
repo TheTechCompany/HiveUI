@@ -1,4 +1,3 @@
-import { Collections, List, GridView as Grid } from '@mui/icons-material'
 import React, { useCallback, useEffect } from 'react'
 import { useState } from 'react'
 import { Breadcrumbs } from './components/breadcrumbs'
@@ -43,12 +42,11 @@ export interface FileExplorerProps {
     onNavigate?: (path: string) => void;
     
     selected?: string[];
-    onSelect?: (id: string) => void;
-    onDeselect?: (id: string) => void;
+    onSelectionChange?: (id: string[]) => void;
 
     onCreateFolder?: (folderName: string) => Promise<void>;
     onRename?: (file: IFile, newName: string) => Promise<void>;
-    onDelete?: (file: IFile) => Promise<void>;
+    onDelete?: (file: IFile | IFile[]) => Promise<void>;
 }
 
 export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
@@ -56,7 +54,6 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const [anchorPos, setAnchorPos] = useState<{ top: number, left: number }>()
     
 //    console.log("Histroy",  historyRef.index, historyRef.)
-    const modes = [{key: 'list', icon: <List />}, {key: 'thumbnail', icon: <Collections />}, {key: 'grid', icon: <Grid />}];
 
     const [navigationHistory, setNavigationHistory] = useState<{path: {name: string, id: string}[]}[]>([])
     const [ currentPath, setCurrentPath ] = useState<number>(-1)
@@ -134,16 +131,29 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
    
 
-    const [ selectedFile, setSelectedFile ] = useState<IFile>()
+    const [ selectedFile, setSelectedFile ] = useState<IFile | IFile[]>()
+
+    useEffect(() => {
+        window.addEventListener('keydown', (e) => {
+            if(e.key == "Escape") {
+                props.onSelectionChange?.([])
+            }
+        })
+    }, [])
 
     return (
         <FileExplorerContext.Provider value={{
             navigate: onNavigate,
+            breadcrumbs,
+            setBreadcrumbs,
             files: Array.isArray(props.files) ? props.files?.map(formatFile) : (props.files) ? [formatFile(props.files)] : [],
             uploading: props.uploading || [],
             selected: props.selected,
             clickFile: props.onClick,
-            selectFile: (id, checked) => id && ((checked) ? props.onSelect?.(id) : props.onDeselect?.(id)),
+            selectFile: (id) => id && (
+                (props.selected || []).indexOf(id) < 0) ? 
+                    props.onSelectionChange?.([...new Set([...(props.selected || []), id])]) :
+                    props.onSelectionChange?.((props.selected || []).filter((a) => a !== id)),
             view, 
             setView,
             actions: props.actions || [],
@@ -182,13 +192,13 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                 }} 
                 open={deleteModalOpen} />
             <RenameModal  
-                selected={selectedFile}
+                selected={!Array.isArray(selectedFile) ? selectedFile : undefined}
                 onClose={() => {
                     openRenameModal(false)
                     setSelectedFile(undefined)
                 }} 
                 onSubmit={async (newName) => {
-                    if(selectedFile) await props.onRename?.(selectedFile, newName)
+                    if(selectedFile && !Array.isArray(selectedFile)) await props.onRename?.(selectedFile, newName)
                     openRenameModal(false)
                     setSelectedFile(undefined)
                 }}
@@ -215,26 +225,9 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                 sx={{bgcolor: 'primary.light', flex: 1, display: 'flex', position: 'relative', flexDirection: 'column'}}>
                
                 <Box   
-                    sx={{alignItems: 'center', justifyContent: 'space-between', display: 'flex', flexDirection: 'row', marginLeft: '6px', marginRight: '6px'}}>
-                <Breadcrumbs 
-                    onBreadcrumbClick={(crumb) => props.onNavigate?.(`/${crumb}`)}
-                    breadcrumbs={breadcrumbs || []} />
-
-                    <ToggleButtonGroup 
-                        value={view} 
-                        size="small"
-                        exclusive={true}
-                        onChange={(ev, value) => {
-                            console.log({ev, value})
-                            setView(value)
-                        }}>
-                        {modes.map((mode) => (
-                            <ToggleButton size="small" value={mode.key}>
-                                {React.cloneElement(mode.icon, {style: {fontSize: '20px'} })}
-                            </ToggleButton>
-                        ))}
-                    </ToggleButtonGroup>
-                   
+                    sx={{display: 'flex'}}>
+                    <ActionHeader />
+                    
                 </Box>
                 <Divider />
                 <Box 

@@ -136,13 +136,16 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                             <TableRow 
                                 hover
                                 onClick={() => {
+                                    selectFile?.(file.id)
+                                }}
+                                onDoubleClick={() => {
                                     if(file.isFolder && file.name){
                                         navigate?.(file.name)
                                     }else{
                                         clickFile?.(file)
                                     }
                                 }}
-                                sx={{cursor: 'pointer'}}
+                                sx={{cursor: 'pointer', bgcolor: (selected || []).indexOf(file.id || '') > -1 ? '#556bdd42': undefined, '&.MuiTableRow-hover:hover': {background: (selected || []).indexOf(file.id || '') > -1 ? '#556bdd69': undefined}}}
                                 key={file.id}>
                                 <TableCell sx={{alignItems: 'center'}} width={'25px'}>
                                     {file.icon}

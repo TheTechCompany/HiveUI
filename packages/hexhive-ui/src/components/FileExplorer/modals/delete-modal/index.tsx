@@ -7,7 +7,7 @@ export interface DeleteModalProps {
     open: boolean;
     onClose?: () => void;
     onSubmit?: () => Promise<void>;
-    selected?: IFile;
+    selected?: IFile | IFile[];
 }
 
 export const DeleteModal : React.FC<DeleteModalProps> = (props) => {
@@ -20,6 +20,17 @@ export const DeleteModal : React.FC<DeleteModalProps> = (props) => {
         setLoading(false);
     }
 
+    const renderItems = () => {
+        if(!Array.isArray(props.selected)){
+            return <Typography>- {props.selected?.name}</Typography>
+                 
+        }else{
+            return props.selected.map((file) => (
+                <Typography>- {file.name}</Typography>
+            ))
+        }
+    }
+
     return (
         <Dialog
             open={props.open}
@@ -29,7 +40,7 @@ export const DeleteModal : React.FC<DeleteModalProps> = (props) => {
                 <Typography color="error">Warning</Typography>
                 <Typography>This action is irreversible the selected items will be unrecoverable once completed</Typography>
 
-                <Typography>- {props.selected?.name}</Typography>
+                {renderItems()}
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose}>Close</Button>

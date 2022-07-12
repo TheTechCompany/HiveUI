@@ -7,6 +7,7 @@ import path from 'path'
 import {
     FileExplorer, FileExplorerProps
 } from "./FileExplorer";
+import { Download } from "@mui/icons-material";
 
 export default {
   title: "Components/FileExplorer",
@@ -17,11 +18,17 @@ export default {
 const Template: Story<FileExplorerProps> = (args) => {
   const [ strPath, setPath ] = useState('');
 
+  const [ selected, setSelected ] = useState<any[]>([]);
+
   return <FileExplorer  
           {...args} 
           onNavigate={(id) => {
             setPath(id)
             args.onNavigate?.(id)
+          }}
+          selected={selected}
+          onSelectionChange={(selected) => {
+            setSelected(selected)
           }}
           path={strPath}  />
 };
@@ -46,10 +53,10 @@ FileActions.args = {
     })
   },
   files: [
-    {name: 'Test.pdf', size: 2200},
+    {id: '1', name: 'Test.pdf', size: 2200},
   ],
   actions: [
-    {key: 'download', label: 'Download', onClick: (file) => console.log("Download", file)},
+    {key: 'download', icon: <Download />, label: 'Download', onClick: (file) => console.log("Download", file)},
   ]
 }
 
@@ -67,9 +74,9 @@ Folders.args = {
 export const Uploads = Template.bind({});
 Uploads.args = {
     files: [
-        {name: 'Test 1.pdf', size: 2000},
-        {name: 'Test 2.pdf', size: 22000},
-        {name: 'Test 3.pdf', size: 20}
+        {id: '1', name: 'Test 1.pdf', size: 2000},
+        {id: '2', name: 'Test 2.pdf', size: 22000},
+        {id: '3', name: 'Test 3.pdf', size: 20}
     ],
     uploading: [
       {name: 'File', percent: 20}

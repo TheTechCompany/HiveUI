@@ -8,6 +8,6 @@ export interface IAction {
     label: string;
     sx?: SxProps<Theme>;
     seperator?: "top" | "bottom";
-    onClick?: (file: IFile) => void;
+    onClick?: (file: IFile | IFile[]) => void;
     disabled?: boolean | ((state: IFileExplorerContext) => boolean)
 }
