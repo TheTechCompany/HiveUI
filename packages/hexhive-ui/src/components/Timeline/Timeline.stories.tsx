@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
   const [ data, setData ] = useState<any>(args.data || [])
   const [ date, setDate ] = useState<Date>(new Date())
 
-  const [ links, setLinks ] = useState<any[]>([]);
+  const [ links, setLinks ] = useState<any[]>(args.links || []);
 
   console.log({links});
   
@@ -30,14 +30,25 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
         // console.log("Updaate")
         // console.log({task})
 
-        setTimeout(() => {
+        if(args.latency){
+          setTimeout(() => {
+            let d = data.slice()
+            let ix = d.map((x: any) => x.id).indexOf(task.id)
+            d[ix].start = position.start;
+            d[ix].end = position.end;
+    
+            setData(d)
+          }, 5000)
+        }else{
+        // setTimeout(() => {
           let d = data.slice()
           let ix = d.map((x: any) => x.id).indexOf(task.id)
           d[ix].start = position.start;
           d[ix].end = position.end;
   
           setData(d)
-        }, 5000)
+        }
+        // }, 5000)
    
       } } 
       links={links}
@@ -99,6 +110,69 @@ WithMultipleItems.args = {
     return 'red';
   }
 };
+
+
+export const WithLinks = Template.bind({});
+WithLinks.args = {
+  date: new Date(),
+  links: [
+    {
+      id: '3', 
+      source: '1',
+      target: '5',
+    }
+  ],
+  data: [
+    {
+      id: '1', start: new Date(2022, 6, 1), end: new Date(2022, 6, 6), name: "Item 0", color: 'red', showLabel: true, 
+    },
+    {
+      id: '5',
+      start: new Date(2022, 6, 1),
+      end: new Date(2022, 6, 6) 
+    }
+  ],
+  primary: true,
+  color: 'green',
+  size: '10px',
+  dayStatus: (day: Date) => {
+    // console.log("Day", day)
+    return 'red';
+  }
+};
+
+
+
+export const WithLatency = Template.bind({});
+WithLatency.args = {
+  date: new Date(),
+  latency: true,
+  links: [
+    {
+      id: '3', 
+      source: '1',
+      target: '5',
+    }
+  ],
+  data: [
+    {
+      id: '1', start: new Date(2022, 6, 1), end: new Date(2022, 6, 6), name: "Item 0", color: 'red', showLabel: true, 
+    },
+    {
+      id: '5',
+      start: new Date(2022, 6, 1),
+      end: new Date(2022, 6, 6) 
+    }
+  ],
+  primary: true,
+  color: 'green',
+  size: '10px',
+  dayStatus: (day: Date) => {
+    // console.log("Day", day)
+    return 'red';
+  }
+};
+
 
 export const HeaderColors = Template.bind({});
 HeaderColors.args = {

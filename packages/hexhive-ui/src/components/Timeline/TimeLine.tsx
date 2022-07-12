@@ -346,6 +346,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
     
+    console.log("Propogating")
     
     let newTasks = tasks.slice();
 

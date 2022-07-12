@@ -67,6 +67,7 @@ export const BaseGraphGrid: React.FC<GraphGridProps> = (props) => {
     <Box sx={{display: 'flex'}} className={props.className}>
       {/* {props.children} */}
       <ResponsiveGridLayout
+        
         rowHeight={props.rowHeight || 30}
         layouts={{ lg: props.layout.map((x) => ({ ...x, i: x.id })) }}
         onLayoutChange={props.onLayoutChange}

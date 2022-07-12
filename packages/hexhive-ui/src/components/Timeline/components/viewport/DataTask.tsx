@@ -243,23 +243,18 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
 
   const style = calculateStyle();
+
+  const Wrapper = props.item?.hoverInfo ? (props: any) => <Tooltip title={(
+    <Box
+    sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
+    >
+    {props.item?.hoverInfo}
+  </Box>
+  )}>{props.children}</Tooltip> : (props: any) => <>{props.children}</>;
+
   return (
 
-    <Tooltip
-      // style={{ zIndex: 9999999 }}
-      // // enterExitTransitionDurationMs={300}
-      // open={props.item?.hoverInfo && hoverEl != null}
-      // anchorEl={hoverEl}
-      title={(
-        <Box
-          sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
-          >
-          {props.item?.hoverInfo}
-        </Box>
-      )}
-      // preferPlace={"above"}
-      >
-        
+    <Wrapper>
        
 
       <Box
@@ -332,7 +327,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           <div className="task-handle" style={{ marginLeft: '100%' }} />
         </div>
       </Box>
-      </Tooltip>
+      </Wrapper>
   );
 
 }
