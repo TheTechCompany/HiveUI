@@ -67,9 +67,9 @@ Folders.args = {
 export const Uploads = Template.bind({});
 Uploads.args = {
     files: [
-        {name: 'Test.pdf', size: 22000},
-        {name: 'Test.pdf', size: 22000},
-        {name: 'Test.pdf', size: 22000}
+        {name: 'Test 1.pdf', size: 2000},
+        {name: 'Test 2.pdf', size: 22000},
+        {name: 'Test 3.pdf', size: 20}
     ],
     uploading: [
       {name: 'File', percent: 20}

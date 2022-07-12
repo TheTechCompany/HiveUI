@@ -1,10 +1,12 @@
-import { Box, ListItemText, List, Checkbox, Button, Typography, IconButton, ListItem, ListItemButton, Menu, MenuItem, Divider } from '@mui/material';
+import { Box, ListItemText, List, Checkbox, Button, Typography, IconButton, ListItem, ListItemButton, Menu, MenuItem, Divider, Table, TableCell, TableRow, TableHead, TableBody, TableSortLabel } from '@mui/material';
 import { Folder, MoreVert, More } from '@mui/icons-material';
 import React, { useRef, useState } from 'react';
 import { useFileExplorer } from '../../context';
 import { IFile } from '../../types/file';
 import { humanFileSize } from '../../utils';
 import _ from 'lodash';
+import moment from 'moment';
+
 
 export interface ListViewProps {
 }
@@ -25,6 +27,39 @@ export const ListView : React.FC<ListViewProps> = (props) => {
 
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [ selectedFile, setSelectedFile ] = useState<IFile | null>(null);
+
+    const [ orderBy, setOrderBy ] = useState<string>();
+    const [ order, setOrder ] = useState<'asc' | 'desc'>();
+
+    const header = [
+        {
+            id: 'name',
+            label: 'Name',
+        },
+        {
+            id: 'lastUpdated',
+            label: 'Last Modified',
+        },
+        {
+            id: 'size',
+            label: 'Size',
+        }
+    ]
+
+    const createSortHandler = (property: string) => (event: React.MouseEvent<HTMLTableHeaderCellElement>) => {
+        setOrderBy(property)
+        setOrder(order === 'asc' ? 'desc' : 'asc')
+    }
+
+    const orderSort = (a: any, b: any) => {
+        if(orderBy){
+            if(order === 'asc'){
+                return a[orderBy] > b[orderBy] ? 1 : -1
+            }
+            return a[orderBy] < b[orderBy] ? 1 : -1
+        }
+        return 0;
+    }
 
     return (
         <Box>
@@ -63,54 +98,73 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                     setAnchorEl(null)
                 }} sx={{color:"red"}}>Delete</MenuItem>
             </Menu>
-            <List>
-                {files?.map((datum: IFile) => (
-                    <ListItem
-                        dense
-                        secondaryAction={(actions || []).length > 0 && (
-                            <IconButton sx={{zIndex: 9}} onClick={(e) => {
-                                setAnchorEl(e.target)
-                                setSelectedFile(datum)
-                            }}>
-                                <MoreVert />
-                            </IconButton>
-                        )}
-                        >
-                    <ListItemButton
-                        onClick={() => {
+            <Table size="small">
+                <TableHead sx={{bgcolor: 'secondary.main'}}>
+                    <TableRow>
+                        <TableCell width={'25px'} />
+                        {header.map((header_item) => (
+                            <TableCell
+                                sx={{color: 'white'}}
+                                sortDirection={orderBy === header_item.id ? order : false}
+                                >
+                                <TableSortLabel
+                                    sx={{color: 'white', '& .MuiTableSortLabel-root': {color: 'white'}, '& .MuiTableSortLabel-icon': {color: 'white'}}}
+                                     active={orderBy === header_item.id}
+                                     direction={orderBy === header_item.id ? order : 'asc'}
+                                     onClick={createSortHandler(header_item.id)}
+                                    >
+                                    
+                                    {orderBy === header_item.id ? (
+                                        <Box component="span" sx={{display: 'none'}}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                        </Box>
+                                    ) : null} 
+                                    {header_item.label}
 
-                        }}
-                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative'}}
-                      >
-                          <Box style={{display: 'flex', alignItems: 'center', padding: '4px', marginRight: '5px'}}>
-                          {datum.isFolder ? <Folder /> :  undefined}
+                                </TableSortLabel>
+                            </TableCell>
+                        ))}
+                        <TableCell>
 
-                          </Box>
-                            {/* <Checkbox checked={(selected || '').indexOf(datum.id || '') > -1} onChange={(e) => {
-                                e.stopPropagation()
-                                selectFile?.(datum.id || '', e.target.checked)
-                            }}/> */}
-                        <Box 
-                            style={{display: 'flex', alignItems: 'center', flex: 1}}
-                            onClick={() => {
-                                datum.isFolder ? navigate?.(datum.name || '') : clickFile?.(datum)
-                            }} >
-                            <Box style={{display: 'flex', alignItems: 'center', flex: 1}} >
-            
-                               
-                                <Typography>{datum.name}</Typography>
+                        </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {files?.sort(orderSort).map((file) => {
 
-                            </Box>
-
-                            <Box style={{display: 'flex', alignItems: 'center'}}>
-                                <Typography>{humanFileSize(datum.size || 0)}</Typography>
-                               
-                            </Box>
-                        </Box>
-                    </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+                        return (
+                            <TableRow 
+                                hover
+                                onClick={() => {
+                                    clickFile?.(file)
+                                }}
+                                sx={{cursor: 'pointer'}}
+                                key={file.id}>
+                                <TableCell sx={{alignItems: 'center'}} width={'25px'}>
+                                    {file.icon}
+                                </TableCell>
+                                <TableCell>
+                                    <Typography>{file.name}</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    {moment(file.lastUpdated).format('hh:mma - DD/MM/YY')}
+                                </TableCell>
+                                <TableCell>
+                                    {humanFileSize(file.size || 0)}
+                                </TableCell>
+                                <TableCell align='right'>
+                                    <IconButton onClick={(e) => {
+                                        e.stopPropagation()
+                                        setAnchorEl(e.currentTarget)
+                                    }}>
+                                        <MoreVert />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        )
+                    })}
+                </TableBody>
+            </Table>
         </Box>
     )
 }

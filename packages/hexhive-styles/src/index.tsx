@@ -36,7 +36,25 @@ export const HexHiveTheme = createTheme({
       MuiTableHead: {
         styleOverrides: {
           root: {
-            background: globalTheme.palette.secondary.main
+            backgroundColor: globalTheme.palette.secondary.main,
+            '& .MuiTableRow-root .MuiTableCell-root': {
+              color: 'white'
+            },
+            '& .MuiTableRow-root .MuiTableSortLabel-root': {
+              color: 'white'
+            },
+            '& .MuiTableRow-root .MuiTableSortLabel-root.Mui-active': {
+              color: 'white'
+            },
+            '& .MuiTableRow-root .MuiTableSortLabel-root .MuiTableSortLabel-icon': {
+              color: 'white'
+            },
+            '& .MuiTableRow-root .MuiTableSortLabel-root .MuiTableSortLabel-iconDirectionDesc': {
+              color: 'white'
+            },
+            '& .MuiTableRow-root .MuiTableSortLabel-root .MuiTableSortLabel-iconDirectionAsc': {
+              color: 'white'
+            }
           }
         }
       },

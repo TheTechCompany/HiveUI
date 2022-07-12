@@ -46,12 +46,12 @@ export const UploadDrawer : React.FC<UploadDrawerProps> = (props) => {
                 <Collapse 
                     in={expanded}>
                     <Box 
-                        sx={{minHeight: '100px', overflow: 'auto', display: 'flex'}}>
-                        <List   >
+                        sx={{minHeight: '100px', flex: 1, overflow: 'auto', display: 'flex'}}>
+                        <List  sx={{flex: 1}} >
                             {uploading?.map((datum) => (
-                                <ListItem>
+                                <ListItem sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                                     <Typography>{datum.name}</Typography>
-                                    <CircularProgress size="small" value={datum.percent}/>
+                                    <CircularProgress size="20px" variant="determinate" value={datum.percent}/>
                                 </ListItem>
                             ))}
                             {/* {(datum: any) => (

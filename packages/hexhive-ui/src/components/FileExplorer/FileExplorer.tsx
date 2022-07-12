@@ -119,6 +119,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     }
 
     const formatFile = (file: IFile) => {
+        console.log({file})
         return {
             ...file,
             icon: DEFAULT_ICONS(file)
@@ -242,7 +243,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
                         border: isDragActive ? '1px solid #dfdfdf' : 'undefined',
                         position: 'relative',
                         overflow: 'auto',
-                        padding: '6px',
+                        // padding: '6px',
                         display: 'flex', 
                         flexDirection: 'column',
                         flex: 1

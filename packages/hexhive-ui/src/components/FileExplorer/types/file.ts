@@ -3,6 +3,7 @@ export interface IFile {
     icon?: any;
     name?: string;
     size?: number;
+    lastUpdated?: Date;
     isFolder?: boolean;
 }
 
