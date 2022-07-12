@@ -86,7 +86,7 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
         thumbnail: <ThumbnailView />
     }
 
-    const onNavigate = (path: string) => {
+    const navigate = (path: string) => {
         console.log({path})
         let parts = props.path.split('/').slice(1).filter((a) => a.length > 0);
         parts.push(path);
@@ -143,7 +143,8 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
 
     return (
         <FileExplorerContext.Provider value={{
-            navigate: onNavigate,
+            navigate: navigate,
+            onNavigate: props.onNavigate,
             breadcrumbs,
             setBreadcrumbs,
             files: Array.isArray(props.files) ? props.files?.map(formatFile) : (props.files) ? [formatFile(props.files)] : [],

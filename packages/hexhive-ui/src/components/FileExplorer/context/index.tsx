@@ -18,6 +18,7 @@ export interface IFileExplorerContext {
     setView?: (view: string) => void;
 
     navigate?: (id: string) => void;
+    onNavigate?: (path: string) => void;
 
     actions?: IAction[]
 

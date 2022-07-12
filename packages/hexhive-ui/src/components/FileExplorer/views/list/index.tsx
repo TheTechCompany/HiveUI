@@ -61,6 +61,24 @@ export const ListView : React.FC<ListViewProps> = (props) => {
         return 0;
     }
 
+    const clickTimer = useRef<any>();
+
+    const onClickHandler = (event: any, file: any) => {
+        clearTimeout(clickTimer.current)
+
+        if(event.detail === 1){
+            clickTimer.current = setTimeout(() => {
+                selectFile?.(file.id)
+            }, 200)
+        }else if(event.detail === 2){
+            if(file.isFolder && file.name){
+                navigate?.(file.name)
+            }else{
+                clickFile?.(file)
+            }
+        }
+
+    }
     return (
         <Box>
             <Menu
@@ -135,15 +153,8 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                         return (
                             <TableRow 
                                 hover
-                                onClick={() => {
-                                    selectFile?.(file.id)
-                                }}
-                                onDoubleClick={() => {
-                                    if(file.isFolder && file.name){
-                                        navigate?.(file.name)
-                                    }else{
-                                        clickFile?.(file)
-                                    }
+                                onClick={(e) => {
+                                    onClickHandler(e, file)
                                 }}
                                 sx={{cursor: 'pointer', bgcolor: (selected || []).indexOf(file.id || '') > -1 ? '#556bdd42': undefined, '&.MuiTableRow-hover:hover': {background: (selected || []).indexOf(file.id || '') > -1 ? '#556bdd69': undefined}}}
                                 key={file.id}>

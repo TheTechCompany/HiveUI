@@ -21,6 +21,7 @@ export const ActionHeader : React.FC<ActionHeaderProps> = (props) => {
         selected,
         breadcrumbs,
         navigate,
+        onNavigate,
         setBreadcrumbs,
         triggerDeleteFile,
     } = context;
@@ -41,7 +42,7 @@ export const ActionHeader : React.FC<ActionHeaderProps> = (props) => {
                 paddingRight: '6px'
             }}>
                 <Breadcrumbs 
-                    onBreadcrumbClick={(crumb) => navigate?.(`/${crumb}`)}
+                    onBreadcrumbClick={(crumb) => onNavigate?.(`/${crumb}`)}
                     breadcrumbs={breadcrumbs || []} />
 
                     <ToggleButtonGroup 
