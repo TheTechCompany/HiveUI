@@ -89,14 +89,14 @@ export const FileViewer: React.FC<FileViewerProps> = ({
        
     } else {
         let file = files[index || 0]
-        let mimetype = file.mimeType ? file.mimeType : 'text/plain'
+        let mimetype = file?.mimeType ? file.mimeType : 'text/plain'
 
-        let url = file.url // `${process.env.REACT_APP_API && process.env.REACT_APP_API.length > 0 ? process.env.REACT_APP_API : window.location.origin}/api/files/${file.id}${file?.extension ? file?.extension : ''}?access_token=${token}`;
+        let url = file?.url // `${process.env.REACT_APP_API && process.env.REACT_APP_API.length > 0 ? process.env.REACT_APP_API : window.location.origin}/api/files/${file.id}${file?.extension ? file?.extension : ''}?access_token=${token}`;
 
-        let main = mimetype.split('/')[0];
-        let sub = mimetype.split('/')[1];
+        let main = mimetype?.split('/')?.[0];
+        let sub = mimetype?.split('/')?.[1];
 
-        const content = getContent(main, sub, url || '')
+        const content = getContent?.(main, sub, url || '')
 
         return (
             <Box
