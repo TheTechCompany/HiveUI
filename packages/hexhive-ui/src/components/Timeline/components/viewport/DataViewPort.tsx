@@ -10,6 +10,7 @@ import { TimelineContext } from '../../context'
 import styled from 'styled-components'
 import useResizeAware from 'react-resize-aware'
 import { Task } from '../../types';
+import moment from 'moment';
 
 export interface DataViewPortProps {
   className?: string;
@@ -67,6 +68,8 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
       // console.log({item})
 
+      if(moment(item.start).format('DD/MM') == moment(item.end).format("DD/MM")) item.end?.setHours(23, 59);
+
       let new_position = DateHelper.dateToPixel(item.start, nowposition, dayWidth || 0);
       let new_width = DateHelper.dateToPixel(item.end, nowposition, dayWidth || 0) - new_position;
 
@@ -89,6 +92,8 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
            itemheight={(itemHeight + 5)}>
 
           {(item.children || []).length > 0 ? item.children?.map((child_task, ix) => {
+
+            if(moment(child_task.start).format('DD/MM') == moment(child_task.end).format("DD/MM")) child_task.end?.setHours(23, 59);
 
           let new_position = DateHelper.dateToPixel(child_task.start, nowposition, dayWidth || 0);
           let new_width = DateHelper.dateToPixel(child_task.end, nowposition, dayWidth || 0) - new_position;
