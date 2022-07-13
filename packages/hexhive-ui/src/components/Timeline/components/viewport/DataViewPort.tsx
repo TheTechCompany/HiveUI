@@ -68,7 +68,10 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
       // console.log({item})
 
-      if(moment(item.start).format('DD/MM') == moment(item.end).format("DD/MM")) item.end?.setHours(23, 59);
+      if(moment(item.start).format('DD/MM') == moment(item.end).format("DD/MM")) {
+        item.start?.setHours(0, 0);
+        item.end?.setHours(23, 59);
+      }
 
       let new_position = DateHelper.dateToPixel(item.start, nowposition, dayWidth || 0);
       let new_width = DateHelper.dateToPixel(item.end, nowposition, dayWidth || 0) - new_position;
