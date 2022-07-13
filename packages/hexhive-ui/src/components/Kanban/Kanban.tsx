@@ -10,12 +10,18 @@ import {
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCreateColumn } from "./KanbanCreateColumn";
 
+export interface KRow {
+  id: string;
+  title: string;
+  lastUpdated?: Date;
+}
+
 export interface KColumn {
   id?: any;
   title?: string;
   ttl?: number;
   menu?: { label: string; onClick?: any }[];
-  rows?: any[];
+  rows?: KRow[];
 }
 
 export interface BaseKanbanProps {
@@ -57,7 +63,7 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
         .indexOf(result.draggableId);
       if (item_ix && item_ix > -1) {
         let item = columns[origin].rows?.splice(item_ix, 1);
-        columns[parseInt(dest)].rows?.push(item);
+        columns[parseInt(dest)].rows?.concat(item || []);
       }
     }
 

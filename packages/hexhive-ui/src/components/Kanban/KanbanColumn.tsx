@@ -3,6 +3,7 @@ import React from 'react';
 import { KanbanList } from './KanbanList';
 import { KanbanColumnMenu } from './KanbanColumnMenu';
 import { dateFromObjectID } from '@hexhive/utils';
+import { KRow } from './Kanban';
 
 
 export interface KanbanColumnProps {
@@ -13,7 +14,7 @@ export interface KanbanColumnProps {
         onClick?: string;
     }[]
     index?: number;
-    items?: any[];
+    items?: KRow[];
 
     isCombineEnabled?: boolean,
     useClone?: boolean,
@@ -29,7 +30,7 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
     title = '',
     index = 0,
     ttl,
-    items = [{status: 'Issued', name: ''}],
+    items = [],
     isCombineEnabled,
     useClone,
     isScrollable,
@@ -89,7 +90,9 @@ export const KanbanColumn : React.FC<KanbanColumnProps> = ({
                     renderCard={renderCard} 
                     onCreateCard={() => onCreateCard?.(title)}
                     onSelectCard={onSelectCard}
-                    items={items.filter((a) => (!ttl || (Date.now() - dateFromObjectID(a.id).getTime()) < ttl))}/>
+                    items={items.filter((a: any) => {
+                        return (!a.lastUpdated || !ttl || (Date.now() - new Date(a.lastUpdated).getTime()) < ttl)
+                    })}/>
 
                 </Box>
             </Paper>

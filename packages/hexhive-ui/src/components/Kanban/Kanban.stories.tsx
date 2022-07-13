@@ -24,11 +24,17 @@ WithCards.args = {
   columns: [
     {
       id: "1",
-      title: "column",
+      title: "Finished",
+      ttl: -60,
       rows: [
         {
           id: '2',
-          name: "two",
+          title: "two",
+          lastUpdated: new Date(),
+        },
+        {
+          id: '5',
+          title: "two",
         },
       ],
     },
@@ -38,15 +44,15 @@ WithCards.args = {
       rows: [
         {
           id: '3',
-          name: "three",
+          title: "three",
         },
         { 
           id: '4',
-          name: "fsdf",
+          title: "fsdf",
         },
       ],
     },
   ],
   onCreateColumn: () => {},
-  renderCard: (item: any) => <Box>{item.name}</Box>,
+  renderCard: (item: any) => <Box>{item.title}</Box>,
 };

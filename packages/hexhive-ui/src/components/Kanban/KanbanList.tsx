@@ -1,9 +1,10 @@
 import { Box, Button } from '@mui/material';
 import React from 'react';
 import { Draggable, DraggableProvided, DraggableStateSnapshot, Droppable, DroppableProps, DroppableProvided } from 'react-beautiful-dnd';
+import { KRow } from './Kanban';
 
 export interface KanbanListProps{ 
-    items?: {id: string}[];
+    items?: KRow[];
     renderCard?: any;
     droppableId?: string;
     onCreateCard?: () => void;
