@@ -566,6 +566,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             
             onUpdateTask={(task: any, position: any) => {
               
+              console.log("onUpdate", {task, position})
+
               let tasks = _tasks.slice()
 
               let ix = tasks.map((x) => x.id).indexOf(task.id);

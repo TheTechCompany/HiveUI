@@ -29,7 +29,10 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
       {...args} 
       data={data} 
       selectedItem={selectedItem}
-      onSelectItem={(item: any) => setSelectedItem(item)}
+      onSelectItem={(item: any) => {
+        console.log("Selected", {item})
+        setSelectedItem(item)
+      }}
       onUpdateTask={(task: any, position: any) => {
         // console.log("Updaate")
         // console.log({task})

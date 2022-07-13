@@ -44,6 +44,8 @@ export interface DataTaskState {
 
 export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
+  const startTime = useRef<any>();
+
   const [hoverEl, setHoverEl] = useState<any>()
 
   const [collapsed, setCollapsed] = useState<boolean>(true)
@@ -107,6 +109,13 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
     width.current = props.width || 0
 
   }
+
+  const dragCancel = () => {
+    props.onChildDrag(false);
+    dragging.current = false
+    mode.current = MODE_NONE
+  }
+
   const dragProcess = (x: number) => {
     let delta = draggingPosition.current - x;
     let newLeft = left.current;
@@ -158,12 +167,31 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
     let host = getHostForElement(e.target as HTMLElement)
 
+    
     if (e.button === 0) {
       e.stopPropagation();
+
+      if(mode == MODE_MOVE){
+        //Set timeout to send select event if drag does not start
+        startTime.current = new Date().getTime();
+        
+        // setTimeout(() => {
+        //   // console.log("Select")
+          
+        // }, 200)
+
+      }
+
       dragStart(e.clientX, mode);
 
       const doMouseUp = () => {
-        dragEnd();
+        if(startTime.current && startTime.current > new Date().getTime() - 200){
+          dragCancel()
+          props.onSelectItem(props.item)
+
+        }else{
+          dragEnd();
+        }
         host.removeEventListener('mousemove', doMouseMove as EventListenerOrEventListenerObject)
         host.removeEventListener('mouseup', doMouseUp as EventListenerOrEventListenerObject)
       };
@@ -176,7 +204,10 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const doMouseMove = (e: MouseEvent) => {
     if (dragging) {
+      console.log("Mouse move")
       e.stopPropagation();
+      // clearTimeout(selectTimeout.current)
+      startTime.current = null;
       dragProcess(e.clientX);
     }
   };
