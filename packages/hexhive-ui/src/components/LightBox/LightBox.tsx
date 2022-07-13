@@ -4,12 +4,12 @@
     Handles viewing images and videos, zooming, rotating and galleries
 */
 
-import { Box } from "@mui/material";
-import React from "react";
+import { Box, Paper } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { LightBoxControl } from "./Controls";
 
 export interface LightBoxProps {
-    sources?: string[]
+    source?: string
 
     zoom?: number
     rotation?: number
@@ -19,33 +19,62 @@ export interface LightBoxProps {
 }
 
 export const LightBox: React.FC<LightBoxProps> = (props) => {
-    const isGallery = (props.sources || []).length > 1;
+    // const isGallery = (props.sources || []).length > 1;
     
+    const [ zoom, setZoom ] = useState(1);
+    const [ rotation, setRotation ] = useState(0);
+
+    useEffect(() => {
+        setZoom(props.zoom || 1)
+    }, [props.zoom])
+
+    useEffect(() => {
+        setRotation(props.rotation || 0)
+    }, [props.rotation])
+
+    const onZoom = (value: number) => {
+        setZoom(value)
+        props.onZoom?.(value);
+    }
+    
+    const onRotate = (value: number) => {
+        setRotation(value)
+        props.onRotate?.(value)
+    }
+
     return (
-        <Box sx={{ 
+        <Paper sx={{ 
             display: 'flex', 
             flex: 1,
             flexDirection: 'column', 
-            border: '1px solid black'
+            // border: '1px solid black'
         }}>  
             <LightBoxControl
-                onRotate={(r) => props.onRotate?.((props.rotation || 0) + r)}
-                onZoom={(r) => props.onZoom?.((props.zoom || 0) + r)}
+                onRotate={(r) => onRotate?.((rotation || 0) + r)}
+                onZoom={(r) => onZoom?.((zoom || 0) + r)}
                 />
             <Box sx={{
                 flex: 1, 
                 display: 'flex', 
                 flexDirection: 'column', 
-                alignItems: 'center',
-                overflow: 'hidden'
+                // alignItems: 'center',
+                overflow: 'auto'
             }}>
-                <img 
+                <div style={{
+                    backgroundImage: `url(${props.source})`,
+                    flex: 1,
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    transform: `scale(${zoom || 1}) rotate(${rotation || 0}deg)`,
+                }} />
+                {/* <img 
                     src="https://picsum.photos/200" 
                     style={{
                         height: '100%',
                         transform: `scale(${props.zoom || 1}) rotate(${props.rotation || 0}deg)`
-                    }} />
+                    }} /> */}
             </Box>
-        </Box>
+        </Paper>
     )  
 }

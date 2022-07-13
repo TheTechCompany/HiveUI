@@ -1,5 +1,5 @@
 import { RotateLeft, RotateRight, ZoomIn, ZoomOut } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Paper } from "@mui/material";
 import React from "react";
 
 export interface LightBoxControlProps {
@@ -9,7 +9,7 @@ export interface LightBoxControlProps {
 
 export const LightBoxControl : React.FC<LightBoxControlProps> = (props) => {
     return (
-        <Box sx={{bgcolor: 'primary.dark', display: 'flex', justifyContent: 'flex-end'}}>
+        <Paper sx={{bgcolor: 'secondary.main', display: 'flex', justifyContent: 'flex-end'}}>
             <IconButton
                 onClick={() => props.onZoom?.(0.5)}
                 sx={{color: 'white'}}>
@@ -30,6 +30,6 @@ export const LightBoxControl : React.FC<LightBoxControlProps> = (props) => {
                 sx={{color: 'white'}}>
                 <RotateRight />
             </IconButton>
-        </Box>
+        </Paper>
     )
 }

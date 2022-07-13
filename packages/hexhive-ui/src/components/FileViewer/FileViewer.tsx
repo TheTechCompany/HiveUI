@@ -3,6 +3,7 @@ import {FolderZip, CopyAll as Multiple, ChevronRight, ChevronLeft} from '@mui/ic
 import React from 'react';
 import { DocViewer } from './DocViewer';
 import styled from 'styled-components'
+import { LightBox } from '../LightBox';
 
 export interface FileViewerFile {
     url?: string;
@@ -35,7 +36,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({
                     <video autoPlay={false} src={url} />
                 );
             case "image":
-                return (<div style={{ flex: 1, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundImage: `url(${url})` }} ></div>)
+                return (<LightBox source={url} />)
             case "application":
                 switch (sub) {
                     case "pdf":

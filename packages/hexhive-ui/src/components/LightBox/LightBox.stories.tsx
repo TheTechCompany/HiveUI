@@ -26,5 +26,5 @@ const Template: ComponentStory<typeof LightBox> = (args) => {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  
+  source: `https://picsum.photos/200`
 };
