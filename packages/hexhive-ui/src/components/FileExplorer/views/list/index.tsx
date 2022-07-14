@@ -99,8 +99,8 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                             if(selectedFile) action?.onClick?.(selectedFile)
                             setAnchorEl(null)
                         }}>
-                            {action.icon}
-                            {action.label}
+                            {action.icon && <Box sx={{marginRight: '6px'}}>{action.icon}</Box>}
+                            <Typography>{action.label}</Typography>
                     </MenuItem>),
                     action.seperator == 'bottom' && <Divider />
                     ]).filter((a) => a != undefined)}
@@ -174,6 +174,7 @@ export const ListView : React.FC<ListViewProps> = (props) => {
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation()
                                         setAnchorEl(e.currentTarget)
+                                        setSelectedFile(file)
                                     }}>
                                         <MoreVert />
                                     </IconButton>
