@@ -83,7 +83,7 @@ const TaskList : React.FC<any>  = (props) => {
         <List 
           className="timeLine-side-task-viewPort" 
           onScroll={doScroll}>
-            {tasks?.map((datum, ix) => [renderTaskRow(datum, ix), <Divider />])}
+            {tasks?.map((datum, ix) => [renderTaskRow(datum, ix), <Divider />]).concat([renderTaskRow({}, tasks.length), <Divider />])}
         </List>
       </Box>
     );
