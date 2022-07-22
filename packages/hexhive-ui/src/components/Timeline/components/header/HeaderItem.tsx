@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useMemo, useRef, useState} from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { Box, Typography, Popover } from "@mui/material";
@@ -11,6 +11,7 @@ export interface HeaderItemProps{
     background?: any;
 
     date?: Moment;
+    dayStatus?: (day: Moment) => any;
     dayInfo?: (day?: Moment) => any;
 
     y?: number;
@@ -21,6 +22,11 @@ export interface HeaderItemProps{
     const [ info, setInfo ] = useState<any>()
     const [ hovering, setHovering ] = useState<boolean>(false)
 
+    const status = useMemo(() => {
+      if (props.dayStatus && props.date) return props.dayStatus(props.date)
+      return null
+    }, [props.date])
+
     const ref = useRef<HTMLDivElement | null>(null)
       return (
         <Box
@@ -30,7 +36,7 @@ export interface HeaderItemProps{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: props.background,
+            backgroundColor: status,
             borderLeft: 'solid 1px rgb(216, 217, 218)',
             position: 'absolute',
             height: 20,

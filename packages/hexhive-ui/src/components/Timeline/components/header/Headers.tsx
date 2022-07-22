@@ -121,27 +121,6 @@ const Header : React.FC<HeaderProps> = (props) => {
     - day
   */
 
-  const [ status, setDayStatus ] = useState<any>({})
-
-  useEffect(() => {
-      setDayStatus({})
-  }, [tasks])
-
-  useEffect(() => {
-    let _status : any = Object.assign({}, status);
-    let visibleDays = (props.numVisibleDays || 1);
-    for(var i = -visibleDays; i < (visibleDays || 0); i++){
-      let day = moment().add((props.currentday || 0) + i, 'days')
-
-      let dayKey = day.format('DD/MM/yyyy')
-      if(!_status[dayKey]) _status[dayKey] = props.dayStatus?.(day)
-    }
-    if(!isEqual(status, _status)){
-      setDayStatus(_status)
-    }
-    return _status;
-  }, [props.dayStatus, props.currentday, status, props.numVisibleDays])
-
   // const dayStatus = memoizeOne((currentDate: string) => {
   //  // console.log(currentDate.toISOString())
   // //  console.log(currentDate)
@@ -202,7 +181,9 @@ const Header : React.FC<HeaderProps> = (props) => {
           result.bottom.push(<HeaderItem
             date={currentDate}
             dayInfo={props.dayInfo}
-            y={2} background={status[currentDate.format('DD/MM/yyyy')]} key={i} left={box.left} width={box.width} label={currentBottom} />);
+            dayStatus={props.dayStatus}
+            y={2}
+            key={i} left={box.left} width={box.width} label={currentBottom} />);
         }
 
         
