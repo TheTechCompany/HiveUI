@@ -4,16 +4,17 @@ import {Avatar, Typography} from '@mui/material';
 
 export interface AvatarListProps {
   users?: Array<{name?: string, color?: string}>;
-
+  style?: any;
   size?: number
 }
 
 export const AvatarList : React.FC<AvatarListProps> =  ({
   users = [],
-  size = 32
+  size = 32,
+  style
 }) => {
   return (
-    <div style={{display: 'flex', flexDirection: 'row'}}>
+    <div style={{...style, display: 'flex', flexDirection: 'row'}}>
         {users.map((x, ix) => {
           let style : any = {
             width: size,

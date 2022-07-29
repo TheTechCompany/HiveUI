@@ -58,7 +58,9 @@ export const Content: React.FC<ContentProps> = ({ data, users }) => {
    const renderInfo = () => {
       const owners = (data.managers || []).concat(data.owner ? [data.owner] : [])
       let content = [
-         <AvatarList size={24} users={owners.map((x) => {
+         <AvatarList 
+            style={{marginLeft: '3px'}}
+            size={24} users={owners.map((x) => {
             return {
                color: stringToColor(x.id),
                name: x.name
