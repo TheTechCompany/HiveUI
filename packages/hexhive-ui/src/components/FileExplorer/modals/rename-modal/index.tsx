@@ -25,8 +25,8 @@ export const RenameModal : React.FC<RenameModalProps> = (props) => {
             open={props.open}
             onClose={props.onClose}
             >
+            <DialogTitle>Rename</DialogTitle>
             <DialogContent sx={{display: 'flex', flexDirection: 'column'}}>
-                <Typography sx={{marginBottom: '6px'}}>Rename</Typography>
                 <TextField sx={{marginBottom: '6px'}} fullWidth size="small" disabled label="Current name" value={props.selected?.name} />
                 <TextField value={name} onChange={(e) => setName(e.target.value)} sx={{marginBottom: '6px'}} fullWidth size="small" label="New name" />
             </DialogContent>
