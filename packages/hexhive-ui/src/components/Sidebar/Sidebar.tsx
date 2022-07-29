@@ -48,7 +48,7 @@ const BaseSidebar: React.FC<SidebarProps> = (props) => {
       sx={{
         display: 'flex',
         flexDirection: getDirection(),
-        width: !isMobile ? (!defaultMinified ? '200px' : '50px') : '100%',
+        width: !isMobile ? (!defaultMinified ? '175px' : '50px') : '100%',
         height: isMobile ? '55px' : '100%',
         bgcolor: 'primary.main'
       }}>
