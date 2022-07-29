@@ -29,7 +29,7 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
                 padding: '6px',
                 alignItems: 'center',
                 justifyContent: props.minified ? 'center' : undefined,
-                background: isActive  ? 'gray' : 'transparent'
+                background: isActive  ? 'rgba(0, 0, 0, 0.15)' : 'transparent'
             }}>
 
             <Box 
