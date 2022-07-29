@@ -40,6 +40,7 @@ export const SidebarMenuItem : React.FC<SidebarMenuItemProps> = (props) => {
                     width: iconSize,
                     height: iconSize,
                     marginRight: '6px',
+                    marginLeft: !isMobile && !props.minified ? '6px' : undefined,
                     padding: isMobile ? '8px' : undefined
                 }}>
                  {props.icon}
