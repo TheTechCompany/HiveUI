@@ -22,7 +22,9 @@ export interface IconNodeProps{
 const _Icons : any = Icons;
 
 export const BaseIconNode : React.FC<IconNodeProps> = (props) => {
-    const Icon = props.extras?.icon && typeof(props.extras.icon) === 'string' ? (Icons as any)[props.extras.icon] : (props.extras?.icon) ? props.extras.icon : ChevronLeft;
+    const Icon = (props.extras?.icon ? (typeof(props.extras.icon) == 'string' ? (Icons as any)[props.extras.icon] : props.extras?.icon) : () => <>missing icon</>) || (() => <>missing icon</>);
+
+    console.log({Icon, icon: props.extras?.icon, type: typeof(props.extras?.icon)})
 
     return (
         <Box 

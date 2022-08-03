@@ -110,7 +110,7 @@ NodeOptions.args = {
       id: "2",
       type: "icon-node",
       extras: {
-        icon: "Next",
+        icon: "NavigateNext",
         color: "purple",
       },
       x: 200,
@@ -178,7 +178,7 @@ Controlled.args = {
       type: "icon-node",
       extras: {
         label: "Run",
-        icon: "Next",
+        icon: "NaviteNext",
         color: "purple",
       },
       x: 200,
@@ -188,7 +188,7 @@ Controlled.args = {
       id: "5",
       type: "icon-node",
       extras: {
-        icon: "Next",
+        icon: "NavigateNext",
         color: "purple",
       },
       x: 300,
