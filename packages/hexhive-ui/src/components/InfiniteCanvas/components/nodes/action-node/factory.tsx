@@ -1,43 +1,40 @@
 import React from 'react';
-import { AbstractWidgetFactory } from "../../../InfiniteCanvas";
+import { IInfiniteCanvasContext } from '../../../context/context';
+import { AbstractNodeFactory, IAbstractNodeFactory } from "../../../InfiniteCanvas";
 import { InfiniteCanvasNode } from "../../../types/canvas";
 import { ActionNodeWidget } from "./widget";
 
-export class ActionNodeFactory extends AbstractWidgetFactory{
+export const ActionNodeFactory : AbstractNodeFactory = (context: IInfiniteCanvasContext) => {
     
-   public static TAG = 'action-node';
-
-    constructor(){
-        super('action-node')
-    }
-
-    parseModel(model: any){ 
-        let m : InfiniteCanvasNode = {
-            id: model.id,
-            type: model.type,
-            x: model.x,
-            y: model.y,
-            extras: {
-                ...model.extras,
-            },
-            ports: model.ports ? model.ports : [
-                {
-                    name: "inlet",
-                    type: "base"
-                    
+    return {
+        type: 'action-node',
+        renderNode: (node: any) => {
+            return <ActionNodeWidget title={node.extras?.title}  />
+        },
+        parseModel: (model: any) => {
+            let m : InfiniteCanvasNode = {
+                id: model.id,
+                type: model.type,
+                x: model.x,
+                y: model.y,
+                extras: {
+                    ...model.extras,
                 },
-                {
-                    name: 'outlet',
-                    type: 'base'
-                }
-            ]
+                ports: model.ports ? model.ports : [
+                    {
+                        name: "inlet",
+                        type: "base"
+                        
+                    },
+                    {
+                        name: 'outlet',
+                        type: 'base'
+                    }
+                ]
+            }
+            
+            return m;
         }
-        
-        return m;
-    }
-
-    generateWidget(event : any): JSX.Element {
-        return <ActionNodeWidget title={event.extras.title}  />
     }
 
 }

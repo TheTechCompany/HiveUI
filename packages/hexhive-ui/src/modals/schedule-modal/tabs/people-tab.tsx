@@ -1,7 +1,7 @@
 import React, {
   Component
 } from 'react';
-import { Box } from 'grommet'
+import { Box } from '@mui/material'
 import {TransferList} from '../../../components/TransferList';
 
 export interface PeopleTabProps {

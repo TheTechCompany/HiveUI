@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
+import { Box } from '@mui/material';
 import React from 'react';
 import { Autocomplete, IconButton, TextField } from '@mui/material';
-import { Button as GButton } from 'grommet'
 import { ExitToApp } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom';
 
@@ -21,11 +20,11 @@ export const ScheduleModalHeader : React.FC<ScheduleModalHeaderProps> = (props) 
  
 
             <Box
-                direction='row'
-                align='center'
-                background={'neutral-1'}
-                pad={{ top: "small", bottom: 'xsmall', horizontal: 'xsmall' }}>
-                <Box flex>
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                <Box sx={{flex: 1}}>
                     <Autocomplete
                         size='small'
                         value={props.item?.project}

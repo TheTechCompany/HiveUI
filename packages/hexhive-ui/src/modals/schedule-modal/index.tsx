@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { AvatarList } from '../../components/AvatarList'
-import { Box, Button as GButton, Text, Select, Tab, Tabs } from 'grommet';
+import { Box, Button as GButton, Typography } from '@mui/material';
 import { PeopleTab } from './tabs/people-tab';
 import { EquipmentTab } from './tabs/equipment-tab';
 import NoteTab from './tabs/note-tab';
@@ -149,20 +149,25 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
             onClose={props.onClose}
         >
             <Box
-                direction='column'
-                flex
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
                 style={{ minHeight: '60vh', maxHeight: '70vh' }}>
                 {/* onDelete={props.selected && props.onDelete}
             onSubmit={onSubmit} */}
                 <Box     
-                    align='center'
-                    pad="xsmall" 
-                    direction='row' 
-                    background={'accent-2'} 
-                    justify="between">
-                    <Text>Create schedule for {moment(props.date).format('DD/MM/yy')}</Text>
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '3px',
+                        bgcolor: 'secondary.main',
+                        justifyContent: 'space-between'
+                    }}>
+                    <Typography>Create schedule for {moment(props.date).format('DD/MM/yy')}</Typography>
                     
-                    <Box gap="xsmall" direction='row' align='center'>
+                    <Box sx={{display: 'flex', alignItems: 'center'}} >
                         
                         { props.selected &&
                         <><AvatarList size={25} users={owners} />
@@ -176,19 +181,18 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
 
                                 // props.onLeave()
                             }}
-                            hoverIndicator
-                            plain
-                            style={{padding: 6, borderRadius: 3}}
-                            label={canEdit() ? "Leave" : "Join"} /></>}
+                            >
+                                {canEdit() ? "Leave" : "Join"}
+                            </GButton></>}
                     </Box>
                 </Box>
 
                 <Box
-                    elevation='small'
-
-                    gap="xsmall"
-                    background={'accent-1'}
-                    width={'xlarge'}
+                    sx={{
+                        bgcolor: 'secondary.light',
+                        display: 'flex'
+                    }}
+                   
                 >
                 <ScheduleModalHeader
                     item={item}
@@ -202,10 +206,12 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
                  activeTab={activeTab}
                  />}
                  </Box>
-                <Box flex background={'neutral-2'}>
+                <Box sx={{flex: 1, display: 'flex'}}>
                     <Box
-                        height={{ max: '50vh' }}
-                        flex>
+                        sx={{
+                            maxHeight: '50vh',
+                            flex: 1
+                        }}>
 
                         {cloneTab ? (
                             <CloneTab 
@@ -217,11 +223,11 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
                         ) : renderActiveTab()}
 
                     </Box>
-                    <Box gap="xsmall" pad="xsmall" direction='row' justify='between'>
-                        <Box direction='row' align='center'>
+                    <Box sx={{display: 'flex', justifyContent: 'space-between'}} >
+                        <Box sx={{display: 'flex', alignItems: 'center'}} >
                             {props.selected && canEdit() && <Button variant="outlined" onClick={() => openCloneTab(!cloneTab)}>{cloneTab ? "Edit" : "Clone"}</Button>}
                         </Box>
-                        <Box direction='row' align='center'>
+                        <Box sx={{display: 'flex', alignItems: 'center'}} >
                             {props.selected && canEdit() && !cloneTab && <Button 
                                 disabled={!canEdit()}
                                 onClick={props.onDelete} style={{color: 'red'}}>Delete</Button>}

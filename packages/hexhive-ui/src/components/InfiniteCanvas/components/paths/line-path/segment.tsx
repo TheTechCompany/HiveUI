@@ -1,10 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
 import styled from 'styled-components'
-import { InfiniteCanvasContext } from '../../context/context';
-import { InfiniteCanvasPosition } from '../../types/canvas';
-import { createLine } from '../../utils';
-import Join from './Join';
+import { InfiniteCanvasContext } from '../../../context/context';
+import { InfiniteCanvasPosition } from '../../../types/canvas';
+import { createLine } from '../../../utils';
+// import Join from './Join';
 
 export interface FlowPathSegmentProps {
     d?: string;
@@ -77,51 +77,14 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
              onMouseDown={props.onMouseDown}>
 
             
-            {/* {props.nextPoint && (
-                <path d={`M${props.points?.[1]?.x || 0}, ${props.points?.[1]?.y || 0} Q${props.points?.[1]?.x || 0}, ${props.points?.[1]?.y || 0} ${props.nextPoint?.x}, ${props.nextPoint?.y}`}  stroke={'black'} strokeWidth={8}/>
-            )} */}
-            {/* <Join
-            x={(props.points?.[1]?.x || 0) }
-            y={(props.points?.[1]?.y || 0) - (12.5)}
-            style={{
-                transformBox: 'fill-box',
-                transformOrigin: `${((props.points?.[1]?.x || 0)) + 5}px ${((props.points?.[1]?.y || 0)) + 12.5}px`,
-                transform: `rotate(${rotation}deg)`
-            }}
-                height="25"
-                width="10"
-                /> */}
-            <rect 
-                fill={`url(#skeuamorphic)`}
-                style={{
-                    transformOrigin: `6.5px 6.5px`, 
-                    transformBox: 'fill-box', 
-                    transform: `rotate(${rotation}deg) scaleY(${false ? '-1' : '1'})`
-                }}
-                x={(x || 0) - 6.5} y={(y || 0) - 6.5} 
-                width={hypo} height={13} />
-            {/* <Join 
-                x={(props.points?.[0]?.x || 0) - 10}
-                y={(props.points?.[0]?.y || 0) - ( 12)}
-                style={{
-                    transformBox: 'fill-box',
-                    transformOrigin: `${(props.points?.[0]?.x || 0) + 5}px ${(props.points?.[0]?.y || 0) + 12.5}px`,
-                    transform: `rotate(${rotation}deg)`
-                }}
-                 height="25"
-                width="10"/> */}
-            {/* <div
-                style={{
-                    position: 'absolute',
-                    left: props.points?.[0]?.x,
-                    top: props.points?.[0]?.y,
-                }}
-                >asdf</div> */}
-            {/* <path d={d} className={"flow-path__pipe-border"}  /> */}
-             {/* <path d={d} style={{stroke: `url(#curvedPipe)`, /*style?.pathColor }} className={"flow-path__pipe"}  />
+
+         
+       
+            <path d={d} className={"flow-path__pipe-border"}  />
+            <path d={d} style={{stroke: style?.pathColor }} className={"flow-path__pipe"}  />
             <path d={d} style={{stroke: style?.pathColor,}} className={"flow-path"} {...{"marker-end": "url(#head)"}} />
 
-            <path d={d} className={"flow-path__highlight"} />  */}
+            <path d={d} className={"flow-path__highlight"} /> 
           
         </g>
     )

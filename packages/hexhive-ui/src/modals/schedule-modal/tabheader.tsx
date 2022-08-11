@@ -1,4 +1,4 @@
-import { Box, Button } from 'grommet'
+import { Box, Button } from '@mui/material'
 import React from 'react'
 
 export interface TabHeaderProps {
@@ -14,21 +14,26 @@ export const TabHeader : React.FC<TabHeaderProps> = (props) => {
     ]
     return (
         <Box
-            pad={{ horizontal: 'xsmall', bottom: 'xsmall' }}
-            flex
+            sx={{
+                flex: 1,
+                display: 'flex',
+                padding: '3px'
+            }}
         >
             <Box
-                gap="xsmall"
-                background={'accent-1'}
-                direction='row'>
+                sx={{
+                    display: 'flex',
+                    bgcolor: 'secondary.light'
+                }}
+                gap="xsmall">
                 {menu.map((item) => (
                     <Button
-                        plain
-                        active={props.activeTab === item.toLowerCase()}
-                        style={{ padding: 6, borderRadius: 3, color: '#2b2b2b' }}
-                        hoverIndicator
-                        label={item}
-                        onClick={() => props.setActiveTab?.(item.toLowerCase())} />
+                        // active={props.activeTab === item.toLowerCase()}                        
+                        onClick={() => props.setActiveTab?.(item.toLowerCase())}>
+                        
+                        {item}
+                        
+                    </Button>
                 ))}
 
             </Box>
