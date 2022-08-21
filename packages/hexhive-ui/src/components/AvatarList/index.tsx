@@ -28,7 +28,9 @@ export const AvatarList : React.FC<AvatarListProps> =  ({
           }
 
           return(
-            <Avatar key={`${ix}`} style={style}>
+            <Avatar sx={{
+              boxShadow: '-6px 0px 6px -3px rgba(0,0,0,0.2)',
+            }} key={`${ix}`} style={style}>
               <Typography color="white" sx={{fontSize: `${size * (5/8)}px`}} >
                 {x.name?.split(' ').map((x) => x[0]).join('')}
               </Typography>

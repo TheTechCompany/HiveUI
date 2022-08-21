@@ -69,7 +69,7 @@ export const addPathSegment = (path : InfiniteCanvasPath, segment_ix: number, po
     let points = [...(path.points || []).slice()] || [];
     // if(!points) path.points = [];
 
-    if(!path.target || segment_ix == 0){
+    if((!path.target && !(segment_ix > 0)) || segment_ix == 0){
        points = [point, ...points]
     }else{
         points.splice(segment_ix, 0, point)
@@ -110,8 +110,12 @@ export const lockToGrid = (point: InfiniteCanvasPosition, snapToGrid: boolean, g
         let widthMultiplier = (grid?.width || 0) / (grid.divisions || 10)
         let heightMultiplier = (grid?.height || 0) / (grid.divisions || 10)
 
-        point.x = Math.floor(point.x / widthMultiplier) * widthMultiplier
-        point.y = Math.floor(point.y / heightMultiplier) * heightMultiplier
+        console.log({grid, widthMultiplier, heightMultiplier})
+        console.log("Locking", {x: point.x, y: point.y})
+
+        point.x = Math.round(point.x / widthMultiplier) * widthMultiplier
+        point.y = Math.round(point.y / heightMultiplier) * heightMultiplier
+        console.log("Locked", {point})
     }
 
     return point;

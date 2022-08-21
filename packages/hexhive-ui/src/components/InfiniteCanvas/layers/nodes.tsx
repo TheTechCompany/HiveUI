@@ -5,6 +5,7 @@ import { getHostForElement } from '../utils';
 import { InfiniteCanvasContext } from '../context/context';
 import { NodeIdContext } from '../context/nodeid';
 import { moveNode } from '../utils/canvas';
+import { IAbstractNodeFactory } from '../factories';
 
 export interface NodeLayerProps {
     className?: string;
@@ -32,7 +33,6 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         nodes:_nodes = [],
         setNodes,
         nodeRefs,
-        setNodeRefs,
         openContextMenu,
         onRightClick,
         getRelativeCanvasPos
@@ -74,7 +74,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     // const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([]);
 
 
-    const itemRefs = useRef<{[key: string]: HTMLDivElement | null}>({})
+    // const itemRefs = useRef<{[key: string]: HTMLDivElement | null}>({})
 
     const [ hoverEl, setHoverEl ] = useState<any>(null);
 
@@ -90,11 +90,23 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         let value = node.value ? status[node.value] : status[key];
 
         let factory = factories?.[node.type];
-     
+        
+        if(!factory){
+            console.error(`Factory not found for type ${node.type}`)
+            return null;
+        }
+        
+        // if(!factory.renderNode){ return null; }
+
+        // if(!(factory instanceof IAbstractNodeFactory)){
+        //     console.error(`Factory ${node.type} is not an instance of AbstractWidgetFactory`)
+        //     return null;
+        // }  
+
         node.isSelected = selected;
         
         if(factory){
-            return factory.generateWidget(node)
+            return (factory as any).renderNode(node)
         }
 
     }
@@ -143,6 +155,8 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     const mouseDown = (elem: string, evt: React.MouseEvent) => {
         evt.stopPropagation()
+        
+        if(!nodeRefs) return;
 
         if(evt.button == 0){
             let doc = getHostForElement(evt.target as HTMLElement)
@@ -152,7 +166,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                 x: 0,
                 y: 0
             }
-            let rect = itemRefs.current[elem]?.getBoundingClientRect()
+            let rect = nodeRefs.current[elem]?.getBoundingClientRect()
             if(rect){
                 offsetRect = {
                     x: rect.x - evt.clientX,
@@ -218,8 +232,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                         openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
                     }}
                     ref={(element) => {
-                        itemRefs.current[node.id] = element
-                        setNodeRefs?.(itemRefs.current)
+                        if(!nodeRefs) return;
+                        nodeRefs.current[node.id] = element
+                        // setNodeRefs?.(itemRefs.current)
                     }}
                     className={`node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`} 
                     onClick={(e) => {

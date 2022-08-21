@@ -13,6 +13,8 @@ import {
   IconNodeFactory,
   StartNodeFactory,
 } from "./components/nodes";
+import { LinePathFactory } from "./components/paths/line-path";
+import { PipePathFactory } from "./components/paths/pipe-path";
 
 export default {
   title: "Components/InfiniteCanvas",
@@ -95,9 +97,13 @@ NodeOptions.args = {
     pathColor: 'blue'
   },
   factories: [
-    new ActionNodeFactory(),
-    new IconNodeFactory(),
-    new StartNodeFactory(),
+    ActionNodeFactory,
+    IconNodeFactory,
+    StartNodeFactory,
+
+    // new ActionNodeFactory(),
+    // new IconNodeFactory(),
+    // new StartNodeFactory(),
   ],
   nodes: [
     {
@@ -110,7 +116,7 @@ NodeOptions.args = {
       id: "2",
       type: "icon-node",
       extras: {
-        icon: "Next",
+        icon: "NavigateNext",
         color: "purple",
       },
       x: 200,
@@ -129,7 +135,7 @@ NodeOptions.args = {
 export const Uncontrolled = Template.bind({});
 Uncontrolled.args = {
   editable: true,
-  factories: [new ActionNodeFactory()],
+  factories: [ActionNodeFactory],
   nodes: [
     {
       id: "1",
@@ -142,7 +148,7 @@ Uncontrolled.args = {
 
 export const Controlled = ControlledTemplate.bind({});
 Controlled.args = {
-  grid: { width: 100, height: 100, divisions: 5 },
+  grid: { width: 100, height: 100, divisions: 20 },
   // snapToGrid: true,
   editable: true,
   style: {
@@ -152,7 +158,7 @@ Controlled.args = {
     portDotColor: 'gray'
   },
   snapToGrid: true,
-  factories: [new ActionNodeFactory(), new IconNodeFactory()],
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory, PipePathFactory],
   nodes: [
     {
       id: "1",
@@ -178,7 +184,7 @@ Controlled.args = {
       type: "icon-node",
       extras: {
         label: "Run",
-        icon: "Next",
+        icon: "NaviteNext",
         color: "purple",
       },
       x: 200,
@@ -188,7 +194,87 @@ Controlled.args = {
       id: "5",
       type: "icon-node",
       extras: {
-        icon: "Next",
+        icon: "NavigateNext",
+        color: "purple",
+      },
+      x: 300,
+      y: 20,
+    },
+  ],
+  paths: [
+    {
+      id: "2",
+      type: 'line',
+      points: [{ x: 420, y: 100 }, { x: 100, y: 100 }, {x: 100, y: 200}, {x: 200, y: 200}],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+    {
+      id: "3",
+      type: 'pipe-path',
+      points: [{ x: 420, y: 100 }, { x: 800, y: 100 }, {x: 800, y: 200}, {x: 900, y: 200}, {x: 900, y: 300}, {x: 1000, y: 300}, {x: 1000, y: 200}, {x: 1100, y: 200}, {x: 1100, y: 100}, {x: 1000, y: 100}, {x: 1000, y: 50}],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+  ],
+};
+
+
+
+export const Routed = ControlledTemplate.bind({});
+Routed.args = {
+  grid: { width: 100, height: 100, divisions: 5 },
+  // snapToGrid: true,
+  router: "JumpPointFinder",
+  routerOptions: {
+    heuristic: 'manhattan',
+    allowDiagonal: false,
+  },
+  editable: true,
+  style: {
+    background: 'lightgray',
+    pathColor: 'blue',
+    portColor: "gray",
+    portDotColor: 'gray'
+  },
+  snapToGrid: true,
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  nodes: [
+    {
+      id: "1",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      x: 371,
+      y: 173,
+    },
+    {
+      id: "2",
+      type: "action-node",
+      menu: <div></div>,
+      x: 20,
+      y: 100,
+    },
+    {
+      id: "3",
+      type: "icon-node",
+      extras: {
+        label: "Run",
+        icon: "NaviteNext",
+        color: "purple",
+      },
+      x: 200,
+      y: 20,
+    },
+    {
+      id: "5",
+      type: "icon-node",
+      extras: {
+        icon: "NavigateNext",
         color: "purple",
       },
       x: 300,

@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 
 import styled from 'styled-components'
-import { InfiniteCanvasContext } from '../../context/context';
-import { InfiniteCanvasPosition } from '../../types/canvas';
-import { createLine } from '../../utils';
-import Join from './Join';
+import { InfiniteCanvasContext } from '../../../context/context';
+import { InfiniteCanvasPosition } from '../../../types/canvas';
+import { createLine } from '../../../utils';
 
 export interface FlowPathSegmentProps {
     d?: string;
@@ -126,7 +125,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
         </g>
     )
 }
-export const FlowPathSegment = styled(BaseFlowPathSegment)`
+export const PipeSegment = styled(BaseFlowPathSegment)`
 
     cursor: pointer;
 

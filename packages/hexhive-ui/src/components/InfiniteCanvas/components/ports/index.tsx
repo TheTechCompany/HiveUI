@@ -15,7 +15,16 @@ export interface PortWidgetProps {
 }
 
 
+const Port = styled.div`
+    width: 10px;
+    height: 10px;
+    background: ${p => (p.style as any)?.portDotColor || (p.style as any)?.portColor || 'green'};
 
+    &:hover{
+        background: ${p => (p.style as any)?.portDotColor || (p.style as any)?.portColor || 'green'};
+        opacity: 0.8;
+    }
+`
 
 export const UnstyledPortWidget : React.FC<PortWidgetProps> = (props) => {
 
@@ -23,16 +32,7 @@ export const UnstyledPortWidget : React.FC<PortWidgetProps> = (props) => {
     
     const { style } = useContext(InfiniteCanvasContext)
 
-    const Port = styled.div`
-        width: 10px;
-        height: 10px;
-        background: ${style?.portDotColor || style?.portColor || 'green'};
 
-        &:hover{
-            background: ${style?.portDotColor || style?.portColor || 'green'};
-            opacity: 0.8;
-        }
-    `
 
 
     const onMouseDown = (e: React.MouseEvent) => {

@@ -1,10 +1,10 @@
 import { off } from 'process';
-import React, { createRef,  useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import React, { createRef,  useCallback,  useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import styled from 'styled-components'
 import { isBuffer, isEqual, throttle, update, xor } from 'lodash'
 import { PortWidget } from './components/ports'
 import { getHostForElement } from './utils';
-import { InfiniteCanvasContext } from './context/context';
+import { IInfiniteCanvasContext, InfiniteCanvasContext } from './context/context';
 import { GridLayer } from './layers/grid';
 import { NodeLayer } from './layers/nodes';
 import { PathLayer } from './layers/paths';
@@ -14,7 +14,7 @@ import { RetractingPort } from './components/ports/retracting'
 import { BlockTray } from './components/block-tray'
 
 import { nanoid } from 'nanoid';
-import { AbstractWidgetFactory } from './models/abstract-widget-factory';
+import { AbstractNodeFactory, IAbstractNodeFactory } from './factories/abstract-node-factory';
 
 import { reducer } from './store';
 import * as actions from './store/actions'
@@ -23,14 +23,22 @@ import { InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition, Infinit
 import { HMIPosition } from './assets/hmi-spec';
 import { ContextMenu } from './components/context-menu';
 
+import * as PF from 'pathfinding';
+
 import { InformationLayer } from './layers/information';
+import { useEngine } from './hooks';
+import { AbstractPathFactory, IAbstractPathFactory } from './factories/abstract-path-factory';
 
 export * from './types'
 
 export * from './components/nodes'
+export * from './components/paths'
 
 export {
-    AbstractWidgetFactory,
+    IAbstractNodeFactory,
+    IAbstractPathFactory,
+    AbstractNodeFactory,
+    AbstractPathFactory,
     ZoomControls,
     RetractingPort,
     BlockTray,
@@ -54,6 +62,13 @@ export interface InfiniteCanvasProps {
         portColor?: string,
         portDotColor?: string
     };
+
+    router?: 'JumpPointFinder' 
+    routerOptions?: {
+        heuristic?: 'manhattan' | 'euclidean' | 'chebyshev',
+        allowDiagonal?: boolean
+    }
+
     className?: string;
 
     editable?: boolean;
@@ -75,7 +90,7 @@ export interface InfiniteCanvasProps {
         [key: string]: JSX.Element
     }
     
-    factories?: Array<AbstractWidgetFactory>;
+    factories?: Array<AbstractNodeFactory | AbstractPathFactory>;
 
     snapToGrid?: boolean;
     grid?: {width: number, height: number, divisions: number}
@@ -104,10 +119,20 @@ export interface InfiniteCanvasProps {
     onViewportChanged?: (viewport: {zoom: number, offset: {x: number, y: number}}) => void;
 }
 
+
+// const pathFinderInstance =  PF.JumpPointFinder({
+// 	heuristic: PF.Heuristic.manhattan,
+// 	diagonalMovement: PF.DiagonalMovement.Never
+// });
+
+const ROUTING_SCALING_FACTOR = 5;
+
 const initialState : any = {nodes: [], paths: []};
 
 export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     zoom,
+    router,
+    routerOptions,
     style,
     onViewportChanged,
     offset,
@@ -134,6 +159,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     onBackdropClick
 }) => {
 
+    
+  
     const [ ports, _setPorts ] = useState<{[key: string]: {
         relativeX: number;
         relativeY: number;
@@ -162,49 +189,45 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const canvasRef = useRef<HTMLDivElement>(null)
 
+    const [{
+        zoom: _zoom,
+        offset: _offset,
+        nodeRefs,
+        nodes: _nodes,
+        paths: _paths,
+        widthScale,
+        heightScale,
+        grid: matrixGrid,
+        generatePath,
+        setNodes,
+        setPaths,
+        setZoom,
+        setOffset
+    }] = useEngine({
+        windowRef: canvasRef, 
+        initialWindow: {
+            x: 0,
+            y: 70,
+            zoom: 100
+        }, 
+        scalingFactor: 5
+    });
+
 
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
-    const [ _factories, setFactories ] = useState<any>({})
+    const [ _factories, setFactories ] = useState<{[key: string]: IAbstractNodeFactory | IAbstractPathFactory}>({})
     
-    const [ nodeRefs, setNodeRefs ] = useState<any>({})
+    // const nodeRefs = useRef<{[key: string]: any}>({})
 
-    const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([])
+   
 
-    const [ _paths, _setPaths ] = useState<InfiniteCanvasPath[]>([])
-
-    const pathRef = useRef<InfiniteCanvasPath[]>([])
-
-    const [_zoom, setZoom] = useState<number>(100)
-
-    const [_offset, _setOffset] = useState<{ x: number, y: number }>({
-        x: 0,
-        y: 70 // REMOVE add as prop
-    })
-
-    const offsetRef = useRef(_offset)
-
-    const setPaths = (paths: InfiniteCanvasPath[]) => {
-        pathRef.current = paths;
-        _setPaths(paths)
-    }
-
-    const setOffset = (offset: HMIPosition) => {
-        offsetRef.current = offset;
-        _setOffset(offset)
-    }
-
-    console.log({paths})
     //TODO memoize
 
     useEffect(() => {
         console.log("nodes")
         if(Object.keys(_factories).length > 0){
-            setNodes(nodes?.map((node) => {
-                let type = node.type;
-                let f : AbstractWidgetFactory = _factories[type]
-                return f.parseModel(node)
-            }) as any)
+            setNodes(nodes || [])
         }
     }, [nodes, _factories])
 
@@ -225,24 +248,18 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         }
     }, [offset])
 
-    useEffect(() => {
-        if(factories){
-            let f : any = {};
-            factories.forEach((factory) => {
-                f[factory.getType()] = factory
-            })
-            setFactories(f)
-        }
-    }, [factories])
 
-    const updateOffset = (position: {x: number, y: number}, lastPos: {x: number, y: number}) => {
+    const updateOffset = useCallback((position: {x: number, y: number}, lastPos: {x: number, y: number}) => {
         let new_offset = {
-            x: offsetRef.current.x - (lastPos.x - position.x),
-            y: offsetRef.current.y - (lastPos.y - position.y)
+            x: (_offset.x || 0) - (lastPos.x - position.x),
+            y: (_offset.y || 0) - (lastPos.y - position.y)
         }
-        setOffset(new_offset)
+        setOffset((_offset: any) => ({
+            x: (_offset.x || 0) - (lastPos.x - position.x),
+            y: (_offset.y || 0) - (lastPos.y - position.y)
+        }))
         onViewportChanged?.({offset: new_offset, zoom: _zoom})
-    }
+    }, [_offset, _zoom])
 
  
 
@@ -309,13 +326,14 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             const clientX = evt.clientX - bounds?.left
             const clientY = evt.clientY - bounds?.top
 
-            const xFactor = (clientX - _offset.x) / oldZoomFactor / clientWidth
-            const yFactor = (clientY - _offset.y) / oldZoomFactor / clientHeight
+            const xFactor = (clientX - (_offset.x || 0)) / oldZoomFactor / clientWidth
+            const yFactor = (clientY - (_offset.y || 0)) / oldZoomFactor / clientHeight
 
             new_offset = {
-                x: _offset.x + widthDiff * xFactor,
-                y: _offset.y + heightDiff * yFactor
+                x: (_offset.x || 0) + widthDiff * xFactor,
+                y: (_offset.y || 0) + heightDiff * yFactor
             }
+
             setOffset(new_offset)
         }
 
@@ -343,7 +361,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 points: points
             }
         
-            let p : any[] = pathRef.current?.slice() || [];
+            let p : any[] = _paths?.slice() || [];
             p.push(path)
 
             onPathCreate?.(path)
@@ -351,7 +369,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const updatePathPosition = throttle((point: InfiniteCanvasPosition) => {
       
-        let p = pathRef.current?.slice() || [];
+        let p = _paths?.slice() || [];
         let ix = p.map((x: any) => x.id).indexOf(id)
 
         let path;
@@ -394,8 +412,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let nodeId = target.getAttribute('data-nodeid') || ''
                     let handleId = target.getAttribute('data-handleid') || ''
 
-                    let current_path = pathRef.current?.find((a) => a.id == path.id)
-                    console.log({current_path, paths: pathRef.current, path})
+                    let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
+                    console.log({current_path, paths: _paths, path})
                     if(!current_path) return;
                     onPathUpdate?.(linkPath(current_path, nodeId, handleId))
 
@@ -407,6 +425,79 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         }
     }
 
+    const viewport = {
+        offset: _offset,
+        zoom: _zoom
+    }
+
+
+    // const dragPathPoint = (path_id: string, e: React.MouseEvent, ix: number) => {
+    //     let pos : InfiniteCanvasPosition = {
+    //         x: e.clientX,
+    //         y: e.clientY
+    //     }
+
+    //     e.preventDefault()
+    //     e.stopPropagation()
+
+    //     let path = _paths.slice().find((a) => a.id == path_id);
+
+    //     if(!path) return;
+
+    //     const { points } = path;
+    //     // props.onPointsChanged?.(ix, pos)
+
+    //     let doc = getHostForElement(e.target as HTMLElement)
+
+
+    //     let rp = getRelativeCanvasPos?.(canvasRef, viewport, pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
+    //     // rp = lockToGrid(rp, snapToGrid, grid)
+
+    //     // let current_path = _paths.current.find((a) => a.id == id)
+
+    //     // if(!current_path) return;
+        
+    //     // let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
+
+    //     const mouseMove = (e: MouseEvent) => {
+    //         let rp = getRelativeCanvasPos?.(canvasRef, viewport, {x: e.clientX, y: e.clientY})
+
+    //         let p = points.slice()
+    //         p[ix] = {
+    //             x: rp?.x || 0,
+    //             y: rp?.y || 0
+    //         }
+
+    //         //update points in path before setting
+    //         // setPoints(p)
+            
+            
+    //         // updatePointPosition({x: e.clientX, y: e.clientY})
+    //     }
+
+    //     const mouseUp = (e: MouseEvent) => {
+
+    //         props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
+
+    //         let target = (e.target as HTMLElement)
+    //         if(target.hasAttribute('data-nodeid')){
+
+    //             let nodeId = target.getAttribute('data-nodeid') || ''
+    //             let handleId = target.getAttribute('data-handleid') || ''
+
+    //             props.onLinked?.(nodeId, handleId)
+
+    //         }
+
+    //         doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
+    //         doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+    //     }
+
+    //     doc.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
+    //     doc.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+    // }
+    
+
     const reportPortPosition = (opts: {
         nodeId: string, 
         handleId: string, 
@@ -415,11 +506,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         let point = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, opts.position)
 
-        let nodes : any[] = _nodes?.slice() || [];
+        let nodes : InfiniteCanvasNode[] = _nodes?.slice() || [];
 
-        let node = _nodes?.find((a) => a.id == opts.nodeId) || {x: 0, y: 0, ports: []}
+        let node = nodes?.find((a) => a.id == opts.nodeId) || {x: 0, y: 0, ports: []}
 
-        let node_ix = (_nodes?.map((x) => x.id) || []).indexOf(opts.nodeId)
+        let node_ix = (nodes?.map((x) => x.id) || []).indexOf(opts.nodeId)
 
         let _ports = Object.assign({}, portRef.current);
 
@@ -505,69 +596,287 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         })
     }
 
+    const bounds = canvasRef?.current?.getBoundingClientRect();
+
+
+    // const getCanvasMatrix = () => {
+
+    //     //Fetch current window dimensions
+    //     // console.log(offset, zoom);
+    //     const bounds = canvasRef.current?.getBoundingClientRect()
+
+    //     if(!bounds?.width || !bounds.height) return {matrix: new PF.Grid(100, 100), grid: new Array(100).fill(new Array(100).fill(0)) };
+
+    //     console.log({bounds, offset: _offset, zoom: _zoom});
+
+    //     //Fetch nodes in window
+    //     let nodes = Object.keys(nodeRefs.current).map((key) => {
+    //         console.log({key, nodeRefs: nodeRefs.current})
+    //         let node = nodeRefs.current[key];
+    //         let bounds = node.getBoundingClientRect();
+
+    //         const { x, y } = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, {x: bounds.x, y: bounds.y}) //
+
+    //         return {
+    //             id: key,
+    //             x:  x - _offset.x,
+    //             y: y - _offset.y,
+    //             width: bounds.width / (100 / _zoom),
+    //             height: bounds.height / (100 / _zoom)
+    //         }
+    //     })
+
+    //     // _nodes?.slice() || [];
+    //     let paths = _paths?.slice() || [];
+
+    //     console.log({nodes, _nodes, nodeRefs: nodeRefs.current})
+
+    //     const leftStart = Math.floor((_offset.x || 0))
+    //     const leftEnd = Math.ceil((_offset.x + 0) + (bounds.width || 0))
+
+    //     const topStart = Math.floor(-(_offset.y || 0))
+    //     const topEnd = Math.ceil(-(_offset.y + 0) + (bounds.height || 0))
+
+    //     console.log({leftStart, leftEnd, topStart, topEnd})
+    //     nodes = nodes.filter((a) => {
+    //         let xMin = Math.floor(a.x);
+    //         let xMax = Math.ceil(a.x + (a.width || 50));
+    //         let yMin = Math.floor(a.y);
+    //         let yMax = Math.ceil(a.y + (a.height || 50));
+    //         return ((xMin > leftStart || xMax > leftStart)&& xMax < (leftEnd)) &&
+    //         ((yMin > topStart || yMax > topStart) && yMax < (topEnd))
+    //     })
+        
+    //     //Divide by 50 and make matrix
+
+
+    //     let widthScale = Math.ceil((bounds?.width || 0) / ROUTING_SCALING_FACTOR);
+    //     let heightScale = Math.ceil((bounds?.height || 0) / ROUTING_SCALING_FACTOR);
+
+
+    //     console.log({widthScale, heightScale, nodes})
+
+    //     let matrix = new Array(heightScale).fill(0).map((a, i) => {
+    //         return new Array(widthScale).fill(0)
+    //     })
+
+
+    //     nodes.forEach((node) => {
+    //         const { x, y } = _offset;
+
+    //         let startX = Math.floor((node.x + x) / ROUTING_SCALING_FACTOR)
+    //         let endX = Math.ceil(((node.x + (node.width || 0)) + x) / ROUTING_SCALING_FACTOR)
+    //         let startY = Math.floor((node.y + y)/ ROUTING_SCALING_FACTOR)
+    //         let endY = Math.ceil(((node.y + (node.height || 0))  + y) / ROUTING_SCALING_FACTOR)
+
+    //         console.log({startX, endX, startY, endY})
+
+    //         for(let x = startX - 1; x < endX + 1; x++){
+    //             for(let y = startY - 1; y < endY + 1; y++){
+    //                 if(!(x >= 0 && y >= 0)) continue;
+    //                matrix[Math.floor(y)][Math.floor(x)] = 1
+    //                console.log("Marked")
+    //             }
+    //         }
+    //     })
+    //     // let widthCount = Math.ceil((bounds?.width || 0) / widthDiff);
+    //     // let heightCount = Math.ceil((bounds?.height || 0) / heightDiff);
+        
+    //     //Find path
+    //     const grid = new PF.Grid(matrix)
+
+    //     // console.log({grid, matrix})
+
+    //     return {matrix: grid, grid: matrix};
+    //     // grid.s
+
+    // }
+
+
+
+
+    // const path = useMemo(() => {
+    //     if(matrix){
+    //         const path = findPath({x: 5, y: 5}, {x: 400, y: 200})
+
+    //         return {
+    //             id: 'path-test',
+    //             source: '',
+    //             target: '',
+    //             points: (path || []).map((x) => ({x: x?.[0], y: x?.[1]}))
+    //         }
+    //         // console.log({path})
+    //     }
+    // }, [matrix, _nodes]);
+
+    const context : IInfiniteCanvasContext =  {
+        style: style,
+        snapToGrid: snapToGrid,
+        grid: {
+            ...grid
+        },
+        editable: editable,
+        router: router,
+        factories: _factories,
+        nodes: _nodes,
+        setNodes: setNodes,
+        paths: _paths,
+        setPaths: setPaths,
+        ports: ports,
+
+        assets: assets,
+        nodeRefs,
+
+        getRelativeCanvasPos: (pos) => {
+            return getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
+        },
+
+        darkMode: true,
+        zoom: 100 / _zoom,
+        offset: _offset,
+        isPortDragging,
+        openContextMenu: openContextMenu,
+        addPathPoint: useCallback((id, ix, point) => {
+            let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
+            
+            let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
+            if(!current_path) return;
+            onPathUpdate?.(addPathSegment(current_path, ix, rp))
+            
+        }, [_paths, _offset, _zoom]),
+        updatePathPoint: useCallback((id, ix, point) => {
+            console.log("UPDATE PATH POINT")
+            let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
+            rp = lockToGrid(rp, snapToGrid, grid)
+
+            let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
+
+            if(!current_path) return;
+            
+            let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
+            console.log("Updated", updated)
+            onPathUpdate?.(updated)
+
+        }, [_paths, _offset, _zoom]),
+        linkPath: useCallback((id, node, handle) => {
+            let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
+            if(!current_path) return;
+            onPathUpdate?.(linkPath(current_path, node, handle))
+        }, [_paths]),
+        // setNodeRefs,
+        dragPort: dragPort,
+        updateNode: (node, position) => {
+            // if(node) onSelect?.("node", node)
+
+            let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
+            pos = lockToGrid(pos, snapToGrid || false, grid)
+            if(editable && pos){
+                let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node)
+                if(!fNode) return;
+                let updatedNode = moveNode(fNode, pos)
+                
+                onNodeUpdate?.(updatedNode)
+                
+                console.log("update node", {pos})
+
+            }
+            // let node = _nodes.find((a) => a.id == node.id)
+        },
+        reportPosition: reportPortPosition,
+        engine: {
+            generatePath
+        },
+        selected,
+        selectNode: (node) => onSelect?.('node', node),
+        selectPath: (path) => onSelect?.('path', path),
+        changeZoom: (z) => setZoom(_zoom + (z)),
+        onRightClick: (item, pos) => {
+        const position = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
+        onRightClick?.(item, position)
+        },
+        information
+    }
+
+
+    useEffect(() => {
+        if(factories){
+            let f : any = {};
+            factories.forEach((factory) => {
+                let factoryInstance = factory(context)
+                
+                f[factoryInstance.type] = factoryInstance
+            })
+            setFactories(f)
+        }
+    }, [factories])
+
     return (
         <InfiniteCanvasContext.Provider
-            value={{
-                style: style,
+            value={{style: style,
                 snapToGrid: snapToGrid,
                 grid: {
                     ...grid
                 },
                 editable: editable,
-                
+                router: router,
                 factories: _factories,
                 nodes: _nodes,
                 setNodes: setNodes,
-                paths: pathRef.current,
+                paths: _paths,
                 setPaths: setPaths,
                 ports: ports,
-
+            
                 assets: assets,
                 nodeRefs,
-
+            
                 getRelativeCanvasPos: (pos) => {
                     return getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
                 },
-
+            
                 darkMode: true,
                 zoom: 100 / _zoom,
                 offset: _offset,
                 isPortDragging,
                 openContextMenu: openContextMenu,
-                addPathPoint: (id, ix, point) => {
+                addPathPoint: useCallback((id, ix, point) => {
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     
-                    let current_path = pathRef.current?.find((a) => a.id == id)
+                    let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
                     if(!current_path) return;
                     onPathUpdate?.(addPathSegment(current_path, ix, rp))
-                },
-                updatePathPoint: (id, ix, point) => {
+                }, [_paths, _offset, _zoom]),
+                updatePathPoint: useCallback((id, ix, point) => {
+                    console.log("Update path point", {id, ix, point})
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     rp = lockToGrid(rp, snapToGrid, grid)
 
-                    let current_path = pathRef.current?.find((a) => a.id == id)
-
+                    console.log({rp})
+            
+                    let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
+                    
+                    console.log({_paths, id})
                     if(!current_path) return;
                     
                     let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
-                    console.log("Updated", updated)
+                    console.log("Updated PATH", updated)
                     onPathUpdate?.(updated)
-
-                },
-                linkPath: (id, node, handle) => {
-                    let current_path = pathRef.current?.find((a) => a.id == id)
+            
+                }, [_paths, _offset, _zoom]),
+                linkPath: useCallback((id, node, handle) => {
+                    let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
                     if(!current_path) return;
                     onPathUpdate?.(linkPath(current_path, node, handle))
-                },
-                setNodeRefs,
+                }, [_paths]),
+                // setNodeRefs,
                 dragPort: dragPort,
                 updateNode: (node, position) => {
                     // if(node) onSelect?.("node", node)
-
+                    console.log("update node", {node})
+            
                     let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
                     pos = lockToGrid(pos, snapToGrid || false, grid)
                     if(editable && pos){
-                        let fNode = (_nodes || []).find((a) => a.id == node)
+                        let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node)
                         if(!fNode) return;
                         let updatedNode = moveNode(fNode, pos)
                         
@@ -579,7 +888,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     // let node = _nodes.find((a) => a.id == node.id)
                 },
                 reportPosition: reportPortPosition,
-
+                engine: {
+                    generatePath
+                },
                 selected,
                 selectNode: (node) => onSelect?.('node', node),
                 selectPath: (path) => onSelect?.('path', path),
@@ -588,8 +899,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                    const position = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
                    onRightClick?.(item, position)
                 },
-                information
-            }}>
+                information}}>
             <div
                 onContextMenu={onContextMenu}
                 ref={canvasRef}
@@ -602,6 +912,27 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 onDrop={_onDrop}
                 className={className}
             >
+
+                {/* <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}}>
+                    {new Array(Math.ceil(heightScale || 100) || 100).fill(0).map((_, i) => {
+                        return new Array(Math.ceil(widthScale || 100) || 100).fill(0).map((_i, j) => {
+                            return (
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        top: `calc(100% / ${heightScale} * ${i})`,
+                                        left: `calc(100% / ${widthScale} * ${j})`,
+                                        width: `calc(100% / ${widthScale})`,
+                                        height: `calc(100% / ${heightScale})`,
+                                        background: matrixGrid?.[i]?.[j] == 1 ? '#000' : '#dfdfdf',
+                                    }}
+                                    >
+                                </div>
+                            )
+                        })   
+                    })}
+                </div> */}
+                
                 {(contextMenu || []).length > 0 && <ContextMenu 
                     menu={contextMenu || []}
                     open={Boolean(menuPos != undefined)} 

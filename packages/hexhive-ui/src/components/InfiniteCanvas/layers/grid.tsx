@@ -65,7 +65,7 @@ export const GridLayer: React.FC<GridLayerProps> = (props) => {
 
         for(var x = 0; x < divisions + 1; x++){
             for(var y = 0; y < divisions + 1; y++){
-                dots.push(<circle fill={style?.dotColor || '#beccb4'} overflow={'visible'} cx={x  * w} cy={y*h} r={1} />)
+                dots.push(<circle fill={style?.dotColor || '#beccb4'} overflow={'visible'} cx={x  * w} cy={y*h} r={0.5} />)
             }
         }
 

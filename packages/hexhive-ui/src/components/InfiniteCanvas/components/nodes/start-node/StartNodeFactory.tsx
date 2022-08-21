@@ -1,25 +1,25 @@
 import React from "react";
-import { AbstractWidgetFactory } from "../../../InfiniteCanvas";
+import { IInfiniteCanvasContext } from "../../../context/context";
+import { AbstractNodeFactory, IAbstractNodeFactory } from "../../../InfiniteCanvas";
 import { StartNode } from "./StartNode";
 
-export class StartNodeFactory extends AbstractWidgetFactory {
-
-    constructor(){
-        super('start-node')
-    }
-
-    generateWidget(event: any): JSX.Element {
-        return (<StartNode  {...event} />)
-    }
-    parseModel(model: any) {
-        return {
-            ...model,
-            ports: model.ports ? model.ports : [
-                {
-                    name: 'out',
-                    type: 'base'
-                }
-            ]
+export const StartNodeFactory : AbstractNodeFactory = (context: IInfiniteCanvasContext) : IAbstractNodeFactory => {
+    
+    return {
+        type: 'start-node',
+        renderNode: (node: any) => {
+            return (<StartNode {...node} />)
+        },
+        parseModel: (model: any) => {
+            return {
+                ...model,
+                ports: model.ports ? model.ports : [
+                    {
+                        name: 'out',
+                        type: 'base'
+                    }
+                ]
+            }
         }
     }
 

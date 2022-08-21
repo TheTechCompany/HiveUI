@@ -1,7 +1,9 @@
-import React, {useContext} from 'react';
+import React, {MutableRefObject, Ref, useContext, useRef} from 'react';
 import { InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition } from '../types/canvas';
 import { HMIPosition } from '../assets/hmi-spec';
-import { AbstractWidgetFactory } from '../models/abstract-widget-factory';
+import { AbstractNodeFactory, IAbstractNodeFactory } from '../factories/abstract-node-factory';
+import { AbstractFactory } from '../factories/abstract-factory';
+import { AbstractPathFactory, IAbstractPathFactory } from '../factories/abstract-path-factory';
 
 export interface IInfiniteCanvasContext {
     style?: {
@@ -17,6 +19,11 @@ export interface IInfiniteCanvasContext {
 
     editable?: boolean;
     nodes?: InfiniteCanvasNode[]
+
+    router?: any;
+
+    // nodeRefs?: Ref<{[key: string]: any}>[];
+
     setNodes?: (nodes: InfiniteCanvasNode[]) => void
     paths?: InfiniteCanvasPath[]
     setPaths?: (paths: InfiniteCanvasPath[]) => void;
@@ -26,7 +33,7 @@ export interface IInfiniteCanvasContext {
     }
 
     factories?: {
-        [type: string]: AbstractWidgetFactory
+        [type: string]: IAbstractNodeFactory | IAbstractPathFactory
     }
 
     isPortDragging?: boolean
@@ -35,7 +42,8 @@ export interface IInfiniteCanvasContext {
     zoom: number
     darkMode?: boolean;
 
-    nodeRefs?: {[key: string]: any}
+    engine?: {generatePath: (start: HMIPosition, end: HMIPosition) => {x: number, y: number}[]}
+    nodeRefs?: MutableRefObject<{[key: string]: any}>
 
     ports?: {[key: string]: any}
 
@@ -71,11 +79,13 @@ export interface IInfiniteCanvasContext {
     onRightClick?: (item: any, pos: InfiniteCanvasPosition) => void;
 }
 
+
 export const InfiniteCanvasContext = React.createContext<IInfiniteCanvasContext>({
     offset: {
         x: 0,
         y: 0
     },
+    // nodeRefs: ,
     darkMode: true,
     zoom: 1,
     io_status: {},

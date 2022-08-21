@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components'
@@ -87,9 +87,12 @@ const BaseCloneTab : React.FC<CloneTabProps> = ({
 
     return (
     <Box 
-        flex
-        direction="column"
-        pad="xsmall"
+        sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '3px',
+            flex: 1
+        }}
         className={className}>
         <Calendar
             currentDate={new DateObject()}

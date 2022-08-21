@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { InfiniteCanvasContext } from '../../context/context';
 import { NodeIdContext } from '../../context/nodeid';
 import { isEqual, transform } from 'lodash'
-import styled from 'styled-components';
 
 export interface BasePortProps {
     nodeId?: string;
@@ -100,12 +99,14 @@ export const BasePort : React.FC<BasePortProps> = (props) => {
             data-handleid={props.handleId}
             data-nodeid={props.nodeId}
             ref={ref}
+            style={{position: 'absolute'}}
             className={props.className}>
             {props.children}
         </div>
     )
 }
 
-export const Port = styled(BasePort)`
-    position: absolute;
-`
+export const Port = BasePort;
+// export const Port = styled(BasePort)`
+//     position: absolute;
+// `

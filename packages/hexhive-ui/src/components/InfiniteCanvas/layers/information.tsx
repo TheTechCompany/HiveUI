@@ -18,7 +18,6 @@ export const InformationLayer : React.FC<InformationLayerProps> = ({className}) 
         offset, 
         nodes = [],
         nodeRefs,
-        setNodeRefs,
         openContextMenu,
         onRightClick,
 		information,
