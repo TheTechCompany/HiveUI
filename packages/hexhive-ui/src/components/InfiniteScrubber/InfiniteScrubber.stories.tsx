@@ -25,3 +25,9 @@ export const Primary = Template.bind({});
 Primary.args = {
   time: new Date().getTime()
 };
+
+export const WithControls = Template.bind({});
+WithControls.args = {
+  time: new Date().getTime(),
+  controls: true,
+};
