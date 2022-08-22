@@ -143,6 +143,7 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
                 <Box sx={{
                     overflow: 'hidden',
                     position: 'relative',
+                    width: '100%',
                     height: '30px',
                     userSelect: 'none'
                 }}>
