@@ -290,3 +290,76 @@ Routed.args = {
     },
   ],
 };
+
+
+
+export const Finite = ControlledTemplate.bind({});
+Finite.args = {
+  grid: { width: 100, height: 100, divisions: 5 },
+  // snapToGrid: true,
+  finite: true,
+  router: "JumpPointFinder",
+  routerOptions: {
+    heuristic: 'manhattan',
+    allowDiagonal: false,
+  },
+  editable: true,
+  style: {
+    background: 'lightgray',
+    pathColor: 'blue',
+    portColor: "gray",
+    portDotColor: 'gray'
+  },
+  snapToGrid: true,
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  nodes: [
+    {
+      id: "1",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      x: 371,
+      y: 173,
+    },
+    {
+      id: "2",
+      type: "action-node",
+      menu: <div></div>,
+      x: 20,
+      y: 100,
+    },
+    {
+      id: "3",
+      type: "icon-node",
+      extras: {
+        label: "Run",
+        icon: "NaviteNext",
+        color: "purple",
+      },
+      x: 200,
+      y: 20,
+    },
+    {
+      id: "5",
+      type: "icon-node",
+      extras: {
+        icon: "NavigateNext",
+        color: "purple",
+      },
+      x: 300,
+      y: 20,
+    },
+  ],
+  paths: [
+    {
+      id: "2",
+      points: [{ x: 100, y: 100 }],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+  ],
+};

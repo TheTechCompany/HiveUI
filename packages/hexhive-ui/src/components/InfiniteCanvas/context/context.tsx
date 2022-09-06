@@ -6,6 +6,7 @@ import { AbstractFactory } from '../factories/abstract-factory';
 import { AbstractPathFactory, IAbstractPathFactory } from '../factories/abstract-path-factory';
 
 export interface IInfiniteCanvasContext {
+    finite?: boolean;
     style?: {
         lineColor?: string;
         pathColor?: string;

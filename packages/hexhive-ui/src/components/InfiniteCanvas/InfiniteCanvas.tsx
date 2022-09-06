@@ -54,6 +54,9 @@ export interface Block {
 
 
 export interface InfiniteCanvasProps {
+
+    finite?: boolean;
+
     style?: {
         background: string,
         pathColor?: string,
@@ -131,6 +134,7 @@ const initialState : any = {nodes: [], paths: []};
 
 export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     zoom,
+    finite = false,
     router,
     routerOptions,
     style,
@@ -207,7 +211,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         windowRef: canvasRef, 
         initialWindow: {
             x: 0,
-            y: 70,
+            y: 0,
             zoom: 100
         }, 
         scalingFactor: 5
@@ -217,9 +221,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
     const [ _factories, setFactories ] = useState<{[key: string]: IAbstractNodeFactory | IAbstractPathFactory}>({})
-    
-    // const nodeRefs = useRef<{[key: string]: any}>({})
-
    
 
     //TODO memoize
@@ -250,15 +251,58 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
 
     const updateOffset = useCallback((position: {x: number, y: number}, lastPos: {x: number, y: number}) => {
-        let new_offset = {
-            x: (_offset.x || 0) - (lastPos.x - position.x),
-            y: (_offset.y || 0) - (lastPos.y - position.y)
+        
+        if(!finite){
+            let new_offset = {
+                x: (_offset.x || 0) - (lastPos.x - position.x),
+                y: (_offset.y || 0) - (lastPos.y - position.y)
+            }
+            setOffset((_offset: any) => ({
+                x: (_offset.x || 0) - (lastPos.x - position.x),
+                y: (_offset.y || 0) - (lastPos.y - position.y)
+            }))
+            onViewportChanged?.({offset: new_offset, zoom: _zoom})
+        }else if(finite && _zoom < 100){
+
+            let new_offset = {
+                x: (_offset.x || 0) - (lastPos.x - position.x),
+                y: (_offset.y || 0) - (lastPos.y - position.y)
+            }
+            
+            if(new_offset.x > 0) new_offset.x = 0;
+            if(new_offset.y < 0) new_offset.y = 0;
+            //TODO add +viewport.width +viewport.height
+
+            setOffset((_offset: any) => {
+
+                const bounds = canvasRef.current?.getBoundingClientRect()
+
+                const clientWidth = bounds?.width
+                const clientHeight = bounds?.height
+
+    
+                let x = (_offset.x || 0) - (lastPos.x - position.x);
+                let y = (_offset.y || 0) - (lastPos.y - position.y);
+
+
+                if( x > 0) x = 0;
+                if( y > 0) y =0;
+
+                let adjustedWidth = (clientWidth || 0) * (_zoom / 100)
+                let adjustedHeight = (clientHeight || 0) * (_zoom / 100)
+
+                console.log({x, y})
+                console.log(Math.abs(x) + adjustedWidth, clientWidth, Math.abs(y) + adjustedHeight, clientHeight, _zoom)
+
+                if(Math.abs(x) + adjustedWidth > (clientWidth || 0)) x = 0 - ((clientWidth || 0) - adjustedWidth)
+                if(Math.abs(y) + adjustedHeight > (clientHeight || 0)) y = 0 - ((clientHeight || 0) - adjustedHeight)
+
+                return {x,y};
+            })
+            onViewportChanged?.({offset: new_offset, zoom: _zoom})
+
         }
-        setOffset((_offset: any) => ({
-            x: (_offset.x || 0) - (lastPos.x - position.x),
-            y: (_offset.y || 0) - (lastPos.y - position.y)
-        }))
-        onViewportChanged?.({offset: new_offset, zoom: _zoom})
+
     }, [_offset, _zoom])
 
  
@@ -302,14 +346,20 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
        
     }
 
+    //TODO add zoom rectifier when bounded to bring offset back to bounds when zooming
     const onWheel = (evt: React.WheelEvent) => {
         let oldZoomFactor = _zoom / 100;
 
         let zoomY = evt.deltaY / 60;
 
-        let zoomFactor = (_zoom + zoomY) / 100;
-        
         let new_zoom = _zoom + zoomY;
+
+        if(new_zoom > 100 && finite){
+            new_zoom = 100;
+        }
+
+        let zoomFactor = (new_zoom) / 100;
+        
         let new_offset = _offset || {x: 0, y: 0};
 
         setZoom(new_zoom)
@@ -332,6 +382,19 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             new_offset = {
                 x: (_offset.x || 0) + widthDiff * xFactor,
                 y: (_offset.y || 0) + heightDiff * yFactor
+            }
+
+            if(finite){
+                console.log({new_offset})
+                if(new_offset.x > 0) new_offset.x = 0;
+                if(new_offset.y > 0) new_offset.y = 0;
+
+                let adjustedWidth = (clientWidth || 0) * (_zoom / 100)
+                let adjustedHeight = (clientHeight || 0) * (_zoom / 100)
+
+                if(Math.abs(new_offset.x) + adjustedWidth > (clientWidth || 0)) new_offset.x = 0 - ((clientWidth || 0) - adjustedWidth)
+                if(Math.abs(new_offset.y) + adjustedHeight > (clientHeight || 0)) new_offset.y = 0 - ((clientHeight || 0) - adjustedHeight)
+
             }
 
             setOffset(new_offset)
@@ -431,72 +494,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     }
 
 
-    // const dragPathPoint = (path_id: string, e: React.MouseEvent, ix: number) => {
-    //     let pos : InfiniteCanvasPosition = {
-    //         x: e.clientX,
-    //         y: e.clientY
-    //     }
-
-    //     e.preventDefault()
-    //     e.stopPropagation()
-
-    //     let path = _paths.slice().find((a) => a.id == path_id);
-
-    //     if(!path) return;
-
-    //     const { points } = path;
-    //     // props.onPointsChanged?.(ix, pos)
-
-    //     let doc = getHostForElement(e.target as HTMLElement)
-
-
-    //     let rp = getRelativeCanvasPos?.(canvasRef, viewport, pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
-    //     // rp = lockToGrid(rp, snapToGrid, grid)
-
-    //     // let current_path = _paths.current.find((a) => a.id == id)
-
-    //     // if(!current_path) return;
-        
-    //     // let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
-
-    //     const mouseMove = (e: MouseEvent) => {
-    //         let rp = getRelativeCanvasPos?.(canvasRef, viewport, {x: e.clientX, y: e.clientY})
-
-    //         let p = points.slice()
-    //         p[ix] = {
-    //             x: rp?.x || 0,
-    //             y: rp?.y || 0
-    //         }
-
-    //         //update points in path before setting
-    //         // setPoints(p)
-            
-            
-    //         // updatePointPosition({x: e.clientX, y: e.clientY})
-    //     }
-
-    //     const mouseUp = (e: MouseEvent) => {
-
-    //         props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
-
-    //         let target = (e.target as HTMLElement)
-    //         if(target.hasAttribute('data-nodeid')){
-
-    //             let nodeId = target.getAttribute('data-nodeid') || ''
-    //             let handleId = target.getAttribute('data-handleid') || ''
-
-    //             props.onLinked?.(nodeId, handleId)
-
-    //         }
-
-    //         doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-    //         doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
-    //     }
-
-    //     doc.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-    //     doc.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
-    // }
-    
 
     const reportPortPosition = (opts: {
         nodeId: string, 
@@ -525,33 +522,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         setPorts(_ports)
 
-        // let ports = node?.ports?.slice();
-
-        // let port_ix = ports?.map((x: any) => x.name).indexOf(opts.handleId) 
         
-
-
-
-        // if(port_ix != undefined && port_ix > -1 && ports){
-
-        //     ports[port_ix] = {
-        //         ...(ports?.[port_ix] || {}),
-        //         position: {
-        //             x: point.x - node.x,
-        //             y: point.y - node.y,
-        //             width: opts.position.width,
-        //             height: opts.position.height
-        //         },
-        //         bounds: {
-        //             ...opts.position
-        //         }
-        //     } as any
-
-        // }
-
-        // nodes[node_ix].ports = ports;
-
-        // onNodeUpdate?.(nodes[node_ix])
     }
 
     const onDragOver = (e: React.DragEvent) => {
@@ -599,118 +570,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     const bounds = canvasRef?.current?.getBoundingClientRect();
 
 
-    // const getCanvasMatrix = () => {
-
-    //     //Fetch current window dimensions
-    //     // console.log(offset, zoom);
-    //     const bounds = canvasRef.current?.getBoundingClientRect()
-
-    //     if(!bounds?.width || !bounds.height) return {matrix: new PF.Grid(100, 100), grid: new Array(100).fill(new Array(100).fill(0)) };
-
-    //     console.log({bounds, offset: _offset, zoom: _zoom});
-
-    //     //Fetch nodes in window
-    //     let nodes = Object.keys(nodeRefs.current).map((key) => {
-    //         console.log({key, nodeRefs: nodeRefs.current})
-    //         let node = nodeRefs.current[key];
-    //         let bounds = node.getBoundingClientRect();
-
-    //         const { x, y } = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, {x: bounds.x, y: bounds.y}) //
-
-    //         return {
-    //             id: key,
-    //             x:  x - _offset.x,
-    //             y: y - _offset.y,
-    //             width: bounds.width / (100 / _zoom),
-    //             height: bounds.height / (100 / _zoom)
-    //         }
-    //     })
-
-    //     // _nodes?.slice() || [];
-    //     let paths = _paths?.slice() || [];
-
-    //     console.log({nodes, _nodes, nodeRefs: nodeRefs.current})
-
-    //     const leftStart = Math.floor((_offset.x || 0))
-    //     const leftEnd = Math.ceil((_offset.x + 0) + (bounds.width || 0))
-
-    //     const topStart = Math.floor(-(_offset.y || 0))
-    //     const topEnd = Math.ceil(-(_offset.y + 0) + (bounds.height || 0))
-
-    //     console.log({leftStart, leftEnd, topStart, topEnd})
-    //     nodes = nodes.filter((a) => {
-    //         let xMin = Math.floor(a.x);
-    //         let xMax = Math.ceil(a.x + (a.width || 50));
-    //         let yMin = Math.floor(a.y);
-    //         let yMax = Math.ceil(a.y + (a.height || 50));
-    //         return ((xMin > leftStart || xMax > leftStart)&& xMax < (leftEnd)) &&
-    //         ((yMin > topStart || yMax > topStart) && yMax < (topEnd))
-    //     })
-        
-    //     //Divide by 50 and make matrix
-
-
-    //     let widthScale = Math.ceil((bounds?.width || 0) / ROUTING_SCALING_FACTOR);
-    //     let heightScale = Math.ceil((bounds?.height || 0) / ROUTING_SCALING_FACTOR);
-
-
-    //     console.log({widthScale, heightScale, nodes})
-
-    //     let matrix = new Array(heightScale).fill(0).map((a, i) => {
-    //         return new Array(widthScale).fill(0)
-    //     })
-
-
-    //     nodes.forEach((node) => {
-    //         const { x, y } = _offset;
-
-    //         let startX = Math.floor((node.x + x) / ROUTING_SCALING_FACTOR)
-    //         let endX = Math.ceil(((node.x + (node.width || 0)) + x) / ROUTING_SCALING_FACTOR)
-    //         let startY = Math.floor((node.y + y)/ ROUTING_SCALING_FACTOR)
-    //         let endY = Math.ceil(((node.y + (node.height || 0))  + y) / ROUTING_SCALING_FACTOR)
-
-    //         console.log({startX, endX, startY, endY})
-
-    //         for(let x = startX - 1; x < endX + 1; x++){
-    //             for(let y = startY - 1; y < endY + 1; y++){
-    //                 if(!(x >= 0 && y >= 0)) continue;
-    //                matrix[Math.floor(y)][Math.floor(x)] = 1
-    //                console.log("Marked")
-    //             }
-    //         }
-    //     })
-    //     // let widthCount = Math.ceil((bounds?.width || 0) / widthDiff);
-    //     // let heightCount = Math.ceil((bounds?.height || 0) / heightDiff);
-        
-    //     //Find path
-    //     const grid = new PF.Grid(matrix)
-
-    //     // console.log({grid, matrix})
-
-    //     return {matrix: grid, grid: matrix};
-    //     // grid.s
-
-    // }
-
-
-
-
-    // const path = useMemo(() => {
-    //     if(matrix){
-    //         const path = findPath({x: 5, y: 5}, {x: 400, y: 200})
-
-    //         return {
-    //             id: 'path-test',
-    //             source: '',
-    //             target: '',
-    //             points: (path || []).map((x) => ({x: x?.[0], y: x?.[1]}))
-    //         }
-    //         // console.log({path})
-    //     }
-    // }, [matrix, _nodes]);
-
     const context : IInfiniteCanvasContext =  {
         style: style,
+        finite,
         snapToGrid: snapToGrid,
         grid: {
             ...grid
@@ -817,6 +679,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 grid: {
                     ...grid
                 },
+                finite,
                 editable: editable,
                 router: router,
                 factories: _factories,
