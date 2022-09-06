@@ -9,6 +9,7 @@ export interface BlockTrayProps {
     blocks: Block[]
     groupBy?: string;
     className?: string;
+    renderHeader?: (header: string) => JSX.Element;
     renderItem?: (block: Block, ix: number) => JSX.Element;
 }
 
@@ -16,7 +17,7 @@ export const BaseBlockTray : React.FC<BlockTrayProps> = (props) => {
     
     const renderGrouped = () => {
         let groupBy = props.groupBy || ''
-        console.log("GROUPS", groupBy, props.blocks)
+
         const groups = (props.blocks as any[]).reduce((prev, curr) => {
             if(!prev[curr[groupBy]]) prev[curr[groupBy]] = [];
             prev[curr[groupBy]].push(curr)
@@ -27,7 +28,7 @@ export const BaseBlockTray : React.FC<BlockTrayProps> = (props) => {
         for(var k in groups){
             items.push(
                 <>
-                    <Typography>{k}</Typography>
+                    {props.renderHeader ? props.renderHeader(k) : <Typography>{k}</Typography>}
                     {groups[k].map((block: any, ix: number) => (
                         <TrayItem model={block}>
                             {props.renderItem ? props.renderItem(block, ix) : block.label}
