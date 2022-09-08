@@ -27,6 +27,7 @@ export const BumpInput : React.FC<BumpInputProps> = (props) => {
 				</IconButton>
 				
 				<TextField
+					size="small"
 					type={props.type}
 					value={props.value}
 					onChange={(event) => { props.onChange?.(event.target.value) }}
