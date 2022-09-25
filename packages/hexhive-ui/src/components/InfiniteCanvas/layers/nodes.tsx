@@ -85,6 +85,46 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     // }, [nodes])
 
 
+    const renderAssetContainer = (node: InfiniteCanvasNode, children: any) => {
+        
+        let factory = factories?.[node.type];
+
+        if((factory as any).renderNodeContainer){
+            return (factory as any).renderNodeContainer(node, children)
+        }else{
+            return (
+                <div 
+                    onContextMenu={(e) => {
+                        openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
+                    }}
+                    ref={(element) => {
+                        if(!nodeRefs) return;
+                        nodeRefs.current[node.id] = element
+                        // setNodeRefs?.(itemRefs.current)
+                    }}
+                    className={`node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`} 
+                    onClick={(e) => {
+                        selectNode?.(node.id)
+                    }}
+
+                    onMouseDown={(evt) => mouseDown(node.id, evt)}
+                    onMouseEnter={(ev) => nodeHover(ev.currentTarget, node.id)}
+                    onMouseLeave={() => nodeHoverEnd()}
+                    style={{
+                        pointerEvents: 'all',
+                        left: node.x, 
+                        top: node.y,
+                        transform: `rotate(${node?.extras?.rotation}deg)
+                                    scaleX(${node?.extras?.scaleX || 1})
+                                    scaleY(${node?.extras?.scaleY || 1})`
+                    }}>
+                    {children}
+                </div>
+            )
+        }
+
+    }
+
     const renderAssetBundle = (key: string, node: InfiniteCanvasNode, selected?: boolean) => {
 
         let value = node.value ? status[node.value] : status[key];
@@ -226,47 +266,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                     <Typography variant="subtitle2">{hoverNode && status && (status[hoverNode.value] || status[hoverNode.label])}</Typography>
                 </div>
             </Popover>*/}
-            {_nodes && _nodes.map((node) => (
-                <div 
-                    onContextMenu={(e) => {
-                        openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
-                    }}
-                    ref={(element) => {
-                        if(!nodeRefs) return;
-                        nodeRefs.current[node.id] = element
-                        // setNodeRefs?.(itemRefs.current)
-                    }}
-                    className={`node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`} 
-                    onClick={(e) => {
-                        selectNode?.(node.id)
-                    }}
-
-                    onMouseDown={(evt) => mouseDown(node.id, evt)}
-                    onMouseEnter={(ev) => nodeHover(ev.currentTarget, node.id)}
-                    onMouseLeave={() => nodeHoverEnd()}
-                    style={{
-                        pointerEvents: 'all',
-                        left: node.x, 
-                        top: node.y,
-                        transform: `rotate(${node?.extras?.rotation}deg)
-                                    scaleX(${node?.extras?.scaleX || 1})
-                                    scaleY(${node?.extras?.scaleY || 1})`
-                    }}>
-                    {/* {selected?.type == 'node' && selected.id == node.id && node.menu && (
-                        <Box 
-                            onMouseDown={(e) => e.stopPropagation()}
-                            flex
-                            round="xsmall"
-                            className="menu-dialog" 
-                            style={{position: 'absolute', left: '100%', minWidth: 150, minHeight: 50}} background="light-1">
-                            <Box
-                                gap="xsmall"
-                                pad="xsmall">
-                                {node.menu}
-                            </Box>
-                        </Box>
-                    )} */}
-                    <NodeIdContext.Provider value={{
+            {_nodes && _nodes.map((node) => renderAssetContainer(
+                    node,
+                    (<NodeIdContext.Provider value={{
                         nodeId: node.id,
                         rotation: node?.extras?.rotation || 0,
                         scaleX: node?.extras?.scaleX || 1,
@@ -281,8 +283,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                         }
                     }}>
                     {renderAssetBundle(node.id, node, (selected?.find((a) => a.key == "node" && a?.id == node.id) != undefined))}
-                    </NodeIdContext.Provider>
-                </div>
+                    </NodeIdContext.Provider>)
+                
+                
             ))}
         </div>
     )
