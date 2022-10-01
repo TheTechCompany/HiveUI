@@ -38,6 +38,8 @@ export const usePort = (props : {id?: string}) => {
 
     return {
         dragPort: (e: React.MouseEvent) => {
+            e.stopPropagation();
+
             dragPort?.(e, props.id, nodeId)
         },
         extraProps: {

@@ -33,12 +33,10 @@ export const UnstyledPortWidget : React.FC<PortWidgetProps> = (props) => {
     const { style } = useContext(InfiniteCanvasContext)
 
 
-
-
     const onMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
-
-        console.log("DRAG", props.id)
+        e.stopPropagation();
+        // console.log("DRAG", props.id)
         //let bounds = ref.current?.getBoundingClientRect();
         dragPort?.(e)
     }
