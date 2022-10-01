@@ -8,8 +8,8 @@ import { Port } from './base';
 export interface RetractingPortProps {
     id?: string;
     direction?: string;
-    x?: number;
-    y?: number;
+    x?: any;
+    y?: any;
 
     width?: number;
     height?: number;
@@ -43,8 +43,8 @@ export const RetractingPort = styled(BaseRetractingPort)`
     position: absolute;
     left: -10px;
     width: ${p => p.height ? `${p.height * 20}px` : '20px'};
-    top: ${p => p.y || 50}px;
-    left: ${p => p.x || 0}px;
+    top: ${p => p.y || '50px'};
+    left: ${p => p.x || '0px'};
     transform: rotate(${p => p.rotation || 0}deg) ${p => p.scaleY ? `scaleY(${1 / p.scaleY})` : ''} ${p => p.scaleX ? `scaleX(${Math.abs(1 / p.scaleX)})`: ''} ${p => p.scaleX && p.scaleX > 1 ? `translateX(${1/p.scaleX * 100}%)` : ''} ${p => p.scaleY && p.scaleY > 1 ? `translateY(${1/p.scaleY * 100}%)` : ''};
     transition: left 250ms ease-out, width 250ms ease-out;
 
