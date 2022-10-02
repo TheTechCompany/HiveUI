@@ -301,7 +301,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
             
            
 
-            return (
+            return ix < points.length - 1 ? (
                 <PipeElbow 
                     width={50}
                     height={50}
@@ -382,7 +382,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
                         transform: `rotate(${rotation}deg) `
                     }}
                     />
-            )
+            ) : null
         },
     }
 }
