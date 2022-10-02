@@ -475,10 +475,10 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let nodeId = target.getAttribute('data-nodeid') || ''
                     let handleId = target.getAttribute('data-handleid') || ''
 
-                    let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
-                    console.log({current_path, paths: _paths, path})
-                    if(!current_path) return;
-                    onPathUpdate?.(linkPath(current_path, nodeId, handleId))
+                    // let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
+                    // console.log({current_path, paths: _paths, path})
+                    // if(!current_path) return;
+                    onPathUpdate?.(linkPath(path, nodeId, handleId))
 
           //  onPathsChanged?.(linkPath(_paths.current, path.id, nodeId, handleId))
                 }
