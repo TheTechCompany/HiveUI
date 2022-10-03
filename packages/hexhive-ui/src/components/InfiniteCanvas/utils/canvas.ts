@@ -218,8 +218,8 @@ export const onDrag = (
     const onMouseUp = (up_evt: MouseEvent) => {
         drag_event?.(
             up_evt,
-            undefined,
-            undefined,
+            {x: up_evt.clientX, y: up_evt.clientY},
+            Object.assign({}, lastPos),
             true
         )
         doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject)
