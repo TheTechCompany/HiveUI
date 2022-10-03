@@ -74,8 +74,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         let endX, endY;
                         if(typeof(x.targetHandle) == 'string'){
                             let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
-                            endX = targetPort.relativeX;
-                            endY = targetPort.relativeY;
+                            endX = targetPort?.relativeX;
+                            endY = targetPort?.relativeY;
                         }else{
                             endX = x.targetHandle?.x;
                             endY = x.targetHandle?.y;
@@ -175,8 +175,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         let endX, endY;
                         if(typeof(x.targetHandle) == 'string'){
                             let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
-                            endX = targetPort.relativeX;
-                            endY = targetPort.relativeY;
+                            endX = targetPort?.relativeX;
+                            endY = targetPort?.relativeY;
                         }else{
                             endX = x.targetHandle?.x;
                             endY = x.targetHandle?.y;
