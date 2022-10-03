@@ -471,10 +471,14 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
                         let handleId = target.getAttribute('data-handleid') || ''
                         onPathUpdate?.(linkPath(path, nodeId, handleId))
+
                     }else{
                         //Dynamic Ports
+                        let {x: adjusterX, y: adjusterY} = nodes?.find((a) => a.id == nodeId) || {x: 0, y: 0}
+                        let newX = position.x - adjusterX;
+                        let newY = position.y - adjusterY;
 
-                        onPathUpdate?.(linkPath(path, nodeId, position));
+                        onPathUpdate?.(linkPath(path, nodeId, {x: newX, y: newY}));
                     }   
 
                     // let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
