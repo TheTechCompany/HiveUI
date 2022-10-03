@@ -56,26 +56,57 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                     if(x.sourceHandle && x.targetHandle){
 
                         let startNode = nodes?.find((a) => a.id == x.source)
-                        let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
+                        
+                        let startX, startY;
+                        
+                        if(typeof(x.sourceHandle) == 'string'){
+                            let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
+
+                            startX = startPort?.relativeX;
+                            startY = startPort?.relativeY;
+                        }else{
+                            startX = x.sourceHandle?.x;
+                            startY = x.sourceHandle?.y;
+                        }
 
                         let targetNode = nodes?.find((a) => a.id == x.target)
-                        let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
+
+                        let endX, endY;
+                        if(typeof(x.targetHandle) == 'string'){
+                            let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
+                            endX = targetPort.relativeX;
+                            endY = targetPort.relativeY;
+                        }else{
+                            endX = x.targetHandle?.x;
+                            endY = x.targetHandle?.y;
+                        }
 
                         points = (engine?.generatePath?.({
-                            x: (startNode?.x || 0) + (startPort?.relativeX || 0) + ((startPort.width || 0) / 2),
-                            y: (startNode?.y || 0) + (startPort?.relativeY || 0) + ((startPort.height || 0) / 2)
+                            x: (startNode?.x || 0) + (startX || 0),// + ((startPort.width || 0) / 2),
+                            y: (startNode?.y || 0) + (startY || 0)// + ((startPort.height || 0) / 2)
                         }, {
-                            x: (targetNode?.x || 0) + (targetPort?.relativeX || 0) + ((targetPort.width || 0) / 2),
-                            y: (targetNode?.y || 0) + (targetPort?.relativeY || 0) + ((targetPort.height || 0) / 2)
+                            x: (targetNode?.x || 0) + (endX || 0), // + ((targetPort.width || 0) / 2),
+                            y: (targetNode?.y || 0) + (endY || 0) //+ ((targetPort.height || 0) / 2)
                         }) || [])
 
                     }else if(x.sourceHandle && x.source && x.points){
 
                         let startNode = nodes?.find((a) => a.id == x.source)
 
-                        let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
+                         
+                        let startX, startY;
+                        
+                        if(typeof(x.sourceHandle) == 'string'){
+                            let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
 
-                        if(!startPort || !startNode) {
+                            startX = startPort?.relativeX;
+                            startY = startPort?.relativeY;
+                        }else{
+                            startX = x.sourceHandle?.x;
+                            startY = x.sourceHandle?.y;
+                        }
+
+                        if(!startX || !startY || !startNode) {
                             points = []
                         } ///return {id: '', points :[]};
                         else {
@@ -84,8 +115,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                             }
                             else{
                                 points = (engine?.generatePath?.({
-                                    x: (startNode?.x || 0) + (startPort?.relativeX || 0) + ((startPort.width || 0) / 2),
-                                    y: (startNode?.y || 0) + (startPort?.relativeY || 0) + ((startPort.height || 0) / 2)
+                                    x: (startNode?.x || 0) + (startX || 0),// + ((startPort.width || 0) / 2),
+                                    y: (startNode?.y || 0) + (startY || 0) //+ ((startPort.height || 0) / 2)
                                 }, {
                                     x: (x.points[x.points.length - 1].x),
                                     y: (x.points[x.points.length - 1].y)
@@ -110,14 +141,28 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
                     if(x.sourceHandle){
                         let node = nodes?.find((a) => a.id == x.source)
-                        let port = ports?.[`${x.source}:${x.sourceHandle}`]
+                        // let port = ports?.[`${x.source}:${x.sourceHandle}`]
 
-                        if(port && node){
+                         
+                        let startX, startY;
+                        
+                        if(typeof(x.sourceHandle) == 'string'){
+                            let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
+
+                            startX = startPort?.relativeX;
+                            startY = startPort?.relativeY;
+                        }else{
+                            startX = x.sourceHandle?.x;
+                            startY = x.sourceHandle?.y;
+                        }
+
+
+                        if(startX && startY && node){
 
                             
                             let point = {
-                                x: (node?.x || 0) + (port?.relativeX || 0) + ((port.width || 0) / 2),
-                                y: (node?.y || 0) + (port?.relativeY || 0) + ((port.height || 0) /2)
+                                x: (node?.x || 0) + (startX || 0),// + ((port.width || 0) / 2),
+                                y: (node?.y || 0) + (startY || 0) //+ ((port.height || 0) /2)
                             }
                             points = [point, ...(points || [])]
                         }
@@ -125,12 +170,22 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
                     if(x.targetHandle){
                         let node = nodes?.find((a) => a.id == x.target)
-                        let port = ports?.[`${x.target}:${x.targetHandle}`]
+                        // let port = ports?.[`${x.target}:${x.targetHandle}`]
 
-                        if(port && node){
+                        let endX, endY;
+                        if(typeof(x.targetHandle) == 'string'){
+                            let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
+                            endX = targetPort.relativeX;
+                            endY = targetPort.relativeY;
+                        }else{
+                            endX = x.targetHandle?.x;
+                            endY = x.targetHandle?.y;
+                        }
+
+                        if(endX && endY && node){
                             let point = {
-                                x: (node?.x || 0)+ (port?.relativeX || 0) + ((port.width || 0) / 2),
-                                y: (node?.y || 0) +(port?.relativeY || 0)+ ((port.height || 0) /2)
+                                x: (node?.x || 0)+ (endX || 0), //+ ((port.width || 0) / 2),
+                                y: (node?.y || 0) +(endY || 0) //+ ((port.height || 0) /2)
                             }
                             points = [...(points || []), point]
                         }
