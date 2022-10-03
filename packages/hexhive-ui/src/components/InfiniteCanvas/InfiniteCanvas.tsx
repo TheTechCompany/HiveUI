@@ -475,8 +475,10 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     }else{
                         //Dynamic Ports
                         let {x: adjusterX, y: adjusterY} = nodes?.find((a) => a.id == nodeId) || {x: 0, y: 0}
-                        let newX = position.x - adjusterX;
-                        let newY = position.y - adjusterY;
+                        const { x, y } = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position);
+
+                        let newX = x - adjusterX;
+                        let newY = y - adjusterY;
 
                         onPathUpdate?.(linkPath(path, nodeId, {x: newX, y: newY}));
                     }   
