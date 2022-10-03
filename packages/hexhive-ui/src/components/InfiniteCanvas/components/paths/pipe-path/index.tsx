@@ -96,6 +96,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
     //     }
     // }
 
+
     return {
         type: 'pipe-path',
         renderPathSegment(path, points, setPoints, ix) {
@@ -132,18 +133,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
             let angle = 0;
             let lastAngle = 0;
             
-            // if(lastEndPoint && lastStartPoint){
-            //     let dx1 = lastStartPoint.x - lastHandle.x;
-            //     let dy1 = lastStartPoint.y - lastHandle.y;
-
-            //     let dx2 = lastEndPoint.x - lastHandle.x;
-            //     let dy2 = lastEndPoint.y - lastHandle.y;
-
-            //     let a1 = Math.atan2(dy1, dx1) 
-            //     let a2 = Math.atan2(dy2, dx2) 
-
-            //     lastAngle = -find_angle(ix, lastStartPoint, lastHandle, lastEndPoint) // ((a1 - a2) * 180) / Math.PI;
-            // }
 
             if(!endPoint) {
                 //TODO return a handle
@@ -165,7 +154,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 let entry : "left" | "right" | "down" | "up" = "up";
                 let exit : "left" | "right" | "down" | "up" = "left";
     
-// /(a1 > 0 && a1 <= 90)
 
                 let handleX = handle.x;
                 let handleY = handle.y;
@@ -200,45 +188,16 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     angle = 90
                 }
             
-                // angle =  find_angle(ix, startPoint, handle, endPoint) //((a1 - a2) * 180) / Math.PI //(((ix % 2 == 0 ? a1 : a2) * 180 / Math.PI) + 360) %360;
 
             }
 
  
-            // angle = Math.atan2()
-            // if(startPoint.y > handle.y){
-            //     angle = Math.atan2(handle.y - (startPoint.y), handle.x - (startPoint.x)) * 180 / Math.PI
-
-            // }else if(startPoint.y == handle.y){
-            //     angle = Math.atan2(handle.y - (startPoint.y), handle.x - (startPoint.x)) * 180 / Math.PI
-
-            //     if(startPoint.x == handle.x){
-            //         angle -= 90
-            //     }
-            // }else if(startPoint.x == handle.x){
-            //     angle = Math.atan2(handle.y - (startPoint.y), handle.x - (startPoint.x)) * 180 / Math.PI
-
-            //      angle -= 90
-            // }else{
-            //     angle = Math.atan2(handle.y - (endPoint.y ), handle.x - (endPoint.x )) * 180 / Math.PI;
-
-            //     if(startPoint.x != handle.x){
-            //         angle += 90;
-            //     }
-            // }
-
-
-            // angle = -angle //-(angles[ix - 1 ] || 0) //angle + lastAngle;
-
-            // console.log({angles, ix, angle, location})
             
       
             angle = find_angle_new(startPoint, handle, endPoint)
 
             angle += Math.atan2(startPoint.y - handle.y, startPoint.x - handle.x) * 180 / Math.PI
-            // if(startPoint.x < endPoint.x && startPoint.y < endPoint.y){
-            //     angle += 90;
-            // }else if(startPoi)
+          
 
             const offsetX = 7.5
             const offsetY = 7.5
@@ -249,49 +208,58 @@ export const PipePathFactory : AbstractPathFactory = () => {
             const transformX = x + 50 - offsetX;
             const transformY = y + offsetY
 
-
-
-            // const isNegative = angle.A < 0 || angle.B < 0;
-            // const startsLower = startPoint.y > endPoint.y
-            // const movesRight =  handle.x < endPoint.x
-            // const startsLeft = handle.x > startPoint.x;
-
             let rotation = angle // + 90 % 360 //(point as any).angle;
 
-            // if(handle.y <= startPoint.y){
-            //     //Handle lower
-            // }else{
-            //     //Handle higher
-
-            //     if()
-            // }
-            // if(!isNegative){
-            //     rotation = -rotation;
-                
-            // }else{
-
-            //     if(startsLower && movesRight){
-            //         rotation += 180;
-            //     }
-
-            //     if(startsLeft && startsLower){
-            //         rotation -= 180
-            //     }
-    
-            //     if(!startsLower){
-            //         if(movesRight){
-            //             rotation += 90;
-            //         }else{
-            //             rotation -= 90;
-            //         }
-            //     }
-
-            //     if(startsLeft){
-                    
-            //     }
-            // // }
-            
            
+
+
+            const onMouseDown = (e: any) => {
+                let pos : InfiniteCanvasPosition = {
+                    x: e.clientX,
+                    y: e.clientY
+                }
+
+                e.preventDefault()
+                e.stopPropagation()
+
+                let doc = getHostForElement(e.target as HTMLElement)
+
+
+                let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
+             
+                const mouseMove = (e: MouseEvent) => {
+                    let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
+
+                    setPoint({
+                        x: rp?.x || 0,
+                        y: rp?.y || 0
+                    })
+                }
+
+                const mouseUp = (e: MouseEvent) => {
+
+                    updatePathPoint?.(path.id, ix - 1, { x: e.clientX, y: e.clientY})
+
+                    // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
+
+                    let target = (e.target as HTMLElement)
+                    if(target.hasAttribute('data-nodeid')){
+
+                        let nodeId = target.getAttribute('data-nodeid') || ''
+                        let handleId = target.getAttribute('data-handleid') || ''
+
+                        linkPath?.(path.id, nodeId, handleId)
+                        // props.onLinked?.(nodeId, handleId)
+
+                    }
+
+                    doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
+                    doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+                }
+
+                doc.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
+                doc.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+            }
 
             return ix < points.length - 1 ? (
                 <PipeElbow 
@@ -299,69 +267,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     height={50}
                     x={x}
                     y={y}
-                    onMouseDown={(e) => {
-                        let pos : InfiniteCanvasPosition = {
-                            x: e.clientX,
-                            y: e.clientY
-                        }
-                
-                        e.preventDefault()
-                        e.stopPropagation()
-                
-                        // props.onPointsChanged?.(ix, pos)
-                
-                        let doc = getHostForElement(e.target as HTMLElement)
-                
-                
-                        let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
-                        // rp = lockToGrid(rp, snapToGrid, grid)
-                
-                        // let current_path = _paths.current.find((a) => a.id == id)
-                
-                        // if(!current_path) return;
-                        
-                        // let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
-                
-                        const mouseMove = (e: MouseEvent) => {
-                            let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
-                
-                            setPoint({
-                                x: rp?.x || 0,
-                                y: rp?.y || 0
-                            })
-                            // let p = points.slice()
-                            // p[ix] = {
-                            //     x: rp?.x || 0,
-                            //     y: rp?.y || 0
-                            // }
-                            // setPoints(p)
-                            // updatePointPosition({x: e.clientX, y: e.clientY})
-                        }
-                
-                        const mouseUp = (e: MouseEvent) => {
-                
-                            updatePathPoint?.(path.id, ix - 1, { x: e.clientX, y: e.clientY})
-
-                            // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
-                
-                            let target = (e.target as HTMLElement)
-                            if(target.hasAttribute('data-nodeid')){
-                
-                                let nodeId = target.getAttribute('data-nodeid') || ''
-                                let handleId = target.getAttribute('data-handleid') || ''
-                
-                                linkPath?.(path.id, nodeId, handleId)
-                                // props.onLinked?.(nodeId, handleId)
-                
-                            }
-                
-                            doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-                            doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
-                        }
-                
-                        doc.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-                        doc.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
-                    }}
+                    onMouseDown={onMouseDown}
                     style={{
                         position: 'absolute',
                         // left: location.x,
@@ -373,7 +279,22 @@ export const PipePathFactory : AbstractPathFactory = () => {
                         transform: `rotate(${rotation}deg) `
                     }}
                     />
-            ) : null
+            ) : (
+                <div 
+                    onMouseDown={onMouseDown}
+                    style={{
+                        position: 'absolute',
+                        top: y,
+                        left: x,
+                        width: 10, 
+                        height: 10, 
+                        borderRadius: 10,
+                        background: 'gray',
+                        border: '1px solid black'
+                    }}>
+
+                </div>
+            )
         },
     }
 }
