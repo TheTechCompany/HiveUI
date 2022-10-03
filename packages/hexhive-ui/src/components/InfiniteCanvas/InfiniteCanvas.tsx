@@ -469,7 +469,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 updatePathPosition(point)
             }else{
                 setPortDragging(false)
-                console.log("LINKING", event?.target)
+
                 let target = (event?.target as HTMLElement)
                 if(target.hasAttribute('data-nodeid')){
 
@@ -482,8 +482,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                         onPathUpdate?.(linkPath(path, nodeId, handleId))
                     }else{
                         //Dynamic Ports
-                        
-                        onPathUpdate?.(linkPath(path, nodeId));
+
+                        onPathUpdate?.(linkPath(path, nodeId, position));
                     }   
 
                     // let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)

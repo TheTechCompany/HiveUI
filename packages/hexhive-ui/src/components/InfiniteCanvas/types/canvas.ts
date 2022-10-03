@@ -23,6 +23,8 @@ export interface InfiniteCanvasNode {
     ports?: InfinitePort[];
     label?: string;
 
+    rotation?: number;
+
     width?: number;
     height?: number;
 
@@ -59,8 +61,8 @@ export interface InfiniteCanvasPath {
     extras?: any;
     
     source: string;
-    sourceHandle?: string;
+    sourceHandle?: string | {x: number, y: number};
     target?: string;
-    targetHandle?: string;
+    targetHandle?: string | {x: number, y: number};
     points: InfiniteCanvasPosition[]
 }
