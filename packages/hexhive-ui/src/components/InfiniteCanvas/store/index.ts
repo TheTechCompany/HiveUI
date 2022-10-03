@@ -37,15 +37,36 @@ export function reducer(state : StoreState = {nodes: [], paths: []}, action : {t
                 let paths = state.paths.filter((a) => a.source == action.data.id || a.target == action.data.id)
                 paths.forEach((path) => {
                     let ix = p.map((x) => x.id).indexOf(path.id)
+
+                    const { sourceHandle, targetHandle } = p[ix];
+
                     if(p[ix].source == action.data.id){
-                        p[ix].points[0] = {
-                            x: n[nIx].x + n[nIx]?.ports?.[p[ix].sourceHandle || ''].position.x,
-                            y: n[nIx].y + n[nIx]?.ports?.[p[ix].sourceHandle || ''].position.y
+
+                    
+                        if(typeof(sourceHandle) == "string"){
+                            p[ix].points[0] = {
+                                x: n[nIx].x + (n[nIx]?.ports?.[sourceHandle || '']?.position?.x || 0),
+                                y: n[nIx].y + (n[nIx]?.ports?.[sourceHandle || '']?.position?.y || 0)
+                            }
+                        }else{
+                            p[ix].points[0] = {
+                                x: sourceHandle?.x || 0,
+                                y: sourceHandle?.y || 0
+                            };
                         }
+
                     }else{
-                        p[ix].points[p[ix].points.length - 1] = {
-                            x: n[nIx].x + n[nIx]?.ports?.[p[ix].targetHandle || ''].position.x,
-                            y: n[nIx].y + n[nIx]?.ports?.[p[ix].targetHandle || ''].position.y
+
+                        if(typeof(targetHandle) == 'string'){
+                            p[ix].points[p[ix].points.length - 1] = {
+                                x: n[nIx].x + n[nIx]?.ports?.[targetHandle || ''].position.x,
+                                y: n[nIx].y + n[nIx]?.ports?.[targetHandle || ''].position.y
+                            }
+                        }else{
+                            p[ix].points[p[ix].points.length - 1] = {
+                                x: targetHandle?.x || 0,
+                                y: targetHandle?.y || 0
+                            }
                         }
                         //p[ix].points[p[ix].points.length - 1] = 
                     }
