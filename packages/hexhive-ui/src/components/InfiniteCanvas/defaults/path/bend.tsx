@@ -9,7 +9,6 @@ import React from 'react'
 import { PathPoint } from './point'
 
 export const PathBend = (props: any) => {
-    console.log({props})
 
     const {x, y, start, bend, end} = props
 

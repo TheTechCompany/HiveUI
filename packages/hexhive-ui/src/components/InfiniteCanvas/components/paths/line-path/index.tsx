@@ -23,7 +23,6 @@ export const LinePathFactory : AbstractPathFactory = (context: IInfiniteCanvasCo
                         // (ix, e, position) => (e.metaKey || e.ctrlKey) ? addPoint(path.id, ix, e, position) : onSelect(path.id)
                         // context.segmentClick(ix, e)
                         if(e.metaKey || e.ctrlKey){
-                            console.log({ix})
                             addPathPoint?.(path.id, ix, { x: e.clientX, y: e.clientY})
                         }else{
                             selectPath?.(path.id)
@@ -82,7 +81,6 @@ export const LinePathFactory : AbstractPathFactory = (context: IInfiniteCanvasCo
                 
                         const mouseUp = (e: MouseEvent) => {
                 
-                            console.log("Update path point", path.id, updatePathPoint)
                             updatePathPoint?.(path.id, ix - 1, { x: e.clientX, y: e.clientY})
 
                             // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})

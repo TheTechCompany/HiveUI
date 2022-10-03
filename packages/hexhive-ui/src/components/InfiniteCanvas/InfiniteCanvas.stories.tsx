@@ -38,7 +38,6 @@ const ControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
         nodes={nodes}
         paths={pathRef.current}
         onNodeUpdate={(node) => {
-          console.log("onNodeUpdate");
 
           action("onNodesChanged");
           let p = nodes.slice();
@@ -53,17 +52,14 @@ const ControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
           //setNodes(nodes)
         }}
         onPathCreate={(path) => {
-          console.log("onPathCreate");
 
           let p = pathRef.current.slice();
           p.push(path);
           setPaths(p);
-          console.log(p);
           // action('onPathsChanged')
           // setPaths(paths)
         }}
         onPathUpdate={(path) => {
-          console.log("onPathUpdate", path);
           let p = pathRef.current.slice();
           let p_ix = p.map((x) => x.id).indexOf(path.id);
 

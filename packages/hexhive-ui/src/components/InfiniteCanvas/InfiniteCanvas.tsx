@@ -226,7 +226,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     //TODO memoize
 
     useEffect(() => {
-        console.log("nodes")
         if(Object.keys(_factories).length > 0){
             setNodes(nodes || [])
         }
@@ -244,7 +243,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     useEffect(() => {
         if(offset && (offset.x != _offset.x || offset.y != _offset.y)){
-            console.log("Set")
            setOffset(offset)
         }
     }, [offset])
@@ -291,8 +289,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 let adjustedWidth = (clientWidth || 0) * (_zoom / 100)
                 let adjustedHeight = (clientHeight || 0) * (_zoom / 100)
 
-                console.log({x, y})
-                console.log(Math.abs(x) + adjustedWidth, clientWidth, Math.abs(y) + adjustedHeight, clientHeight, _zoom)
 
                 if(Math.abs(x) + adjustedWidth > (clientWidth || 0)) x = 0 - ((clientWidth || 0) - adjustedWidth)
                 if(Math.abs(y) + adjustedHeight > (clientHeight || 0)) y = 0 - ((clientHeight || 0) - adjustedHeight)
@@ -331,11 +327,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const onTouchStart = (evt: React.TouchEvent) => {
         setMenuPos(undefined)
-        console.log("TOUCH BASED")
             //Left
             isDragging.current.dragging = true
             onTouchDrag(evt, (evt, position, lastPos, finished) => {
-                console.log("Drag")
                 if(!finished && isDragging && position && lastPos){
                     updateOffset(position, lastPos)
                 }
@@ -385,7 +379,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             }
 
             if(finite){
-                console.log({new_offset})
                 if(new_offset.x > 0) new_offset.x = 0;
                 if(new_offset.y > 0) new_offset.y = 0;
 
@@ -443,14 +436,12 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 point
             ]
             if(ix > -1){
-                console.log("Updating", id)
                 path = {
                     ...p[ix],
                     points: _points
                 }                    
 
             }else{
-                console.log("creating", id)
                path = {
                     id,
                     source: nodeId,
@@ -617,7 +608,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             
         }, [_paths, _offset, _zoom]),
         updatePathPoint: useCallback((id, ix, point) => {
-            console.log("UPDATE PATH POINT")
             let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
             rp = lockToGrid(rp, snapToGrid, grid)
 
@@ -626,7 +616,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             if(!current_path) return;
             
             let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
-            console.log("Updated", updated)
             onPathUpdate?.(updated)
 
         }, [_paths, _offset, _zoom]),
@@ -649,7 +638,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 
                 onNodeUpdate?.(updatedNode)
                 
-                console.log("update node", {pos})
 
             }
             // let node = _nodes.find((a) => a.id == node.id)
@@ -719,19 +707,15 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     onPathUpdate?.(addPathSegment(current_path, ix, rp))
                 }, [_paths, _offset, _zoom]),
                 updatePathPoint: useCallback((id, ix, point) => {
-                    console.log("Update path point", {id, ix, point})
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     rp = lockToGrid(rp, snapToGrid, grid)
 
-                    console.log({rp})
             
                     let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
                     
-                    console.log({_paths, id})
                     if(!current_path) return;
                     
                     let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
-                    console.log("Updated PATH", updated)
                     onPathUpdate?.(updated)
             
                 }, [_paths, _offset, _zoom]),
@@ -744,7 +728,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 dragPort: dragPort,
                 updateNode: (node, position) => {
                     // if(node) onSelect?.("node", node)
-                    console.log("update node", {node})
             
                     let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
                     pos = lockToGrid(pos, snapToGrid || false, grid)
@@ -755,7 +738,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                         
                         onNodeUpdate?.(updatedNode)
                         
-                        console.log("update node", {pos})
             
                     }
                     // let node = _nodes.find((a) => a.id == node.id)

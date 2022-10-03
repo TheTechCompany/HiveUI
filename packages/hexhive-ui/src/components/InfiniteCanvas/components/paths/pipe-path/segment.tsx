@@ -34,14 +34,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
 
     const hypo = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2))
 
-    console.log({
-        points: props.points,
-        x,
-        y,
-        rightX,
-        rightY,
-
-    })
+  
     let rotation = ((((Math.atan2((rightY || 0) - (y || 0), (rightX || 0) - (x || 0)) * 180 )/ Math.PI) ) + 360) % 360
 
     // if (!(rotation > 0)){
@@ -51,9 +44,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
     // if(rotation < 0){
     //     rotation = rotation * 2 * Math.PI
     // }
-    console.log({rotation})
     // if(rotation > 90) 
-    console.log(props.nextPoint)
 
     const find_angle = (A: {x: number, y:number},B: {x: number, y:number},C: {x: number, y:number}) => {
         var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    

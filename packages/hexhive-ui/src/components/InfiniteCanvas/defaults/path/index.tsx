@@ -227,13 +227,8 @@ export const BaseFlowPath : React.FC<FlowPathProps> = (props) => {
                 angle =  -find_angle(startPoint, handle, endPoint) //((a1 - a2) * 180) / Math.PI //(((ix % 2 == 0 ? a1 : a2) * 180 / Math.PI) + 360) %360;
 
             }
-            console.log({ix, angle, lastAngle, last: lastAngle + angle})
 
             angle = -(angles[ix -1 ] || 0) //angle + lastAngle;
-
-            console.log({angles, ix, angle, location})
-            
-      
 
             const offsetX = 7.5
             const offsetY = 7.5

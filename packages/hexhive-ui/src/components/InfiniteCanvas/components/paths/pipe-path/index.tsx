@@ -26,7 +26,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
         let ab1 = Math.atan2(b.y - ac.y, b.x - ac.x) * 180 / Math.PI;
         let ab2 = Math.atan2(b.y - ca.y, b.x - ca.x) * 180 / Math.PI
 
-        console.log({ix, ab1, ab2})
         return a.x < c.x && ab1 == 180 || ab1 == -90 || (ab1 == 0 && ab2 != 90) ? ab1 : ab1 + 90//a.x <= c.x ? Math.abs(ab2) : Math.abs(ab1);
 
     }
@@ -106,7 +105,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 <PipeSegment 
                     onMouseDown={(e) => {
                         if(e.metaKey || e.ctrlKey){
-                            console.log({ix})
                             addPathPoint?.(path.id, ix, { x: e.clientX, y: e.clientY})
                         }else{
                             selectPath?.(path.id)
@@ -122,8 +120,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
             const { points } = path;
 
             const { linkPath, getRelativeCanvasPos, updatePathPoint } = useContext(InfiniteCanvasContext);
-
-            console.log({point})
 
             const startPoint = points[ix - 1]
             let endPoint = points[ix + 1]
@@ -169,7 +165,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 let entry : "left" | "right" | "down" | "up" = "up";
                 let exit : "left" | "right" | "down" | "up" = "left";
     
-                console.log("Start angle", Math.atan2(startPoint.y - handle.y, startPoint.x - (handle.x)) * 180 / Math.PI)
 // /(a1 > 0 && a1 <= 90)
 
                 let handleX = handle.x;
@@ -205,7 +200,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     angle = 90
                 }
             
-                console.log({ix, angle, a1, a2, entry, exit})
                 // angle =  find_angle(ix, startPoint, handle, endPoint) //((a1 - a2) * 180) / Math.PI //(((ix % 2 == 0 ? a1 : a2) * 180 / Math.PI) + 360) %360;
 
             }
@@ -233,7 +227,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
             //     }
             // }
 
-            console.log("angle", Math.atan2(endPoint.y - (handle.y +50), endPoint.x - (handle.x)) * 180 / Math.PI)
 
             // angle = -angle //-(angles[ix - 1 ] || 0) //angle + lastAngle;
 
@@ -256,7 +249,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
             const transformX = x + 50 - offsetX;
             const transformY = y + offsetY
 
-            console.log({ix: ix, point: (point as any).angle, angle})
 
 
             // const isNegative = angle.A < 0 || angle.B < 0;
@@ -348,7 +340,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 
                         const mouseUp = (e: MouseEvent) => {
                 
-                            console.log("Update path point", path.id, updatePathPoint)
                             updatePathPoint?.(path.id, ix - 1, { x: e.clientX, y: e.clientY})
 
                             // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})

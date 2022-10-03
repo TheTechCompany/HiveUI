@@ -62,7 +62,6 @@ export const useEngine = (options: EngineOptions): [Engine] => {
         }
     }, [bounds.width, bounds.height])
 
-    console.log({widthScale, heightScale})
 
     useEffect(() => {
 

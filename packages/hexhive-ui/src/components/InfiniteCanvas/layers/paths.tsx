@@ -52,10 +52,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
             
                
                 if(router){
-                    console.log("Pathways")
 
                     if(x.sourceHandle && x.targetHandle){
-                        console.log("handle to handle")
 
                         let startNode = nodes?.find((a) => a.id == x.source)
                         let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
@@ -72,7 +70,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         }) || [])
 
                     }else if(x.sourceHandle && x.source && x.points){
-                        console.log("source to point")
 
                         let startNode = nodes?.find((a) => a.id == x.source)
 
@@ -80,12 +77,10 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
                         if(!startPort || !startNode) {
                             points = []
-                            console.log({startPort, startNode})
                         } ///return {id: '', points :[]};
                         else {
                             if(!x.points[x.points.length - 1]) {
                                 points = []
-                                console.log({startPort, startNode, points: x.points})
                             }
                             else{
                                 points = (engine?.generatePath?.({
@@ -96,27 +91,10 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                                     y: (x.points[x.points.length - 1].y)
                                 }) || [])
 
-                                console.log({
-                                    points: engine?.generatePath?.({
-                                        x: (startNode?.x || 0) + (startPort?.relativeX || 0) + ((startPort.width || 0) / 2),
-                                        y: (startNode?.y || 0) + (startPort?.relativeY || 0) + ((startPort.height || 0) / 2)
-                                    }, {
-                                        x: (x.points[x.points.length - 1].x),
-                                        y: (x.points[x.points.length - 1].y)
-                                    }),
-                                   start: {
-                                        x: (startNode?.x || 0) + (startPort?.relativeX || 0) + ((startPort.width || 0) / 2),
-                                        y: (startNode?.y || 0) + (startPort?.relativeY || 0) + ((startPort.height || 0) / 2)
-                                    }, 
-                                    end: {
-                                        x: (x.points[x.points.length - 1].x),
-                                        y: (x.points[x.points.length - 1].y)
-                                    }
-                                })
+                             
                             }
                         }
                     }else{
-                        console.log("point to point")
                         points = (engine?.generatePath?.({
                             x: x.points?.[0]?.x,
                             y: x.points?.[0]?.y
@@ -126,7 +104,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         }) || [])
                     }
 
-                    console.log({points})
                 }else{
 
                     points = x.points;
@@ -184,11 +161,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         let a1 = Math.atan2(dy1, dx1) * 180 / Math.PI
                         let a2 = Math.atan2(dy2, dx2) * 180 / Math.PI
 
-                        console.log({ix, a1, a2, a3: a1 + a2, a4: a1-a2})
         
                         return find_angle(pair[0], pair[1], nextPair[1])
-                        return (ix % 2 == 0 ? a1 : a2) * 180 / Math.PI;
-                        // console.log({a1: (a1 *180) / Math.PI, a2: (a2 * 180) / Math.PI})
                     }
                 }).filter((a: any) => a);
                 
@@ -200,8 +174,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                 // }
               
     
-                console.log({angles});
-
                 return {
                     ...x,
                     points: (points || []).map((point, ix) => ({...point, angle: angles[ix - 1]})),
@@ -222,8 +194,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
     const addPoint = (path_id: string, ix: number, e: React.MouseEvent, pos: InfiniteCanvasPosition) => {
         addPathPoint?.(path_id, ix, pos)
         e.stopPropagation()
-
-        console.log(e)
 
         let doc = getHostForElement(e.target as HTMLElement)
 
@@ -305,7 +275,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
         if(factory){
 
             return () => {
-                console.log({points: path.points})
                 const [points, setPoints] = useState(path.points || [])
 
                 path.points = points;
