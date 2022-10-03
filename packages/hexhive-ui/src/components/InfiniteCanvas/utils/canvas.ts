@@ -94,11 +94,11 @@ export const updatePathSegment = (path: InfiniteCanvasPath, ix: number, point: I
     return p
 }
 
-export const linkPath = (path: InfiniteCanvasPath, nodeId: string, handleId: string) => {
+export const linkPath = (path: InfiniteCanvasPath, nodeId: string, handleId?: string) => {
     
         path.points.splice(path.points.length -1, 1) //TODO make safe for relinking
         path.target = nodeId;
-        path.targetHandle = handleId;
+        if(handleId) path.targetHandle = handleId;
     
 
     return path;

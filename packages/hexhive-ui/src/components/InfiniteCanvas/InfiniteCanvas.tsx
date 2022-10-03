@@ -472,13 +472,23 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 console.log("LINKING", event?.target)
                 let target = (event?.target as HTMLElement)
                 if(target.hasAttribute('data-nodeid')){
+
                     let nodeId = target.getAttribute('data-nodeid') || ''
-                    let handleId = target.getAttribute('data-handleid') || ''
+
+                    if(target.hasAttribute('data-handleid')){
+                        //Static Ports
+
+                        let handleId = target.getAttribute('data-handleid') || ''
+                        onPathUpdate?.(linkPath(path, nodeId, handleId))
+                    }else{
+                        //Dynamic Ports
+                        
+                        onPathUpdate?.(linkPath(path, nodeId));
+                    }   
 
                     // let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
                     // console.log({current_path, paths: _paths, path})
                     // if(!current_path) return;
-                    onPathUpdate?.(linkPath(path, nodeId, handleId))
 
           //  onPathsChanged?.(linkPath(_paths.current, path.id, nodeId, handleId))
                 }

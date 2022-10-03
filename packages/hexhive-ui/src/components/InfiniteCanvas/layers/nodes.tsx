@@ -94,6 +94,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         }else{
             return (
                 <div 
+                    data-nodeid={node.id}
                     onContextMenu={(e) => {
                         openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
                     }}
