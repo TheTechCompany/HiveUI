@@ -45,7 +45,7 @@ export const BaseRetractingPort : React.FC<RetractingPortProps> = (props) => {
 export const RetractingPort = styled(BaseRetractingPort)`
     position: absolute;
     left: -10px;
-    width: ${p => p.hidden ? (p.height ? `${p.height * 20}px` : '20px') : 0};
+    width: ${p => !p.hidden ? (p.height ? `${p.height * 20}px` : '20px') : 0};
     top: ${p => p.y || '50px'};
     left: ${p => p.x || '0px'};
     transform: rotate(${p => p.rotation || 0}deg) ${p => p.scaleY ? `scaleY(${1 / p.scaleY})` : ''} ${p => p.scaleX ? `scaleX(${Math.abs(1 / p.scaleX)})`: ''} ${p => p.scaleX && p.scaleX > 1 ? `translateX(${1/p.scaleX * 100}%)` : ''} ${p => p.scaleY && p.scaleY > 1 ? `translateY(${1/p.scaleY * 100}%)` : ''};
@@ -56,8 +56,8 @@ export const RetractingPort = styled(BaseRetractingPort)`
         position: absolute;
         left: -10px;
         top: 0px;
-        width: ${p => p.hidden ? '10px' : '0px'};
-        height: ${p => p.hidden ? '10px' : '0px'};
+        width: ${p => !p.hidden ? '10px' : '0px'};
+        height: ${p => !p.hidden ? '10px' : '0px'};
         border-radius: 5px;
         background-color: lightblue;
     }
