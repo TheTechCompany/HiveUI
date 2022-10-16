@@ -54,7 +54,7 @@ export const RetractingPort = styled(BaseRetractingPort)`
 
     .connector{
         position: absolute;
-        left: -10px;
+        left: ${p => !p.hidden ? '-10px' : '0px'};
         top: 0px;
         width: ${p => !p.hidden ? '10px' : '0px'};
         height: ${p => !p.hidden ? '10px' : '0px'};
