@@ -267,7 +267,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                     <Typography variant="subtitle2">{hoverNode && status && (status[hoverNode.value] || status[hoverNode.label])}</Typography>
                 </div>
             </Popover>*/}
-            {_nodes && _nodes.map((node) => renderAssetContainer(
+            {_nodes && _nodes.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1)).map((node) => renderAssetContainer(
                     node,
                     (<NodeIdContext.Provider value={{
                         nodeId: node.id,

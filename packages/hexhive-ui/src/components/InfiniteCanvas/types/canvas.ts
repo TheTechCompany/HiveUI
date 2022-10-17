@@ -20,6 +20,9 @@ export interface InfiniteCanvasNode {
     asset?: string;
     x: number;
     y: number;
+
+    zIndex?: number;
+
     ports?: InfinitePort[];
     label?: string;
 
