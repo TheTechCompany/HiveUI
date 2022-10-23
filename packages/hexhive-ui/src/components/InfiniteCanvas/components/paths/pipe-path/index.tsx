@@ -205,8 +205,8 @@ export const PipePathFactory : AbstractPathFactory = () => {
             let x = point.x - 50 + offsetX;
             let y = point.y - offsetY
 
-            const transformX = x + 50 - offsetX;
-            const transformY = y + offsetY
+            const transformX = 50 - offsetX; //+x
+            const transformY = offsetY //+y
 
             let rotation = angle // + 90 % 360 //(point as any).angle;
 
@@ -262,6 +262,11 @@ export const PipePathFactory : AbstractPathFactory = () => {
             }
 
             return ix < points.length - 1 ? (
+                <g style={{
+                    transformBox: 'fill-box', 
+                    transformOrigin: `${transformX}px ${transformY}px`, 
+                    transform: `rotate(${rotation}deg) `
+                }}>
                 <PipeElbow 
                     width={50}
                     height={50}
@@ -274,11 +279,12 @@ export const PipePathFactory : AbstractPathFactory = () => {
                         // top: location.y,
                         width: '50px',
                         height: '50px',
-                        transformBox: 'fill-box', 
-                        transformOrigin: `${transformX}px ${transformY}px`, 
-                        transform: `rotate(${rotation}deg) `
+                        // transformBox: 'fill-box', 
+                        // transformOrigin: `${transformX}px ${transformY}px`, 
+                        // transform: `rotate(${rotation}deg) `
                     }}
                     />
+                </g>
             ) : (
                 <div 
                     onMouseDown={onMouseDown}
