@@ -1,4 +1,3 @@
-import { getHostForElement } from "@hexhive/utils";
 import React, { useContext } from "react";
 import { InfiniteCanvasContext } from "../../../context/context";
 import { AbstractPathFactory } from "../../../factories";
@@ -228,7 +227,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
 
                 (host as any).setPointerCapture(e.pointerId);
 
-                let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
+                // let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
              
                 const mouseMove = (e: MouseEvent) => {
                     let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
@@ -262,12 +261,12 @@ export const PipePathFactory : AbstractPathFactory = () => {
 
                     (host).releasePointerCapture(e.pointerId)
 
-                    host.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-                    host.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+                    host.removeEventListener('pointermove', mouseMove as EventListenerOrEventListenerObject)
+                    host.removeEventListener('pointerup', mouseUp as EventListenerOrEventListenerObject)
                 }
 
-                host.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
-                host.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
+                host.addEventListener('pointermove', mouseMove as EventListenerOrEventListenerObject)
+                host.addEventListener('pointerup', mouseUp as EventListenerOrEventListenerObject)
             }
 
             return ix < points.length - 1 ? (
@@ -281,7 +280,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     height={50}
                     x={x}
                     y={y}
-                    onMouseDown={onMouseDown}
+                    onPointerDown={onMouseDown}
                     style={{
                         position: 'absolute',
                         // left: location.x,
