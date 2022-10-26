@@ -89,36 +89,38 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         
         let factory = factories?.[node.type];
 
+        const props = {
+            'data-nodeid': node.id,
+            ref: (element: any) => {
+                if(!nodeRefs) return;
+                nodeRefs.current[node.id] = element;
+            },
+            className: `node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`,
+            onClick: (e: any) => {
+                selectNode?.(node.id)
+            },
+            onMouseDown: (evt: any) => mouseDown(node.id, evt),
+            style: {
+                // pointerEvents: 'all',
+                left: node.x, 
+                top: node.y,
+                transform: `rotate(${node?.extras?.rotation}deg)
+                            scaleX(${node?.extras?.scaleX || 1})
+                            scaleY(${node?.extras?.scaleY || 1})`
+            }
+        }
+
         if((factory as any).renderNodeContainer){
-            return (factory as any).renderNodeContainer(node, children)
+            return (factory as any).renderNodeContainer(node, props, children)
         }else{
             return (
-                <div 
-                    data-nodeid={node.id}
+                <div
+                    {...props}
                     onContextMenu={(e) => {
                         openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
                     }}
-                    ref={(element) => {
-                        if(!nodeRefs) return;
-                        nodeRefs.current[node.id] = element
-                        // setNodeRefs?.(itemRefs.current)
-                    }}
-                    className={`node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`} 
-                    onClick={(e) => {
-                        selectNode?.(node.id)
-                    }}
-
-                    onMouseDown={(evt) => mouseDown(node.id, evt)}
-                    onMouseEnter={(ev) => nodeHover(ev.currentTarget, node.id)}
-                    onMouseLeave={() => nodeHoverEnd()}
-                    style={{
-                        pointerEvents: 'all',
-                        left: node.x, 
-                        top: node.y,
-                        transform: `rotate(${node?.extras?.rotation}deg)
-                                    scaleX(${node?.extras?.scaleX || 1})
-                                    scaleY(${node?.extras?.scaleY || 1})`
-                    }}>
+                 
+                  >
                     {children}
                 </div>
             )
