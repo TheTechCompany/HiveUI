@@ -180,7 +180,7 @@ Controlled.args = {
       type: "icon-node",
       extras: {
         label: "Run",
-        icon: "NaviteNext",
+        icon: "NavigateNext",
         color: "purple",
       },
       x: 200,
@@ -212,6 +212,16 @@ Controlled.args = {
       source: "1",
       sourceHandle: "inlet",
     },
+
+    {
+      id: '4',
+      type: 'pipe-path',
+      points: [],
+      source: "1",
+      sourceHandle: 'outlet',
+      target: '2',
+      targetHandle: 'inlet'
+    }
   ],
 };
 
@@ -283,7 +293,7 @@ Routed.args = {
       points: [{ x: 100, y: 100 }],
       source: "1",
       sourceHandle: "inlet",
-    },
+    }
   ],
 };
 

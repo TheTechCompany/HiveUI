@@ -518,6 +518,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         let _ports = Object.assign({}, portRef.current);
 
+        console.log({opts, point})
+
         _ports[`${opts.nodeId}:${opts.handleId}`] = {
             relativeX: point.x - node.x,
             relativeY: point.y - node.y,

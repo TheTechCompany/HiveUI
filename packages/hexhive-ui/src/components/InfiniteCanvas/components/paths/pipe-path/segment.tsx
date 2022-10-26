@@ -86,10 +86,10 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
                 style={{
                     transformOrigin: `6.5px 6.5px`, 
                     transformBox: 'fill-box', 
-                    transform: `rotate(${rotation}deg) scaleY(${false ? '-1' : '1'})`
+                    transform: `translateX(-6.5px) translateY(-6.5px) rotate(${rotation}deg) scaleY(${false ? '-1' : '1'})`
                 }}
-                x={(x || 0) - 6.5} y={(y || 0) - 6.5} 
-                width={hypo} height={13} />
+                x={(x || 0)} y={(y || 0)} 
+                width={hypo + 13} height={13} />
             {/* <Join 
                 x={(props.points?.[0]?.x || 0) - 10}
                 y={(props.points?.[0]?.y || 0) - ( 12)}

@@ -43,6 +43,7 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
     const paths = useMemo(() => {
         if(_paths && nodes && ports){
 
+            console.log({_paths})
 
 
                 // console.log({pairs, angles});
@@ -139,25 +140,33 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
                     points = x.points;
 
+                    console.log({x})
+
                     if(x.sourceHandle){
                         let node = nodes?.find((a) => a.id == x.source)
                         // let port = ports?.[`${x.source}:${x.sourceHandle}`]
 
-                         
-                        let startX, startY;
+                        // console.log({node});
+
+                        let startX, startY; 
                         
                         if(typeof(x.sourceHandle) == 'string'){
                             let startPort = ports?.[`${x.source}:${x.sourceHandle}`]
 
-                            startX = startPort?.relativeX;
-                            startY = startPort?.relativeY;
+                            startX = startPort?.relativeX + (startPort?.width / 2);
+                            startY = startPort?.relativeY + (startPort?.height / 2);
+
+                            if(x.id == '4') console.log("Start Port", {x, startX, startY})
                         }else{
                             startX = x.sourceHandle?.x;
                             startY = x.sourceHandle?.y;
+
+                            if(x.id == '4') console.log({x, startX, startY})
+
                         }
 
 
-                        if(startX && startY && node){
+                        if(startX != undefined && startY != undefined && node){
 
                             
                             let point = {
@@ -175,21 +184,28 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         let endX, endY;
                         if(typeof(x.targetHandle) == 'string'){
                             let targetPort = ports?.[`${x.target}:${x.targetHandle}`]
-                            endX = targetPort?.relativeX;
-                            endY = targetPort?.relativeY;
+
+                            endX = targetPort?.relativeX + (targetPort?.width / 2);
+                            endY = targetPort?.relativeY + (targetPort?.height / 2);
+
+                            if(x.id == '4') console.log("End Port", {x, endX, endY})
+
                         }else{
                             endX = x.targetHandle?.x;
                             endY = x.targetHandle?.y;
                         }
 
-                        if(endX && endY && node){
+                        // console.log({endX, endY, node});
+
+                        if(endX != undefined && endY != undefined && node){
                             let point = {
-                                x: (node?.x || 0)+ (endX || 0), //+ ((port.width || 0) / 2),
-                                y: (node?.y || 0) +(endY || 0) //+ ((port.height || 0) /2)
+                                x: (node?.x || 0) + (endX || 0), //+ ((port.width || 0) / 2),
+                                y: (node?.y || 0) + (endY || 0) //+ ((port.height || 0) /2)
                             }
                             points = [...(points || []), point]
                         }
                     }
+                    console.log({x, points})
 
                 }
 
@@ -198,7 +214,7 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                 let init : InfiniteCanvasPosition[][] = [];
                 let pairs = points.reduce((result, value, index, array) => {
                     if(index < array.length - 1){
-                        result.push(array.slice(index, index+ 2))
+                        result.push(array.slice(index, index + 2))
                     }
                     return result;
                 }, init)
