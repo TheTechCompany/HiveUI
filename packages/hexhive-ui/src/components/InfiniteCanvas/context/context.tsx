@@ -1,5 +1,5 @@
 import React, {MutableRefObject, Ref, useContext, useRef} from 'react';
-import { InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition } from '../types/canvas';
+import { InfiniteCanvasBounds, InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition } from '../types/canvas';
 import { HMIPosition } from '../assets/hmi-spec';
 import { AbstractNodeFactory, IAbstractNodeFactory } from '../factories/abstract-node-factory';
 import { AbstractFactory } from '../factories/abstract-factory';
@@ -66,7 +66,7 @@ export interface IInfiniteCanvasContext {
     selected?: {key?: "node" | "path", id?: string}[]
 
     moveNode?: (node: string, position: InfiniteCanvasPosition) => void;
-    updateNode?: (node: string, position: InfiniteCanvasPosition) => void;
+    updateNode?: (node: string, position: InfiniteCanvasPosition, bounds?: InfiniteCanvasBounds) => void;
     changeZoom?: (zoom: number) => void;
     getRelativeCanvasPos?: (pos: {x: number, y: number}) => {x: number, y: number};
     io_status?: {

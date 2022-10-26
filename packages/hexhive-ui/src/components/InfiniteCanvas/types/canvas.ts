@@ -1,5 +1,11 @@
 
 
+export interface InfiniteCanvasBounds {
+    width: number;
+    height: number;
+    rotation: number;
+}
+
 export interface InfiniteCanvasPosition {
     x: number;
     y: number;
