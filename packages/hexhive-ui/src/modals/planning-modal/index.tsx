@@ -89,8 +89,8 @@ export const BasePlanningModal : React.FC<PlanningModalProps> = (props) => {
         let schedule_quote : any;
         var startDate = start?.getTime();
         var endDate = end?.getTime();
-      console.log(quotes, quote)
-      for(var i = 0; i < quotes?.length; i++){
+
+        for(var i = 0; i < quotes?.length; i++){
           let prefix = quotes?.[i].type;
             if(prefix +":"+ quotes?.[i][prefix == 'quote' ? 'QuoteID' : 'JobID'] == quote?.value){
     
@@ -109,7 +109,6 @@ export const BasePlanningModal : React.FC<PlanningModalProps> = (props) => {
           end: endDate,
           type: planType
         };
-      console.log("Planning", schedule);
       
         // if(mode == 'edit'){
         //     if(!props.event?.id) return;
@@ -145,7 +144,6 @@ export const BasePlanningModal : React.FC<PlanningModalProps> = (props) => {
   }
 
   const updateSearch = (item: any) => {
-      console.log(item)
       setQuote(item)
   }
 

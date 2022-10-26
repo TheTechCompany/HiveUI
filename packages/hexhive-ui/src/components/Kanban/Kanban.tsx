@@ -52,7 +52,6 @@ export const Kanban: React.FC<BaseKanbanProps> = ({
   columns = [],
 }) => {
   const onDragEnd = (result: DropResult) => {
-    console.log(result);
 
     let origin: number = parseInt(result.source.droppableId);
     let dest = result.destination?.droppableId;

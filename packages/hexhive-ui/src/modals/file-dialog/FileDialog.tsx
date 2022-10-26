@@ -7,7 +7,6 @@ import moment from 'moment';
 
 import { Typography, Box } from '@mui/material'
 // import './file-dialog.css';
-import { dateFromObjectID } from '@hexhive/utils'
 import { FileViewer, FileViewerFile } from '../../components';
 import { FileContent } from './FileContent';
 import { isEqual } from 'lodash';
@@ -44,7 +43,6 @@ export const FileDialog: React.FC<FileDialogProps> = (props) => {
   const [files, setFiles] = useState<FileDialogFile[]>([])
 
   useEffect(() => {
-    console.log(props.files)
     if (props.files && !isEqual(files, props.files)) {
       setFiles(props.files)
     }

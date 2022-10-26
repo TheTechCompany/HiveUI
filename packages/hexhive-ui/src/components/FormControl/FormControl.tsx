@@ -24,8 +24,7 @@ export const FormControl : React.FC<FormControlProps> = (props) => {
 				value={props.value}
 				label={props.placeholder}
 				onChange={(event) => {
-					console.log({event})
-					 props.onChange?.(event.target.value)
+					props.onChange?.(event.target.value)
 			 	}}>
 				{props.options?.map((option, index) => {
 					return typeof(props.labelKey) == "string" ? (

@@ -204,7 +204,6 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const doMouseMove = (e: MouseEvent) => {
     if (dragging) {
-      console.log("Mouse move")
       e.stopPropagation();
       // clearTimeout(selectTimeout.current)
       startTime.current = null;

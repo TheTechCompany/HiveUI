@@ -23,14 +23,11 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
 
   const [ selectedItem, setSelectedItem ] = useState<any>();
 
-  console.log({links});
-  
  return <Timeline 
       {...args} 
       data={data} 
       selectedItem={selectedItem}
       onSelectItem={(item: any) => {
-        console.log("Selected", {item})
         setSelectedItem(item)
       }}
       onUpdateTask={(task: any, position: any) => {
@@ -186,7 +183,7 @@ export const HeaderColors = Template.bind({});
 HeaderColors.args = {
   date: new Date(),
   onCreateTask: (task: Task) => {
-    console.log({task})
+
   },
   links: [
     {

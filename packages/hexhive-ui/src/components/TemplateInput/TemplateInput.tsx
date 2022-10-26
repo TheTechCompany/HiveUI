@@ -36,7 +36,6 @@ export const TemplateInput : React.FC<TemplateInputProps> = (props) => {
 
         arr.forEach((match) => {
             if(start == end && props.delimeter){
-                console.log(match.index, props.delimeter.length)
                 if((match.index || 0) + props.delimeter?.length == start){
                     console.log("Autocomplete area");
                 }
@@ -44,7 +43,6 @@ export const TemplateInput : React.FC<TemplateInputProps> = (props) => {
         })
     }, [start])
 
-    console.log({start, end})
 
     return (
         <input 

@@ -19,8 +19,6 @@ export const Form = () => {
             setItem({x, y})
 
             setForm?.([...(form||[]), info]) //?.({type: 'CREATE', item: info})
-
-            console.log({info, monitor: monitor.getClientOffset()}) 
         },
         collect(monitor) {
             return {
@@ -31,8 +29,6 @@ export const Form = () => {
     }), [form])
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-
-        console.log({dragIndex, hoverIndex, form})
 
         if(dragIndex == undefined || hoverIndex == undefined) return;
 

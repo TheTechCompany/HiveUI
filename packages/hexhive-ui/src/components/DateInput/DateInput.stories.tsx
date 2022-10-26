@@ -19,7 +19,6 @@ const Template: ComponentStory<typeof DateInput> = (args) => {
     return <Box sx={{flex: 1, display: 'flex', flexDirection: 'column'}}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <DateInput {...args}  value={date} onChange={(date) => { 
-          console.log({date})
           setDate(date)
         
         }}/>

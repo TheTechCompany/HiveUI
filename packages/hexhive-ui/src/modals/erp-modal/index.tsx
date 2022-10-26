@@ -55,7 +55,6 @@ export const ERPModal: React.FC<ERPModalProps> = (props) => {
     }>({items: []})
 
     useEffect(() => {
-        console.log(props.selected)
         setPlan(props.selected ? {
             ...Object.assign({}, props.selected),
             project: props.selected?.project?.id,

@@ -6,7 +6,6 @@ const SSHAPE_SIDE_WIDTH = 20;
 class Link extends Component<any, any>{
   constructor(props: any) {
     super(props);
-    console.log("Link", {props: props})
 
   }
 
@@ -47,7 +46,6 @@ class Link extends Component<any, any>{
 
   render() {
     let pathColor = this.props.isSelected ? Config.values.links.selectedColor : Config.values.links.color;
-    console.log({props: this.props})
     return (
       <g className="timeline-link">
         <path

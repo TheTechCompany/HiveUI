@@ -17,7 +17,6 @@ export interface ListBoxProps {
 }
 
 export const BaseListBox : React.FC<ListBoxProps> = (props) => {
-    console.log({props})
     return (
         <HeaderBox
             header={props.header}

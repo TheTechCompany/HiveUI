@@ -51,7 +51,6 @@ const TaskList : React.FC<any>  = (props) => {
   }
 
   const doScroll = (e: any) => {
-    console.log("On Scroll", e)
     props.onScroll(e.target.scrollTop);
     // if(taskViewRef.current) props.onScroll(taskViewRef.current.scrollTop);
   };

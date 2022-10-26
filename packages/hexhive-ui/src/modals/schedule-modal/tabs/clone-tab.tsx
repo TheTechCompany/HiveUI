@@ -26,8 +26,6 @@ const BaseCloneTab : React.FC<CloneTabProps> = ({
 }) => {
     const [ cloneSelected, setCloneSelected ] = useState<Date[]>([]);
 
-    console.log({project});
-
     useEffect(()=> {
         if(selected){
             setCloneSelected(selected)
@@ -82,7 +80,6 @@ const BaseCloneTab : React.FC<CloneTabProps> = ({
         */
         onSelect?.(select)
 
-        console.log(select)
     }
 
     return (

@@ -15,7 +15,6 @@ const Template: ComponentStory<typeof InfiniteScrubber> = (args) => {
             {...args}
             time={date}
             onTimeChange={(time) => {
-              console.log("time change", time)
               setDate(time)
             }}
              />

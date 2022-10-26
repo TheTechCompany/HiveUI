@@ -31,7 +31,6 @@ export const ScheduleModalHeader : React.FC<ScheduleModalHeaderProps> = (props) 
                         
                         disablePortal
                         onChange={(event, value) => {
-                            console.log({ event, value })
                             props.onChange?.({
                                 ...props.item,
                                 project: value

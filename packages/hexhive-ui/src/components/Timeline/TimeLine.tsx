@@ -346,8 +346,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
     
-    console.log("Propogating")
-    
     let newTasks = tasks.slice();
 
     let updates : any[] = [];
@@ -358,8 +356,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     if(oldTask && forwardLinks.length > 0){
       const { start: oldStart, end: oldEnd } = oldTask;
       const { start, end } = newTasks.find((a) => a.id == item.id);
-
-      console.log({oldTask})
 
       if(!oldEnd) return;
 
@@ -566,8 +562,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             
             onUpdateTask={(task: any, position: any) => {
               
-              console.log("onUpdate", {task, position})
-
               let tasks = _tasks.slice()
 
               let ix = tasks.map((x) => x.id).indexOf(task.id);

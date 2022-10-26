@@ -53,8 +53,6 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     
     const [anchorPos, setAnchorPos] = useState<{ top: number, left: number }>()
     
-//    console.log("Histroy",  historyRef.index, historyRef.)
-
     const [navigationHistory, setNavigationHistory] = useState<{path: {name: string, id: string}[]}[]>([])
     const [ currentPath, setCurrentPath ] = useState<number>(-1)
 
@@ -67,18 +65,10 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     const [ deleteModalOpen, openDeleteModal ] = useState(false);
 
     useEffect(() => {
-        console.log({path: props.path})
         setBreadcrumbs(props.path.split('/').slice(1).map((x) => ({name: x})))
         props.refetchFiles?.(props.path);
     }, [props.path])
 
-    useEffect(() => {
-        // listenHistory((location) => {
-        //     console.log("location", location)
-
-        //     props.onBreadcrumbClick({name: '', id: location.id})
-        // })
-    }, [])
 
     const views : {[key: string]: JSX.Element} = {
         list: <ListView />,
@@ -87,7 +77,6 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     }
 
     const navigate = (path: string) => {
-        console.log({path})
         let parts = props.path.split('/').slice(1).filter((a) => a.length > 0);
         parts.push(path);
 
@@ -116,7 +105,6 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
     }
 
     const formatFile = (file: IFile) => {
-        console.log({file})
         return {
             ...file,
             icon: DEFAULT_ICONS(file)
@@ -125,7 +113,6 @@ export const FileExplorer : React.FC<FileExplorerProps> = (props) => {
 
     const onDrop = (acceptedFiles: File[]) => {
         // Do something with the files
-        console.log(acceptedFiles)
         props.onDrop?.(acceptedFiles)
     }
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})

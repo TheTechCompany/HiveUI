@@ -71,7 +71,6 @@ export const FileViewer: React.FC<FileViewerProps> = ({
     if (files && files.length == 1) {
         let file = files[0]
         let mimetype = file.mimeType ? file.mimeType : 'text/plain'
-        console.log(file)
         let url = file.url // `${process.env.REACT_APP_API && process.env.REACT_APP_API.length > 0 ? process.env.REACT_APP_API : window.location.origin}/api/files/${file.id}${file?.extension ? file?.extension : ''}?access_token=${token}`;
 
         let main = mimetype.split('/')[0];

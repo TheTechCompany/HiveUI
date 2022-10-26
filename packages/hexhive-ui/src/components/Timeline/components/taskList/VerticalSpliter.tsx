@@ -46,7 +46,7 @@ const VerticalSpliter : React.FC<VerticalSplitterProps> = (props) => {
       let delta = bounds - e.clientX;//
       draggingPosition.current = e.clientX;
 
-    if(delta > 0) console.log("delta", delta)
+    // if(delta > 0) console.log("delta", delta)
       props.onTaskListSizing?.(e.clientX + 6);
     }
     

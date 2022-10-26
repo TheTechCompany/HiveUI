@@ -24,7 +24,6 @@ export const DateInput : React.FC<DateInputProps> = (props) => {
                 label={props.label}
                 renderInput={(params) => <TextField size="small" {...params} />}
                 onChange={(value) => {
-                    console.log({value, onChange: props.onChange})
                     props.onChange?.(new Date(value?.valueOf() || '').toISOString())
                     // if(!props.onChange): (value) => {}}
                 }}

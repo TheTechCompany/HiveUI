@@ -76,7 +76,6 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
         }
     }, [props.open]);
 
-    console.log({ item })
     const renderActiveTab = () => {
         switch (activeTab) {
             case 'people':
@@ -85,7 +84,6 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
                         labelKey='name'
                         selected={item.people}
                         onChange={(people) => {
-                            console.log({ people })
                             setItem({ ...item, people: people })
                         }}
                         options={props.people?.filter((a) => (item.people || []).map((x: any) => x.id).indexOf(a.id) < 0)}
@@ -120,7 +118,6 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = (props) => {
                 cloneDates
             })
         }else{
-            console.log(item)
             props.onSubmit?.({
                 ...item,
                 project: item?.project?.id

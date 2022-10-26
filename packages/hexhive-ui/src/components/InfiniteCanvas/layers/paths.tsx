@@ -43,11 +43,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
     const paths = useMemo(() => {
         if(_paths && nodes && ports){
 
-            console.log({_paths})
-
-
-                // console.log({pairs, angles});
-            
             let p = _paths.map((x) : InfiniteCanvasPath => {
                 let points: any[] = [];
             
@@ -140,13 +135,9 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
                     points = x.points;
 
-                    console.log({x})
-
                     if(x.sourceHandle){
                         let node = nodes?.find((a) => a.id == x.source)
                         // let port = ports?.[`${x.source}:${x.sourceHandle}`]
-
-                        // console.log({node});
 
                         let startX, startY; 
                         
@@ -156,12 +147,10 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                             startX = startPort?.relativeX + (startPort?.width / 2);
                             startY = startPort?.relativeY + (startPort?.height / 2);
 
-                            if(x.id == '4') console.log("Start Port", {x, startX, startY})
                         }else{
                             startX = x.sourceHandle?.x;
                             startY = x.sourceHandle?.y;
 
-                            if(x.id == '4') console.log({x, startX, startY})
 
                         }
 
@@ -188,8 +177,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                             endX = targetPort?.relativeX + (targetPort?.width / 2);
                             endY = targetPort?.relativeY + (targetPort?.height / 2);
 
-                            if(x.id == '4') console.log("End Port", {x, endX, endY})
-
                         }else{
                             endX = x.targetHandle?.x;
                             endY = x.targetHandle?.y;
@@ -205,7 +192,6 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                             points = [...(points || []), point]
                         }
                     }
-                    console.log({x, points})
 
                 }
 
