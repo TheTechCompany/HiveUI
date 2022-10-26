@@ -222,21 +222,28 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 e.preventDefault()
                 e.stopPropagation()
 
-                let doc = getHostForElement(e.target as HTMLElement)
+                let doc = getHostForElement(e.target as HTMLElement);
 
+                const host = e.currentTarget;
+
+                (host as any).setPointerCapture(e.pointerId);
 
                 let rp = getRelativeCanvasPos?.(pos);// (canvasRef, {offset: _offset, zoom: _zoom}, point)
              
                 const mouseMove = (e: MouseEvent) => {
                     let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
 
-                    setPoint({
-                        x: rp?.x || 0,
-                        y: rp?.y || 0
-                    })
+                    console.log("Set point", {rp})
+
+                    if(rp?.x != undefined || rp?.y != undefined){
+                        setPoint({
+                            x: rp?.x || 0,
+                            y: rp?.y || 0
+                        })
+                    }
                 }
 
-                const mouseUp = (e: MouseEvent) => {
+                const mouseUp = (e: any) => {
 
                     updatePathPoint?.(path.id, ix - 1, { x: e.clientX, y: e.clientY})
 
@@ -252,6 +259,8 @@ export const PipePathFactory : AbstractPathFactory = () => {
                         // props.onLinked?.(nodeId, handleId)
 
                     }
+
+                    (host).releasePointerCapture(e.pointerId)
 
                     doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
                     doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
