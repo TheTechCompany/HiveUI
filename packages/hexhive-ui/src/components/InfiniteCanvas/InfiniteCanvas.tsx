@@ -609,7 +609,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
             
             let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
-            if(!current_path) return;
+            if(!current_path) return console.debug("No current path - addPathPoint");
+
             onPathUpdate?.(addPathSegment(current_path, ix, rp))
             
         }, [_paths, _offset, _zoom]),
@@ -619,7 +620,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
             let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
 
-            if(!current_path) return;
+            if(!current_path) return console.debug("No current path - updatePathPoint");
             
             let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
             onPathUpdate?.(updated)
@@ -721,7 +722,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let rp = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, point)
                     
                     let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
-                    if(!current_path) return;
+                    if(!current_path) return console.debug("No current path - addPathPoint");
                     onPathUpdate?.(addPathSegment(current_path, ix, rp))
                 }, [_paths, _offset, _zoom]),
                 updatePathPoint: useCallback((id, ix, point) => {
@@ -731,7 +732,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             
                     let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == id)
                     
-                    if(!current_path) return;
+                    console.log({rp, current_path})
+                    if(!current_path) return console.debug("No current path - updatePathPoint");
                     
                     let updated = updatePathSegment(Object.assign({}, current_path), ix, rp);
                     onPathUpdate?.(updated)
