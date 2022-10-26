@@ -632,16 +632,16 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         }, [_paths]),
         // setNodeRefs,
         dragPort: dragPort,
-        updateNodeBounds: (node, bounds) => {
+        updateNodeBounds: (node, updateFn) => {
 
-            let fNode : InfiniteCanvasNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node) || ({width: 0, height: 0} as any);
+            let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node);
 
-            fNode.width = bounds.width;
-            fNode.height = bounds.height;
+            if(!fNode) return console.debug('No node found for id ', node);
 
-            fNode.rotation = bounds.rotation;
+            let updated = updateFn(fNode)
 
-            onNodeUpdate?.(fNode)
+            onNodeUpdate?.(updated)
+
         },
         updateNode: (node, position) => {
             // if(node) onSelect?.("node", node)
@@ -744,6 +744,17 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 }, [_paths]),
                 // setNodeRefs,
                 dragPort: dragPort,
+                updateNodeBounds: (node, updateFn) => {
+
+                    let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node);
+
+                    if(!fNode) return console.debug('No node found for id ', node);
+
+                    let updated = updateFn(fNode)
+
+                    onNodeUpdate?.(updated)
+
+                },
                 updateNode: (node, position) => {
                     // if(node) onSelect?.("node", node)
             
