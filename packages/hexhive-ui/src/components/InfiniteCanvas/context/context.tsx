@@ -66,7 +66,8 @@ export interface IInfiniteCanvasContext {
     selected?: {key?: "node" | "path", id?: string}[]
 
     moveNode?: (node: string, position: InfiniteCanvasPosition) => void;
-    updateNode?: (node: string, position: InfiniteCanvasPosition, bounds?: InfiniteCanvasBounds) => void;
+    updateNodeBounds?: (node: string, bounds: InfiniteCanvasBounds) => void;
+    updateNode?: (node: string, position: InfiniteCanvasPosition) => void;
     changeZoom?: (zoom: number) => void;
     getRelativeCanvasPos?: (pos: {x: number, y: number}) => {x: number, y: number};
     io_status?: {

@@ -632,9 +632,21 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         }, [_paths]),
         // setNodeRefs,
         dragPort: dragPort,
+        updateNodeBounds: (node, bounds) => {
+
+            let fNode : InfiniteCanvasNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node) || ({width: 0, height: 0} as any);
+
+            fNode.width = bounds.width;
+            fNode.height = bounds.height;
+
+            fNode.rotation = bounds.rotation;
+
+            onNodeUpdate?.(fNode)
+        },
         updateNode: (node, position) => {
             // if(node) onSelect?.("node", node)
 
+            
             let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
             pos = lockToGrid(pos, snapToGrid || false, grid)
             if(editable && pos){
@@ -643,9 +655,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 let updatedNode = moveNode(fNode, pos)
                 
                 onNodeUpdate?.(updatedNode)
-                
-
             }
+
+            
             // let node = _nodes.find((a) => a.id == node.id)
         },
         reportPosition: reportPortPosition,
