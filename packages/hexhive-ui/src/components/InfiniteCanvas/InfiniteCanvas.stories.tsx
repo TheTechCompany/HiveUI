@@ -54,6 +54,7 @@ const ControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
         onPathCreate={(path) => {
 
           let p = pathRef.current.slice();
+          path.type = 'pipe-path'
           p.push(path);
           setPaths(p);
           // action('onPathsChanged')

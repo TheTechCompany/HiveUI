@@ -101,7 +101,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
             },
             onMouseDown: (evt: any) => mouseDown(node.id, evt),
             style: {
-                // pointerEvents: 'all',
+                pointerEvents: 'all',
                 left: node.x, 
                 top: node.y,
                 transform: `rotate(${node?.extras?.rotation}deg)
@@ -115,7 +115,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         }else{
             return (
                 <div
-                    {...props}
+                    {...props as any}
                     onContextMenu={(e) => {
                         openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
                     }}

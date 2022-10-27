@@ -249,6 +249,9 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
 
                     let target = (e.target as HTMLElement)
+
+                    console.log({target});
+
                     if(target.hasAttribute('data-nodeid')){
 
                         let nodeId = target.getAttribute('data-nodeid') || ''

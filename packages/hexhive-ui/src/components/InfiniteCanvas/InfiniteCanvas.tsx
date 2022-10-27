@@ -462,6 +462,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 setPortDragging(false)
 
                 let target = (event?.target as HTMLElement)
+                console.log({target, event: event?.relatedTarget});
+
                 if(target.hasAttribute('data-nodeid')){
 
                     let nodeId = target.getAttribute('data-nodeid') || ''

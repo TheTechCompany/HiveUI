@@ -43,7 +43,7 @@ export const UnstyledPortWidget : React.FC<PortWidgetProps> = (props) => {
 
     return (
         <Box 
-            style={{display: 'flex'}}
+            style={{display: 'flex', pointerEvents: 'all'}}
             className={`port-base`}>
             {props.label && (props.direction == "left" || !props.direction ) && <Typography>{props.label}</Typography>}
             <Port
