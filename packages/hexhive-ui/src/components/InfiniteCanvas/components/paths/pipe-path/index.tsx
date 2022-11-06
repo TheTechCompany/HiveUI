@@ -275,8 +275,8 @@ export const PipePathFactory : AbstractPathFactory = () => {
             return ix < points.length - 1 ? (
                 <g style={{
                     transformBox: 'fill-box', 
-                    transformOrigin: `${transformX}px ${transformY}px !important`, 
-                    transform: `rotate(${rotation}deg) !important`
+                    transformOrigin: `${transformX}px ${transformY}px`, 
+                    transform: `rotate(${rotation}deg)`
                 }}>
                 <PipeElbow 
                     width={50}
