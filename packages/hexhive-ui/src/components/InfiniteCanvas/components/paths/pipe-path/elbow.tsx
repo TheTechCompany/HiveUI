@@ -2,14 +2,16 @@ import * as React from "react";
 import { SVGProps } from "react";
 import styled from "styled-components";
 
-const RawPipeElbowComponent = (props: any) => {
+export const PipeElbowComponent = (props: any) => {
   return (
-    <g className={props.className}>
         <PipeElbow 
             width={50}
             height={50}
-            x={props.x}
+            x={props.x - 7}
             y={props.y}
+            rotation={props.rotation}
+            transformX={props.transformX + 7}
+            transformY={props.transformY}
             onPointerDown={props.onMouseDown}
             style={{
                 position: 'absolute',
@@ -22,23 +24,20 @@ const RawPipeElbowComponent = (props: any) => {
                 // transform: `rotate(${rotation}deg) `
             }}
             />
-    </g>
   )
 }
 
-export const PipeElbowComponent = styled(RawPipeElbowComponent)`
-  transform-box: fill-box !important;
-  transform-origin: ${p => p.transformX}px ${p => p.transformY}px !important;
-  transform: rotate(${p => p.rotation}deg) !important;
-`
 
-export const PipeElbow = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlnsXlink="http://www.w3.org/1999/xlink"
-    viewBox="0 0 57.33 57.48"
-    {...props}
-  >
+export const RawPipeElbow = (props: any) => (
+  <g 
+    x={props.x}
+    y={props.y}
+    width={props.width}
+    height={props.height}
+    style={props.style}
+    onPointerDown={props.onPointerDown}
+    className={props.className}>
+
     <defs>
       <linearGradient
         id="elbow_svg__a"
@@ -109,7 +108,13 @@ export const PipeElbow = (props: SVGProps<SVGSVGElement>) => (
       }}
       d="M46.85 46.86h5.02v16.25h-5.02z"
     />
-  </svg>
+  </g>
+    
 );
 
 
+export const PipeElbow = styled(RawPipeElbow)`
+  transform-box: fill-box !important;
+  transform-origin: ${p => p.transformX}px ${p => p.transformY}px !important;
+  transform: translate(${p => p.x}px, ${p => p.y}px) scale(90%) rotate(${p => p.rotation}deg) !important;
+`
