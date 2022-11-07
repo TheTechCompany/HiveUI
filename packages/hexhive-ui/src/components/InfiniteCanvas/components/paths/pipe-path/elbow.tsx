@@ -1,5 +1,36 @@
 import * as React from "react";
 import { SVGProps } from "react";
+import styled from "styled-components";
+
+const RawPipeElbowComponent = (props: any) => {
+  return (
+    <g className={props.className}>
+        <PipeElbow 
+            width={50}
+            height={50}
+            x={props.x}
+            y={props.y}
+            onPointerDown={props.onMouseDown}
+            style={{
+                position: 'absolute',
+                // left: location.x,
+                // top: location.y,
+                width: '50px',
+                height: '50px',
+                // transformBox: 'fill-box', 
+                // transformOrigin: `${transformX}px ${transformY}px`, 
+                // transform: `rotate(${rotation}deg) `
+            }}
+            />
+    </g>
+  )
+}
+
+export const PipeElbowComponent = styled(RawPipeElbowComponent)`
+  transform-box: fill-box !important;
+  transform-origin: ${p => p.transformX}px ${p => p.transformY}px;
+  transform: rotate(${p => p.rotation}deg);
+`
 
 export const PipeElbow = (props: SVGProps<SVGSVGElement>) => (
   <svg

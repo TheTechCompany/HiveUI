@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { InfiniteCanvasContext } from "../../../context/context";
 import { AbstractPathFactory } from "../../../factories";
 import { InfiniteCanvasPosition } from "../../../types";
-import { PipeElbow } from "./elbow";
+import { PipeElbow, PipeElbowComponent } from "./elbow";
 import { PipeSegment } from "./segment";
 
 export const PipePathFactory : AbstractPathFactory = () => {
@@ -273,29 +273,14 @@ export const PipePathFactory : AbstractPathFactory = () => {
             }
 
             return ix < points.length - 1 ? (
-                <g style={{
-                    transformBox: 'fill-box !important', 
-                    transformOrigin: `${transformX}px ${transformY}px`, 
-                    transform: `rotate(${rotation}deg)`
-                } as any}>
-                <PipeElbow 
-                    width={50}
-                    height={50}
+                <PipeElbowComponent 
+                    transformX={transformX}
+                    transformY={transformY}
+                    rotation={rotation}
                     x={x}
                     y={y}
-                    onPointerDown={onMouseDown}
-                    style={{
-                        position: 'absolute',
-                        // left: location.x,
-                        // top: location.y,
-                        width: '50px',
-                        height: '50px',
-                        // transformBox: 'fill-box', 
-                        // transformOrigin: `${transformX}px ${transformY}px`, 
-                        // transform: `rotate(${rotation}deg) `
-                    }}
+                    onMouseDown={onMouseDown}
                     />
-                </g>
             ) : (
                 <div 
                     onMouseDown={onMouseDown}
