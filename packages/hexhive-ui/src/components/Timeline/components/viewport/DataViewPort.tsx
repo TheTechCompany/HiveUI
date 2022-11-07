@@ -39,6 +39,8 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const { onSelectItem, onCreateTask, selectedItem, nowposition, startRow, endRow, tasks, mode, style, dayWidth, itemHeight, moveTimeline, scrollLeft, scrollTop } = useContext(TimelineContext)
 
+  console.log({tasks});
+
   const [ childDragging, setChildDragging ] = useState<boolean>(false) 
   
   const [ creatingTask, setCreatingTask ] = useState<Task | null>(null);
@@ -61,6 +63,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const renderRows = () => {
     let result = [];
+    console.log({startRow, endRow})
     for (let i = startRow; i < endRow + 1; i++) {
       let item = tasks?.[i];
       if (!item) break;
@@ -160,6 +163,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
         </DataRow>
       );
     }
+    console.log({result})
     return result;
   };
 

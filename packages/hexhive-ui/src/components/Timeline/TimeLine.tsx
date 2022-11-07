@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import VerticalSpliter from './components/taskList/VerticalSpliter';
 import Header from './components/header/Headers';
@@ -49,6 +49,8 @@ export type TimelineProps = {
   onCreateLink?: (link: Link) => void;
   onSelectItem?: (item: Task | Link) => void;
   
+  horizon?: {start: Date, end: Date} | boolean;
+
   onHorizonChange?: (start: Date, end: Date) => void;
   onNeedData?: any;
 
@@ -66,6 +68,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   onUpdateTask,
   onCreateLink,
   onSelectItem,
+  horizon,
   onHorizonChange,
   onNeedData,
   selectedItem,
@@ -114,9 +117,34 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   const [ scrollData, setScrollData ] = useState<any>()
   const [ headerData, setHeaderData ] = useState<any>()
 
+  const [ _horizon, setHorizon ] = useState<{start?: Date, end?: Date}>({})
+
   const [ _tasks, setTasks ] = useState<Task[]>(data)
   const [ _links, setLinks ] = useState<Link[]>(links)
 
+  //If horizon is undefined provide default
+  //If horizon is defined use it
+  //If horizon is false dont do anything
+
+  const tasks = useMemo(() => {
+    return _tasks.filter((task) => {
+      if((horizon == undefined || horizon == null) && task.start && task.end){
+        // return true;
+
+
+        if(!_horizon.start || !_horizon.end) return true;
+        console.log({horizon, _horizon, _tasks:  task.start as any < _horizon?.end as any && task.end as any > _horizon?.start as any})
+
+        return task.start <= _horizon.end && task.end >= _horizon.start
+      }else if(horizon == false){
+        return true;
+      }else if(horizon && typeof(horizon) !== 'boolean' && task.start && task.end && horizon.end && horizon.start){
+        return task.start < horizon.end && task.end > horizon.start
+      }else{
+        return true;
+      }
+    });
+  }, [_tasks, _horizon, horizon])
 
   useEffect(() => {
     dc.current.onHorizonChange = _onHorizonChange;
@@ -264,7 +292,9 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   };
 
   const _onHorizonChange = (lowerLimit: any, upLimit: any) => {
+    console.log("onHorizon", lowerLimit, upLimit)
     if (onHorizonChange) onHorizonChange(lowerLimit, upLimit);
+    setHorizon({start: lowerLimit, end: upLimit})
   };
 
   /////////////////////
@@ -349,7 +379,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     let newTasks = tasks.slice();
 
     let updates : any[] = [];
-    let oldTask = _tasks?.find((a) => a.id == item.id);
+    let oldTask = tasks?.find((a) => a.id == item.id);
 
     let forwardLinks = links?.filter((a) => a.source == item.id);
 
@@ -397,21 +427,22 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   }
 
   const onTaskChanging = (changingTask: any) => {
+    console.log("Changing")
     const { item, position } = changingTask;
 
-    let tasks = _tasks.slice()
+    let newTasks = _tasks.slice()
     let links = _links.slice()
-    let ix = tasks.map((x) => x.id).indexOf(item?.id);
+    let ix = newTasks.map((x) => x.id).indexOf(item?.id);
 
-    let task = tasks[ix];
+    let task = newTasks[ix];
 
-    tasks[ix] = {
-      ...tasks[ix],
+    newTasks[ix] = {
+      ...newTasks[ix],
       start: changingTask.position.start,
       end: changingTask.position.end
     }
 
-    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links}, item)  || {tasks: []}  
+    const { tasks: taskUpdate, updates } = propogateMovement({tasks: newTasks, links}, item)  || {tasks: []}  
 
     
 
@@ -497,7 +528,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     return (
       <TimelineContext.Provider value={{
         onCreateTask,
-        tasks: _tasks?.map((x, ix) => ({...x, index: ix})),
+        tasks: (tasks || []).map((x, ix) => ({...x, index: ix})),
         links,
         style: style,
         mode: _mode,

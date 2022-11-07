@@ -82,9 +82,9 @@ WithItems.args = {
   ],
   data: [
     {id: '5', start: new Date(2022, 7, 15), end: new Date(2022, 7, 15), name: "Item 1", color: 'red', showLabel: true},
-    {id: '1', start: new Date(), end: new Date(2022, 4, 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '1', start: new Date(2022, 4, 4), end: new Date(2022, 4, 10), name: "Item 1", color: 'red', showLabel: true},
     {id: '2', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true},
-    {id: '3', start: new Date(), end: new Date(2022, 9, 12), name: "Item 1", color: 'red', showLabel: true}
+    {id: '3', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true}
   ],
   primary: true,
   color: 'green',

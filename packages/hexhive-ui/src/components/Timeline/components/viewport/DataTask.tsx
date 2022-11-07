@@ -53,21 +53,23 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
   const draggingPosition = useRef<number>(0)
 
   const dragging = useRef<boolean>(false);
-  const left = useRef<number>(props.left || 0)
-  const width = useRef<number>(props.width || 0)
+
+  const [ left, setLeft ] = useState(props.left || 0);
+  const [ width, setWidth ] = useState(props.width || 0)
+  // const left = useRef<number>(props.left || 0)
+  // const width = useRef<number>(props.width || 0)
 
   const mode = useRef<number>(MODE_NONE);
 
-
   useEffect(() => {
     if (props.left) {
-      left.current = props.left
+      setLeft(props.left)
     }
   }, [props.left])
 
   useEffect(() => {
     if (props.width) {
-      width.current = props.width
+      setWidth(props.width)
     }
   }, [props.width])
 
@@ -94,8 +96,8 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
   };
 
   const updatePosition = () => {
-    let new_start_date = DateHelper.pixelToDate(left.current, props.nowposition, props.dayWidth || 0);
-    let new_end_date = DateHelper.pixelToDate(left.current + width.current, props.nowposition, props.dayWidth || 0);
+    let new_start_date = DateHelper.pixelToDate(left, props.nowposition, props.dayWidth || 0);
+    let new_end_date = DateHelper.pixelToDate(left + width, props.nowposition, props.dayWidth || 0);
 
     props.onUpdateTask(props.item, { start: new_start_date, end: new_end_date });
   }
@@ -105,8 +107,11 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
     draggingPosition.current = x;
     dragging.current = true
     mode.current = _mode
-    left.current = props.left || 0
-    width.current = props.width || 0
+
+    setLeft(props.left || 0)
+    setWidth(props.width || 0)
+    // left.current = props.left || 0
+    // width.current = props.width || 0
 
   }
 
@@ -118,30 +123,37 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const dragProcess = (x: number) => {
     let delta = draggingPosition.current - x;
-    let newLeft = left.current;
-    let newWidth = width.current;
 
+    setLeft((left) => {
+      switch (mode.current) {
+        case MODE_MOVE:
+          return left - delta;
+        case MOVE_RESIZE_LEFT:
+          return left - delta;
+        default: 
+          return left;
+      }
+    })
 
-    switch (mode.current) {
-      case MODE_MOVE:
-        newLeft = left.current - delta;
-        break;
-      case MOVE_RESIZE_LEFT:
-        newLeft = left.current - delta;
-        newWidth = width.current + delta;
-        break;
-      case MOVE_RESIZE_RIGHT:
-        newWidth = width.current - delta;
-        break;
-    }
+    setWidth((width) => {
+      switch (mode.current) {
+        case MOVE_RESIZE_LEFT:
+          return width + delta;
+        case MOVE_RESIZE_RIGHT:
+          return width - delta;
+        default: 
+          return width;
+      }
+    })
+    
     //the coordinates need to be global
     let changeObj = {
       item: props.item,
       position: {
-        startInt: newLeft - props.nowposition,
-        start: DateHelper.pixelToDate(newLeft, props.nowposition, props.dayWidth || 0),
-        end: DateHelper.pixelToDate(newLeft + newWidth, props.nowposition, props.dayWidth || 0),
-        endInt: newLeft + newWidth - props.nowposition
+        startInt: left - props.nowposition,
+        start: DateHelper.pixelToDate(left, props.nowposition, props.dayWidth || 0),
+        end: DateHelper.pixelToDate(left + width, props.nowposition, props.dayWidth || 0),
+        endInt: left + width - props.nowposition
       }
     };
 
@@ -150,13 +162,13 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
     props.onTaskChanging(changeObj);
     draggingPosition.current = x;
 
-    left.current = newLeft;
-    width.current = newWidth
   }
 
   const dragEnd = () => {
     props.onChildDrag(false);
+    
     updatePosition()
+
     dragging.current = false
     mode.current = MODE_NONE
 
@@ -247,8 +259,8 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
       ...configStyle,
       background: backgroundColor,
       opacity: props.opacity || 1,
-      left: left.current,
-      width: width.current,
+      left: left,
+      width: width,
       height: props.height - 5,
     };
     // } 
