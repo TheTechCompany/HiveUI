@@ -116,5 +116,5 @@ export const RawPipeElbow = (props: any) => (
 export const PipeElbow = styled(RawPipeElbow)`
   transform-box: fill-box !important;
   transform-origin: ${p => p.transformX}px ${p => p.transformY}px !important;
-  transform: translate(${p => p.x}px, ${p => p.y}px) scale(90%) rotate(${p => p.rotation}deg) !important;
+  transform: translate(${p => p.x}px, ${p => p.y}px) scale(0.9) rotate(${p => p.rotation}deg);
 `
