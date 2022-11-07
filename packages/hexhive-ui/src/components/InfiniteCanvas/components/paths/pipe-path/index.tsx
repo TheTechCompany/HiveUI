@@ -119,7 +119,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
 
             const { points } = path;
 
-            const { linkPath, getRelativeCanvasPos, updatePathPoint } = useContext(InfiniteCanvasContext);
+            const { linkPath, getRelativeCanvasPos, editable, updatePathPoint } = useContext(InfiniteCanvasContext);
 
             const startPoint = points[ix - 1]
             let endPoint = points[ix + 1]
@@ -213,6 +213,9 @@ export const PipePathFactory : AbstractPathFactory = () => {
 
 
             const onMouseDown = (e: any) => {
+
+                if(!editable) return;
+                
                 let pos : InfiniteCanvasPosition = {
                     x: e.clientX,
                     y: e.clientY

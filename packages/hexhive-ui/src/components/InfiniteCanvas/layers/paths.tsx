@@ -289,6 +289,7 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
         let p = points.slice(0, targetHandle ? points.length - 1 : points.length)
         const setPoint = (ix: number, position: InfiniteCanvasPosition) => {
+            if(!editable) return;
             let newPoints = points.slice();
             newPoints[ix] = position;
             setPoints(newPoints);
