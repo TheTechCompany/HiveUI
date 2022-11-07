@@ -28,8 +28,8 @@ const RawPipeElbowComponent = (props: any) => {
 
 export const PipeElbowComponent = styled(RawPipeElbowComponent)`
   transform-box: fill-box !important;
-  transform-origin: ${p => p.transformX}px ${p => p.transformY}px;
-  transform: rotate(${p => p.rotation}deg);
+  transform-origin: ${p => p.transformX}px ${p => p.transformY}px !important;
+  transform: rotate(${p => p.rotation}deg) !important;
 `
 
 export const PipeElbow = (props: SVGProps<SVGSVGElement>) => (
