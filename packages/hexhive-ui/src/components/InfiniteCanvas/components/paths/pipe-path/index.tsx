@@ -102,14 +102,17 @@ export const PipePathFactory : AbstractPathFactory = () => {
             const { addPathPoint, selectPath } = useContext(InfiniteCanvasContext)
 
             let position: PipePosition;
-
-            if(ix == 0){
+            if(ix == 0 && ix + 2 == path.points.length){
+                position = 'start-end';   
+            }else if(ix == 0){
                 position = 'start';
-            }else if(ix == path.points.length){
+            }else if(ix + 2 == path.points.length){
                 position = 'end'
-            }else{
+            } else{
                 position = 'link'
             }
+            console.log({ix, position, points: path.points.length})
+
 
             return (
                 <PipeSegment 
