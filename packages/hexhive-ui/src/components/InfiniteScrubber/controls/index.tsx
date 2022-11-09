@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Box, IconButton } from '@mui/material'
+import { Box, Button, ButtonGroup, IconButton } from '@mui/material'
 import { FastRewind, PlayArrow, FastForward, Pause } from "@mui/icons-material"
 import { useScrubberContext } from "../context"
 
@@ -39,7 +39,10 @@ export const ScrubberControls = (props: any) => {
     ];
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box>
+
+            </Box>
             <Box>
                 {Controls.map((X) => (
                     <IconButton 
@@ -48,6 +51,14 @@ export const ScrubberControls = (props: any) => {
                         <X.icon sx={{ color: props.color }} fontSize="inherit" />
                     </IconButton>
                 ))}
+            </Box>
+
+            <Box>
+                {/* <ButtonGroup color="secondary">
+                    <Button>Day</Button>
+                    <Button>Hour</Button>
+                    <Button>Minute</Button>
+                </ButtonGroup> */}
             </Box>
         </Box>
     )

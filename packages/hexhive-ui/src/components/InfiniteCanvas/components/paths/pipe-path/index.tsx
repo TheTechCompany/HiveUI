@@ -3,7 +3,7 @@ import { InfiniteCanvasContext } from "../../../context/context";
 import { AbstractPathFactory } from "../../../factories";
 import { InfiniteCanvasPosition } from "../../../types";
 import { PipeElbow, PipeElbowComponent } from "./elbow";
-import { PipeSegment } from "./segment";
+import { PipePosition, PipeSegment } from "./segment";
 
 export const PipePathFactory : AbstractPathFactory = () => {
 
@@ -101,6 +101,16 @@ export const PipePathFactory : AbstractPathFactory = () => {
         renderPathSegment(path, points, setPoints, ix) {
             const { addPathPoint, selectPath } = useContext(InfiniteCanvasContext)
 
+            let position: PipePosition;
+
+            if(ix == 0){
+                position = 'start';
+            }else if(ix == path.points.length){
+                position = 'end'
+            }else{
+                position = 'link'
+            }
+
             return (
                 <PipeSegment 
                     onMouseDown={(e) => {
@@ -110,7 +120,8 @@ export const PipePathFactory : AbstractPathFactory = () => {
                             selectPath?.(path.id)
                         }
                     }}
-                    points={points} 
+                    points={points}
+                    position={position}  
                     
                     />
             )
@@ -213,8 +224,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
 
 
             const onMouseDown = (e: any) => {
-
-                if(!editable) return;
                 
                 let pos : InfiniteCanvasPosition = {
                     x: e.clientX,

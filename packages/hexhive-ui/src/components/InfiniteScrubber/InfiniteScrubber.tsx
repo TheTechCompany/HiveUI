@@ -14,6 +14,9 @@ export interface InfiniteScrubberProps {
         backgroundColor?: string;
         textColor?: string;
     }
+
+    scale?: 'minute' | 'hour' | 'quarter-hour' | 'day'
+
     controls?: boolean;
 }
 
@@ -24,7 +27,8 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
         backgroundColor: 'secondary.main',
         textColor: 'white'
     },
-    controls
+    controls,
+    scale = 'day'
 }) => {
 
     const [ playing, setPlaying ] = useState(false);
@@ -34,25 +38,66 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
     const [resizeListener, sizes] = useResizeAware();
 
     const day = moment(new Date(time)).format('DD/MM')
+
     const [offset, setOffset] = useState<number>(0);
 
-    const WIDTH = 62;
+    const WIDTH = 100;
 
-    const days = useMemo(() => {
+    const unit : any = useMemo(() => {
+        switch(scale){
+            case 'quarter-hour':
+                return 'minutes';
+            default:
+                return `${scale}s`;
+        }
+    }, [scale])
+
+    const unitMultiplier = useMemo(() => {
+        switch(scale){
+            case 'quarter-hour':
+                return 15;
+            default:
+                return 1;
+        }
+    }, [scale])
+    
+    // `${scale}s`;
+
+    const format = useMemo(() => {
+        switch(scale){
+            case 'hour':
+                return 'ha';
+            case 'day':
+                return 'DD/MM';
+            case 'quarter-hour':
+                return 'hh:mma';
+            case 'minute':
+                return 'hh:mma'
+        }
+    }, [scale])
+
+    const blocks = useMemo(() => {
 
         let totalDays = (sizes.width || 0) / WIDTH;
 
         let offsetDate = offset / WIDTH;
 
-        let date = moment(new Date(time)).subtract(Math.trunc(offsetDate), 'days');
+        let date = moment(new Date(time));
+        
+        if(scale == 'quarter-hour'){
+            date = date.set('minutes', Math.floor(date.get('minutes') / 15) * 15)
+        }
 
-        let start = moment(date).subtract(totalDays / 2, 'day')
-        let end = moment(date).add(totalDays / 2, 'day')
+        date = date.subtract(Math.trunc(offsetDate) * unitMultiplier, unit);
 
+        let start = moment(date).subtract((totalDays / 2) * unitMultiplier, unit)
+        let end = moment(date).add((totalDays / 2) * unitMultiplier, unit)
+
+        // moment(start).add(2, '')
         let days = [];
 
-        for (var i = 0; i < end.diff(start, 'days'); i++) {
-            days.push(moment(start).add(i, 'days').format('DD/MM'))
+        for (var i = 0; i < (end.diff(start, unit) / unitMultiplier); i++) {
+            days.push(moment(start).add(i * unitMultiplier, unit).format(format))
         }
         return days;
     }, [time, offset, sizes])
@@ -60,7 +105,7 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
 
     useEffect(() => {
 
-        let newTime = moment(new Date(time)).subtract(Math.trunc(offset / WIDTH), 'days').valueOf()
+        let newTime = moment(new Date(time)).subtract((Math.trunc(offset / WIDTH)) * unitMultiplier, unit).valueOf()
         if (time != newTime) {
             onTimeChange?.(newTime)
             setOffset(0)
@@ -161,14 +206,14 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
                         }}>
                         {resizeListener}
 
-                        {days.map((x) => (
+                        {blocks.map((block) => (
                             <div
                                 style={{
                                     position: 'relative',
-                                    color: style?.textColor || 'white', width: '50px', padding: '6px'
+                                    color: style?.textColor || 'white', width: `${WIDTH || 50}px`, padding: '6px'
                                 }}>
                                 <div style={{
-                                    background: day == x ? 'red' : undefined,
+                                    background: day == block ? 'red' : undefined,
                                     position: 'absolute',
                                     left: 0 - offset,
                                     bottom: 0,
@@ -177,7 +222,7 @@ export const InfiniteScrubber: React.FC<InfiniteScrubberProps> = ({
                                 }}>
 
                                 </div>
-                                {x}
+                                {block}
                             </div>
                         ))}
                     </Box>

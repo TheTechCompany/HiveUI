@@ -15,6 +15,7 @@ const Template: ComponentStory<typeof InfiniteScrubber> = (args) => {
             {...args}
             time={date}
             onTimeChange={(time) => {
+              console.log({time})
               setDate(time)
             }}
              />
@@ -29,4 +30,11 @@ export const WithControls = Template.bind({});
 WithControls.args = {
   time: new Date().getTime(),
   controls: true,
+};
+
+export const WithScale = Template.bind({});
+WithScale.args = {
+  time: new Date().getTime(),
+  controls: true,
+  scale: 'quarter-hour'
 };

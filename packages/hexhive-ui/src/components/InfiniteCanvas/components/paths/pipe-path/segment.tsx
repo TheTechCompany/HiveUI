@@ -5,6 +5,8 @@ import { InfiniteCanvasContext } from '../../../context/context';
 import { InfiniteCanvasPosition } from '../../../types/canvas';
 import { createLine } from '../../../utils';
 
+export type PipePosition = "start" | "end" | "link";
+
 export interface FlowPathSegmentProps {
     d?: string;
     className?: string;
@@ -13,6 +15,7 @@ export interface FlowPathSegmentProps {
     onContextMenu?: (e: React.MouseEvent) => void;
     arrow?: boolean;
     nextPoint?: any;
+    position?: PipePosition
 }
 
 export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
@@ -23,8 +26,8 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
 
     const { style } = useContext(InfiniteCanvasContext)
 
-    const x = ((props.points?.[0]?.x || 0) > (props.points?.[1]?.x || 0) )? props.points?.[1]?.x : props.points?.[0]?.x;
-    const y = ((props.points?.[0]?.x || 0) > (props.points?.[1]?.x || 0) ) ? props.points?.[1]?.y : props.points?.[0]?.y;
+    let x = (((props.points?.[0]?.x || 0) > (props.points?.[1]?.x || 0) )? props.points?.[1]?.x : props.points?.[0]?.x) || 0;
+    let y = (((props.points?.[0]?.x || 0) > (props.points?.[1]?.x || 0) ) ? props.points?.[1]?.y : props.points?.[0]?.y) || 0;
 
     const rightX = ((props.points?.[0]?.x || 0) < (props.points?.[1]?.x || 0) || (props.points?.[0]?.x || 0) == (props.points?.[1]?.x || 0))? props.points?.[1]?.x : props.points?.[0]?.x;
     const rightY = ((props.points?.[0]?.x || 0) < (props.points?.[1]?.x || 0) || (props.points?.[0]?.x || 0) == (props.points?.[1]?.x || 0)) ? props.points?.[1]?.y : props.points?.[0]?.y;
@@ -32,10 +35,37 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
     const width = Math.abs((props.points?.[0]?.x || 0) - (props.points?.[1]?.x || 0))
     const height = Math.abs((props.points?.[0]?.y || 0) - (props.points?.[1]?.y || 0))
 
-    const hypo = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2))
+    const hypo = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
 
+    let pipeLength = hypo;
+ 
+    console.log({hypo: 50 / hypo, fullHypo: hypo})
   
     let rotation = ((((Math.atan2((rightY || 0) - (y || 0), (rightX || 0) - (x || 0)) * 180 )/ Math.PI) ) + 360) % 360
+
+    let scaleX = 1;
+    let translateX : any = 0;
+    if(props.position == 'start'){
+        //Take off end
+        // translateX = '-25px'
+        // scaleX = 1 - (25 / hypo)
+
+        // if(rotation >= 270 || rotation < 90) {
+        //     scaleX = 1 - (25 / hypo)
+        // }else{
+        //     translateX = '25px'
+        // }
+    }else if(props.position == 'end'){
+        //Take off start
+
+    }else {
+        //Take off both
+
+        translateX = '25px';
+        scaleX = 1 - (50 / hypo) //0.9 //25 / hypo; //0.9;
+        // x = x * 1.1;
+    }
+
 
     // if (!(rotation > 0)){
     //     rotation = (2 * Math.PI + rotation) * 360 /(2 * Math.PI)
@@ -86,7 +116,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
                 style={{
                     transformOrigin: `6.5px 6.5px`, 
                     transformBox: 'fill-box', 
-                    transform: `translateX(-6.5px) translateY(-6.5px) rotate(${rotation}deg) scaleY(${false ? '-1' : '1'})`
+                    transform: `translateX(-6.5px) translateY(-6.5px)  rotate(${rotation}deg) translateX(${translateX}) scaleX(${scaleX || 1}) scaleY(${false ? '-1' : '1'})`
                 }}
                 x={(x || 0)} y={(y || 0)} 
                 width={hypo + 13} height={13} />
