@@ -19,14 +19,13 @@ export interface FlowPathSegmentProps {
 }
 
 export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
+
     const d = useMemo(() => {
         if(props.d) return props.d;
         if(props.points) return createLine(props.points)
     }, [props.d, props.points])
 
-
     const { style } = useContext(InfiniteCanvasContext)
-
 
     const calculateAngles = (points: {x: number, y: number}[]) => {
         let x = (((points?.[0]?.x || 0) > (points?.[1]?.x || 0) )? points?.[1]?.x : points?.[0]?.x) || 0;
@@ -41,9 +40,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
         const hypo = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
 
         let pipeLength = hypo;
-    
-        console.log({hypo: 50 / hypo, fullHypo: hypo})
-    
+        
         let rotation = ((((Math.atan2((rightY || 0) - (y || 0), (rightX || 0) - (x || 0)) * 180 )/ Math.PI) ) + 360) % 360
 
         return {
@@ -54,7 +51,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
         }
     }
 
-    let { rotation, length, x, y } = calculateAngles(props.points || []);
+    let { rotation, length, x, y } = useMemo(() => calculateAngles(props.points || []), [props.points]);
 
     let scaleX = 1;
     let translateX : any = 0;
