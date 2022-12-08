@@ -113,7 +113,6 @@ export const RawPipeElbow = (props: any) => (
       d="m10.6.1-.1 28c-.1 14.1 2.2 18.8 16.3 19.1l32.1-.2v1.1l-31.6.5C13.4 48.1 9.7 43 9.6 29.1L9.4 0h1.2v.1z"
     />
     <circle cx={props.transformX} cy={props.transformY} r={1} />
-
   </g>
     
 );

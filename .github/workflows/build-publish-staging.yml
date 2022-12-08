@@ -5,6 +5,8 @@ on:
       - staging
     paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/**", "packages/hexhive-ui/src/components/**", "packages/hexhive-ui/src/views/**", "packages/hexhive-ui/src/modals/**", "packages/hexhive-ui/src/hooks/**"]
 
+concurrency: hiveui-${{ github.ref }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
