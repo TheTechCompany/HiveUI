@@ -358,7 +358,7 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
 
     const path_components = useMemo(() => {
         return paths.map((path) => renderFactory(path))
-    }, [paths])
+    }, [JSON.stringify(paths)]);
 
     return (
         <svg
@@ -379,7 +379,8 @@ export const PathLayer : React.FC<PathLayerProps> = (props) => {
                         <stop offset="1" stop-color="#6f7173"/>
                     </linearGradient>
                 </defs>
-                {paths.map((path) => renderFactory(path)).map((C) => C ?  <C /> : null)}
+                {path_components.map((Path) => Path ? <Path /> : null)}
+                {/* {paths.map((path) => renderFactory(path)).map((C) => C ?  <C /> : null)} */}
                 {/* {paths?.map((path) => renderFactory(path)?.())} */}
                 
         </svg>

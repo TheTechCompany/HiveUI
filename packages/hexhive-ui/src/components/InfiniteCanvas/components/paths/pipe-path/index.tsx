@@ -111,7 +111,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
             } else{
                 position = 'link'
             }
-            console.log({ix, position, points: path.points.length})
 
 
             return (
