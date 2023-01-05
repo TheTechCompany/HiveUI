@@ -15,6 +15,8 @@ export default {
   },
 } as ComponentMeta<typeof Timeline>;
 
+const currentDate = new Date();
+
 const Template: ComponentStory<typeof Timeline> = (args) => {
   const [ data, setData ] = useState<any>(args.data || [])
   const [ date, setDate ] = useState<Date>(new Date())
@@ -32,7 +34,7 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
       }}
       onUpdateTask={(task: any, position: any) => {
         // console.log("Updaate")
-        // console.log({task})
+        console.log({task, position})
 
         if(args.latency){
           setTimeout(() => {
@@ -45,18 +47,23 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
           }, 5000)
         }else{
         // setTimeout(() => {
-          let d = data.slice()
-          let ix = d.map((x: any) => x.id).indexOf(task.id)
-          d[ix].start = position.start;
-          d[ix].end = position.end;
+   
+          // console.log("Data", d)
+          setData((data: any) => {
+            let d = data.slice()
+            let ix = d.map((x: any) => x.id).indexOf(task.id)
+            d[ix].start = position.start;
+            d[ix].end = position.end;
   
-          setData(d)
+            return d;
+          })
         }
         // }, 5000)
    
       } } 
       links={links}
       onCreateLink={(link: any) => {
+        console.log({link})
         setLinks([...links, link])
       }} date={date} onDateChange={setDate} />
       ;
@@ -81,8 +88,8 @@ WithItems.args = {
     }
   ],
   data: [
-    {id: '5', start: new Date(2022, 7, 15), end: new Date(2022, 7, 15), name: "Item 1", color: 'red', showLabel: true},
-    {id: '1', start: new Date(2022, 4, 4), end: new Date(2022, 4, 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '5', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 1", color: 'red', showLabel: true},
+    {id: '1', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
     {id: '2', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true},
     {id: '3', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true}
   ],

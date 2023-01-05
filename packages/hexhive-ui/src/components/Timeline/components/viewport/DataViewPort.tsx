@@ -15,6 +15,8 @@ import moment from 'moment';
 export interface DataViewPortProps {
   className?: string;
 
+  interactiveMode?: boolean;
+
   onSize?: (dims: {width: number | null, height: number | null}) => void;
   onStartCreateLink?: (item: any, pos: any) => void;
   onFinishCreateLink?: (item: any, pos: any) => void;
@@ -39,7 +41,6 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const { onSelectItem, onCreateTask, selectedItem, nowposition, startRow, endRow, tasks, mode, style, dayWidth, itemHeight, moveTimeline, scrollLeft, scrollTop } = useContext(TimelineContext)
 
-  console.log({tasks});
 
   const [ childDragging, setChildDragging ] = useState<boolean>(false) 
   
@@ -63,7 +64,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
   const renderRows = () => {
     let result = [];
-    console.log({startRow, endRow})
+
     for (let i = startRow; i < endRow + 1; i++) {
       let item = tasks?.[i];
       if (!item) break;
@@ -81,6 +82,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
       result.push(
         <DataRow
+          interactiveMode={props.interactiveMode}
           onDragCreate={async (task: any, finished: boolean) => {
             setCreatingTask({...task, index: i})
 
@@ -163,7 +165,6 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
         </DataRow>
       );
     }
-    console.log({result})
     return result;
   };
 
@@ -183,6 +184,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
 
     return (
       <DataRow
+          interactiveMode={props.interactiveMode}
           onDragCreate={async (task: any, finished: boolean) => {
             setCreatingTask({...task, index: i})
             if(finished){

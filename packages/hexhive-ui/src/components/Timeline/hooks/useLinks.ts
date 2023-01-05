@@ -18,5 +18,5 @@ export const useLink = (id?: string | number) => {
 export const useLinks = () => {
     const { links } = useContext(TimelineContext)
 
-    return links?.map((x, ix) => ({...x, index: ix}));
+    return (links || []).map((x, ix) => ({...x, index: ix}));
 }

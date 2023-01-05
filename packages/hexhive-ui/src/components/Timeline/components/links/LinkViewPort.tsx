@@ -1,4 +1,4 @@
-import React, { Component, useContext, useEffect } from 'react';
+import React, { Component, useCallback, useContext, useEffect } from 'react';
 import {Link, Task} from '../../types/index';
 import CreateLink from './CreateLink';
 import DateHelper from '../../helpers/DateHelper';
@@ -50,7 +50,9 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
 
   const links = useLinks()
 
-  const { tasks, links: dataLinks, dayWidth } = useContext(TimelineContext)
+  const tasks = useData();
+
+  const { links: dataLinks, dayWidth } = useContext(TimelineContext)
 
   const [ selectedItem, setSelectedItem ] = useState<any>(null)
   const [ changingTask, setChangingTask ] = useState<any>()
@@ -83,7 +85,8 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
     return { x: x, y: y };
   };
 
-  const renderLinks = () => {
+  const renderLinks = useCallback(() => {
+
     let ret : any[] = [];
 
     let startItem: any = {}
@@ -108,11 +111,13 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
         continue;
       }
 
+      // console.log({startItem, endItem})
+
       ret = ret.concat([renderLink(startItem, endItem, link, i)])
      // renderLinks[link.id] = '';
     }
     return ret;
-  }
+  }, [tasks, links])
 
  
 

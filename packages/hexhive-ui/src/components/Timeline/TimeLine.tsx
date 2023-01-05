@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useMemo } from 'react';
+import React, { Component, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import VerticalSpliter from './components/taskList/VerticalSpliter';
 import Header from './components/header/Headers';
@@ -10,7 +10,6 @@ import { VIEW_MODE_DAY, VIEW_MODE_WEEK, VIEW_MODE_MONTH, VIEW_MODE_YEAR } from '
 import { DAY_MONTH_MODE, DAY_WEEK_MODE, DAY_DAY_MODE, DAY_YEAR_MODE } from './Const';
 import DataController from './controller/DataController';
 import Config from './helpers/config/Config';
-import DateHelper from './helpers/DateHelper';
 import { TimelineContext } from './context'
 import {nanoid} from 'nanoid'
 import { Link, Config as _Config, Task, TimelineStyle } from './types';
@@ -20,9 +19,7 @@ import { getDayWidth } from './utils';
 import { Box, CircularProgress } from '@mui/material';
 import styled from 'styled-components'
 import { Moment } from 'moment';
-import { debounce, isEqual } from 'lodash';
-import moment from 'moment';
-
+import { isEqual } from 'lodash';
 
 
 export type TimelineProps = {
@@ -133,7 +130,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
 
         if(!_horizon.start || !_horizon.end) return true;
-        console.log({horizon, _horizon, _tasks:  task.start as any < _horizon?.end as any && task.end as any > _horizon?.start as any})
+        // console.log({horizon, _horizon, _tasks:  task.start as any < _horizon?.end as any && task.end as any > _horizon?.start as any})
 
         return task.start <= _horizon.end && task.end >= _horizon.start
       }else if(horizon == false){
@@ -292,7 +289,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   };
 
   const _onHorizonChange = (lowerLimit: any, upLimit: any) => {
-    console.log("onHorizon", lowerLimit, upLimit)
+    // console.log("onHorizon", lowerLimit, upLimit)
     if (onHorizonChange) onHorizonChange(lowerLimit, upLimit);
     setHorizon({start: lowerLimit, end: upLimit})
   };
@@ -374,6 +371,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     
   };
 
+
+  //TODO make this propogate
   const propogateMovement = ({tasks, links}: {tasks: any[], links: any[]}, item: { id: string }) => {
     
     let newTasks = tasks.slice();
@@ -427,7 +426,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   }
 
   const onTaskChanging = (changingTask: any) => {
-    console.log("Changing")
+    // console.log("Changing")
     const { item, position } = changingTask;
 
     let newTasks = _tasks.slice()
@@ -524,6 +523,30 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     }
   }, [mode])
 
+  const _onUpdateTask = (task: any, position: any) => {
+              
+    console.log(_links);
+
+    let tasks = _tasks.slice()
+
+    let ix = tasks.map((x) => x.id).indexOf(task.id);
+
+    tasks[ix] = {
+      ...tasks[ix],
+      start: position.start,
+      end: position.end
+    }
+    const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task) || {updates: []}
+
+    console.log({updates})
+    if(updates.length > 0){
+      updates.forEach((update) => {
+        onUpdateTask?.(update, {start: update.start, end: update.end})
+      })
+    }
+
+    onUpdateTask?.(task, position)
+  }
 
     return (
       <TimelineContext.Provider value={{
@@ -586,31 +609,13 @@ const BaseTimeline : React.FC<TimelineProps> = ({
         <Box style={{position: 'absolute', display: 'flex', width: '100%', height: 'calc(100% - 60px)', zIndex: 9, top: 60, left: 0}}>
           {loading ? <Box style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: "#ffffff42"}} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}><CircularProgress size="medium" /></Box>: null}
         <DataViewPort
+            interactiveMode={interactiveMode}
             onDown={doMouseDown}
             onMove={doMouseMove}
             onUp={doMouseUp}
             onCancel={doMouseLeave}
             
-            onUpdateTask={(task: any, position: any) => {
-              
-              let tasks = _tasks.slice()
-
-              let ix = tasks.map((x) => x.id).indexOf(task.id);
-              tasks[ix] = {
-                ...tasks[ix],
-                start: position.start,
-                end: position.end
-              }
-              const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task) || {updates: []}
-
-              if(updates.length > 0){
-                updates.forEach((update) => {
-                  onUpdateTask?.(update, {start: update.start, end: update.end})
-                })
-              }
-
-              onUpdateTask?.(task, position)
-            }}
+            onUpdateTask={_onUpdateTask}
             onTaskChanging={onTaskChanging}
 
             onStartCreateLink={onStartCreateLink}
@@ -783,17 +788,37 @@ export const Timeline = styled(BaseTimeline)`
   flex-direction: column;
   justify-content: center;
 }
+
+.timeLine-main-data-task-side-link-container {
+  width: 12px;
+  height: 25px;
+
+  cursor: pointer;
+
+}
+.timeLine-main-data-task-side-link-container:hover > .timeLine-main-data-task-side-linker {
+
+  background-color: black;
+  border: solid 0.5px grey;
+}
+
+.timeLine-main-data-task-side-link-container:hover{
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 .timeLine-main-data-task-side-linker {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  cursor: default;
   z-index: 100;
+  cursor: pointer;
+
 }
-.timeLine-main-data-task-side-linker:hover {
-  background-color: black;
-  border: solid 0.5px grey;
-}
+
+// .timeLine-main-data-task-side-linker:hover {
+//   background-color: black;
+//   border: solid 0.5px grey;
+// }
 /* .timeLine-main-data-task:hover {
     background-color:chocolate;
     border:solid 2px darkorchid;

@@ -5,6 +5,7 @@ export default class CreateLink extends Component<any, any> {
   init: boolean;
   lastX: number;
   lastY: number;
+
   constructor(props: any) {
     super(props);
     this.state = { x: this.props.start.x, y: this.props.start.y };
@@ -17,6 +18,7 @@ export default class CreateLink extends Component<any, any> {
     document.addEventListener('mousemove', this.doMouseMove);
     document.addEventListener('mouseup', this.doMouseUp);
   }
+  
   componentWillUnmount() {
     document.removeEventListener('mousemove', this.doMouseMove);
     document.removeEventListener('mouseup', this.doMouseUp);

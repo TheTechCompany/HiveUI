@@ -49,7 +49,7 @@ class Link extends Component<any, any>{
     return (
       <g className="timeline-link">
         <path
-          pointerEvents="stroke"
+          pointerEvents={this.props.key == -1 ? "none" : "stroke"}
           onMouseDown={this.onSelect}
           stroke="white"
           d={this.getPath()}
@@ -60,12 +60,13 @@ class Link extends Component<any, any>{
         />
 
         <path
-          pointerEvents="stroke"
+          pointerEvents={this.props.key == -1 ? "none" : "stroke"}
           onMouseDown={this.onSelect}
           // stroke={"white"}
           stroke={pathColor}
           d={this.getPath()}
           strokeLinejoin="round"
+          
           fill="transparent"
           strokeWidth="1"
           cursor="pointer"

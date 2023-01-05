@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import DateHelper from '../../helpers/DateHelper';
 import { MODE_NONE, MODE_MOVE, MOVE_RESIZE_LEFT, MOVE_RESIZE_RIGHT } from '../../Const';
 import { LINK_POS_LEFT, LINK_POS_RIGHT } from '../../Const';
@@ -54,11 +54,23 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const dragging = useRef<boolean>(false);
 
-  const [ left, setLeft ] = useState(props.left || 0);
-  const [ width, setWidth ] = useState(props.width || 0)
-  // const left = useRef<number>(props.left || 0)
-  // const width = useRef<number>(props.width || 0)
+  const [ left, _setLeft ] = useState(props.left || 0);
+  const [ width, _setWidth ] = useState(props.width || 0)
 
+  const leftRef = useRef(props.left || 0)
+
+  const setLeft = (left: number) => {
+    _setLeft(left);
+    leftRef.current = left;
+  };
+
+  const widthRef = useRef(props.left || 0)
+
+  const setWidth = (width: number) => {
+    _setWidth(width);
+    widthRef.current = width;
+  };
+  
   const mode = useRef<number>(MODE_NONE);
 
   useEffect(() => {
@@ -96,11 +108,14 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
   };
 
   const updatePosition = () => {
-    let new_start_date = DateHelper.pixelToDate(left, props.nowposition, props.dayWidth || 0);
-    let new_end_date = DateHelper.pixelToDate(left + width, props.nowposition, props.dayWidth || 0);
+    
+    let new_start_date = DateHelper.pixelToDate(leftRef.current, props.nowposition, props.dayWidth || 0);
+    let new_end_date = DateHelper.pixelToDate(leftRef.current + widthRef.current, props.nowposition, props.dayWidth || 0);
 
     props.onUpdateTask(props.item, { start: new_start_date, end: new_end_date });
+
   }
+
 
   const dragStart = (x: any, _mode: any) => {
     props.onChildDrag(true);
@@ -110,8 +125,6 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
     setLeft(props.left || 0)
     setWidth(props.width || 0)
-    // left.current = props.left || 0
-    // width.current = props.width || 0
 
   }
 
@@ -124,36 +137,46 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
   const dragProcess = (x: number) => {
     let delta = draggingPosition.current - x;
 
-    setLeft((left) => {
-      switch (mode.current) {
-        case MODE_MOVE:
-          return left - delta;
-        case MOVE_RESIZE_LEFT:
-          return left - delta;
-        default: 
-          return left;
-      }
-    })
+    let newLeft = leftRef.current;
 
-    setWidth((width) => {
-      switch (mode.current) {
-        case MOVE_RESIZE_LEFT:
-          return width + delta;
-        case MOVE_RESIZE_RIGHT:
-          return width - delta;
-        default: 
-          return width;
-      }
-    })
+    switch (mode.current) {
+      case MODE_MOVE:
+        newLeft = newLeft - delta;
+        break;
+      case MOVE_RESIZE_LEFT:
+        newLeft = newLeft - delta;
+        break;
+      default: 
+        break;
+        // return left;
+    }
+
+    setLeft(newLeft)
+
+    let newWidth = widthRef.current;
+
+    switch (mode.current) {
+      case MOVE_RESIZE_LEFT:
+        newWidth = newWidth + delta;
+        break;
+      case MOVE_RESIZE_RIGHT:
+        newWidth = newWidth - delta;
+        break;
+      default: 
+        break;
+        // return width;
+    }
+
+    setWidth(newWidth)
     
     //the coordinates need to be global
     let changeObj = {
       item: props.item,
       position: {
-        startInt: left - props.nowposition,
-        start: DateHelper.pixelToDate(left, props.nowposition, props.dayWidth || 0),
-        end: DateHelper.pixelToDate(left + width, props.nowposition, props.dayWidth || 0),
-        endInt: left + width - props.nowposition
+        startInt: leftRef.current - props.nowposition,
+        start: DateHelper.pixelToDate(leftRef.current , props.nowposition, props.dayWidth || 0),
+        end: DateHelper.pixelToDate(leftRef.current  + widthRef.current, props.nowposition, props.dayWidth || 0),
+        endInt: leftRef.current + widthRef.current - props.nowposition
       }
     };
 
@@ -259,7 +282,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
       ...configStyle,
       background: backgroundColor,
       opacity: props.opacity || 1,
-      left: left,
+      // left: left,
       width: width,
       height: props.height - 5,
     };
@@ -302,35 +325,45 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
       <Box
         onMouseEnter={hoverStart}
         onMouseLeave={hoverEnd}
-        className={`${props.className} ${dragging.current ? 'dragging' : ''}`}
+        className={`timeLine-data-task-container ${props.className} ${dragging.current ? 'dragging' : ''}`}
         onMouseDown={(e) => doMouseDown(e, MODE_MOVE)}
         onTouchStart={(e) => doTouchStart(e, MODE_MOVE)}
         onDoubleClick={(e) => {
           props.onSelectItem(props.item);
         }}
         style={{
-          ...style,
-          top: 5,
+          position: 'absolute',
+          top: 0,
+          paddingTop: '6px',
+          paddingBottom: '6px',
           display: 'flex',
-          pointerEvents: props.pointerEvents
+          height: props.height - 5,
+          left: left,
+          width: width,
+          pointerEvents: props.pointerEvents as any
         }}
       >
         <div
           className="timeLine-main-data-task-side"
-          style={{ top: 0, left: -10, height: style.height }}
+          style={{ position: 'relative', top: 0, left: -10, height: style.height }}
           onMouseDown={(e) => doMouseDown(e, MOVE_RESIZE_LEFT)}
           onTouchStart={(e) => doTouchStart(e, MOVE_RESIZE_LEFT)}
         >
-          <div className="task-handle" style={{ right: 0 }} />
-          <div className="task-handle-grip" />
+          {/* <div className="task-handle" style={{ right: 0 }} />
+          <div className="task-handle-grip" /> */}
 
         </div>
         <div
-          style={{ position: 'absolute', left: -4, bottom: 0, top: 0, margin: 'auto 0' }}
-          className="timeLine-main-data-task-side-linker"
+          style={{ position: 'absolute', zIndex: 999, borderBottomLeftRadius: '12px', borderTopLeftRadius: '12px', left: 0, bottom: 0, top: 6 }}
           onMouseUp={(e) => onCreateLinkMouseUp(e, LINK_POS_LEFT)}
           onTouchEnd={(e) => onCreateLinkTouchEnd(e, LINK_POS_LEFT)}
-        />
+          className='timeLine-main-data-task-side-link-container'>
+            {/* <div
+              style={{ position: 'absolute', margin: 'auto 0', top: '8px', left: '-4px' }}
+              className="timeLine-main-data-task-side-linker"
+            /> */}
+        </div>
+       
 
         <div onClick={() => {
           props.onExpansion?.(!collapsed)
@@ -338,6 +371,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
         }} 
         className={`timeline-data-task`}  
         style={{
+          ...style,
            display: 'flex', 
            flex: 1, 
            justifyContent: 'center', 
@@ -353,20 +387,28 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
               </Collapsible>
             )} */}
         </div>
+
+    
+       
         <div
-          style={{ position: 'absolute', left: style.width - 4, bottom: 0, top: 0, margin: 'auto 0' }}
-          className="timeLine-main-data-task-side-linker"
+          style={{ position: 'absolute', zIndex: 999, left: style.width - 12, borderTopRightRadius: '12px', borderBottomRightRadius: '12px', bottom: 0, top: 6 }}
           onMouseDown={(e) => onCreateLinkMouseDown(e, LINK_POS_RIGHT)}
           onTouchStart={(e) => onCreateLinkTouchStart(e, LINK_POS_RIGHT)}
-        />
+          className='timeLine-main-data-task-side-link-container'>
+              {/* <div
+                style={{ position: 'absolute', top: '8px', left: '6px', margin: 'auto 0' }}
+                className="timeLine-main-data-task-side-linker"
+
+              /> */}
+        </div>
         <div
           className="timeLine-main-data-task-side"
-          style={{ top: 0, left: style.width, height: style.height }}
+          style={{ position: 'relative', top: 0, left: style.width, height: style.height }}
           onMouseDown={(e) => doMouseDown(e, MOVE_RESIZE_RIGHT)}
           onTouchStart={(e) => doTouchStart(e, MOVE_RESIZE_RIGHT)}
         >
-          <div className="task-handle-grip" />
-          <div className="task-handle" style={{ marginLeft: '100%' }} />
+          {/* <div className="task-handle-grip" />
+          <div className="task-handle" style={{ marginLeft: '100%' }} /> */}
         </div>
       </Box>
       </Wrapper>
