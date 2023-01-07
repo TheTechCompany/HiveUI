@@ -575,6 +575,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
       }}>
       <Box 
         sx={{
+          printColorAdjust: 'exact',
+          WebkitPrintColorAdjust: 'exact',
           display: 'flex',
           flexDirection: 'row',
         }}
