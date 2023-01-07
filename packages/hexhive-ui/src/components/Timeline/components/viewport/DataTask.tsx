@@ -12,15 +12,20 @@ import { getHostForElement, stringToColor } from '@hexhive/utils';
 import { useRef } from 'react';
 
 export interface DataTaskProps {
+
+  interactiveMode?: boolean;
+
   dayWidth?: number;
   item?: Task;
   label?: any;
   left?: number;
   width?: number;
+
   onStartCreateLink?: (item: any, pos: any) => void;
+  onFinishCreateLink?: (item: any, pos: any) => void;
+
   onChildDrag?: any;
   onTaskChanging?: any;
-  onFinishCreateLink?: any;
   onUpdateTask?: any;
   isSelected?: boolean;
   color?: any;
@@ -94,7 +99,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const onCreateLinkMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, position: any) => {
     e.stopPropagation();
-    props.onFinishCreateLink(props.item, position);
+    props.onFinishCreateLink?.(props.item, position);
   };
 
   const onCreateLinkTouchStart = (e: React.TouchEvent<HTMLDivElement>, position: string) => {
@@ -104,7 +109,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const onCreateLinkTouchEnd = (e: React.TouchEvent<HTMLDivElement>, position: any) => {
     e.stopPropagation();
-    props.onFinishCreateLink(props.item, position);
+    props.onFinishCreateLink?.(props.item, position);
   };
 
   const updatePosition = () => {
@@ -353,7 +358,8 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           <div className="task-handle-grip" /> */}
 
         </div>
-        <div
+        
+        {props.onFinishCreateLink && props.interactiveMode && (<div
           style={{ position: 'absolute', zIndex: 999, borderBottomLeftRadius: '12px', borderTopLeftRadius: '12px', left: 0, bottom: 0, top: 6 }}
           onMouseUp={(e) => onCreateLinkMouseUp(e, LINK_POS_LEFT)}
           onTouchEnd={(e) => onCreateLinkTouchEnd(e, LINK_POS_LEFT)}
@@ -362,7 +368,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
               style={{ position: 'absolute', margin: 'auto 0', top: '8px', left: '-4px' }}
               className="timeLine-main-data-task-side-linker"
             /> */}
-        </div>
+        </div>)}
        
 
         <div onClick={() => {
@@ -390,7 +396,8 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
     
        
-        <div
+       
+        {props.onStartCreateLink && (<div
           style={{ position: 'absolute', zIndex: 999, left: style.width - 12, borderTopRightRadius: '12px', borderBottomRightRadius: '12px', bottom: 0, top: 6 }}
           onMouseDown={(e) => onCreateLinkMouseDown(e, LINK_POS_RIGHT)}
           onTouchStart={(e) => onCreateLinkTouchStart(e, LINK_POS_RIGHT)}
@@ -400,7 +407,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
                 className="timeLine-main-data-task-side-linker"
 
               /> */}
-        </div>
+        </div>)}
         <div
           className="timeLine-main-data-task-side"
           style={{ position: 'relative', top: 0, left: style.width, height: style.height }}

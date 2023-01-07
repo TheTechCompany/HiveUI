@@ -26,6 +26,7 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
   const [ selectedItem, setSelectedItem ] = useState<any>();
 
  return <Timeline 
+   
       {...args} 
       data={data} 
       selectedItem={selectedItem}
@@ -65,7 +66,9 @@ const Template: ComponentStory<typeof Timeline> = (args) => {
       onCreateLink={(link: any) => {
         console.log({link})
         setLinks([...links, link])
-      }} date={date} onDateChange={setDate} />
+      }} 
+      date={date} 
+      onDateChange={setDate} />
       ;
 }
 
@@ -79,6 +82,7 @@ Primary.args = {
 export const WithItems = Template.bind({});
 WithItems.args = {
   date: new Date(),
+  onCreateLink: null,
   links: [
     {
       id: '4',
@@ -135,14 +139,10 @@ WithLinks.args = {
     }
   ],
   data: [
-    {
-      id: '1', start: new Date(2022, 6, 1), end: new Date(2022, 6, 6), name: "Item 0", color: 'red', showLabel: true, 
-    },
-    {
-      id: '5',
-      start: new Date(2022, 6, 1),
-      end: new Date(2022, 6, 6) 
-    }
+    {id: '5', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 1", color: 'red', showLabel: true},
+    {id: '1', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '2', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true},
+    {id: '3', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true}
   ],
   primary: true,
   color: 'green',

@@ -43,7 +43,10 @@ export type TimelineProps = {
 
   onCreateTask?: (task: Task, row: number) => Promise<void>;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
+  
   onCreateLink?: (link: Link) => void;
+  // onDeleteLink?: (link: Link) => void;
+
   onSelectItem?: (item: Task | Link) => void;
   
   horizon?: {start: Date, end: Date} | boolean;
@@ -356,6 +359,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
         if(!taskToCreate.task.id || !task.id) return;
 
+    console.log({onCreateLink, task, taskToCreate})
+
         let newLink = {
           id: nanoid(),
           source: taskToCreate.task.id,
@@ -618,8 +623,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             onUpdateTask={_onUpdateTask}
             onTaskChanging={onTaskChanging}
 
-            onStartCreateLink={onStartCreateLink}
-            onFinishCreateLink={onFinishCreateLink}
+            onStartCreateLink={onCreateLink && onStartCreateLink}
+            onFinishCreateLink={onCreateLink && onFinishCreateLink}
       
             onSize={onSize}
           />

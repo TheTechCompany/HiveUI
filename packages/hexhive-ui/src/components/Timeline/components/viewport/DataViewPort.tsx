@@ -110,6 +110,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
             return  (
               
             <DataTask 
+              interactiveMode={props.interactiveMode}
               item={child_task}
               nowposition={nowposition}
               dayWidth={dayWidth}
@@ -131,6 +132,7 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
             </DataTask>)
           }) : (
           <DataTask
+            interactiveMode={props.interactiveMode}
             onExpansion={(expanded: boolean) => setExpanded(expanded)}
             item={item}
             label={item.name}
@@ -150,11 +152,12 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
             onUpdateTask={props.onUpdateTask}
           >
             {' '}
-          </DataTask>
+          </DataTask >
           )}
 
           {i == (creatingTask as any)?.index && 
             <DataTask 
+            interactiveMode={props.interactiveMode}
             pointerEvents='none'
             item={creatingTask || undefined}
             width={DateHelper.dateToPixel(creatingTask?.end, nowposition, dayWidth || 0) - DateHelper.dateToPixel(creatingTask?.start, nowposition, dayWidth || 0)}
@@ -200,12 +203,15 @@ export const BaseDataViewPort : React.FC<DataViewPortProps> = (props) => {
            expanded={expanded}
            itemheight={(itemHeight + 5)}>
 
-            <DataTask />
+            <DataTask
+              interactiveMode={props.interactiveMode}
+              />
             {(creatingTask as any)?.index == i && <DataTask
               pointerEvents='none'
               item={creatingTask || undefined}
               width={new_width}
               left={new_position}
+              interactiveMode={props.interactiveMode}
               height={itemHeight}
               />}
           {/* <DataTask
