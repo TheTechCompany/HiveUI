@@ -126,6 +126,7 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
       if(!taskToCreate || !taskToCreate.end) return console.error("No link")
   
       let position = getItemPosition(taskToCreate?.index, taskToCreate?.end);
+      
       return <CreateLink start={position} onFinishCreateLink={props.onFinishCreateLink} />;
     }
   };
@@ -205,7 +206,7 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
   // }, [props.changingTask])
 
     return (
-      <svg x={0} y={0} width="100%" pointerEvents="none" style={{ position: 'absolute', top: 0, userSelect: 'none', height: '100%' }}>
+      <svg x={0} y={0} pointerEvents="none" style={{ position: 'absolute', top: 0, userSelect: 'none', marginLeft: '200px', width: 'calc(100% - 200px)', height: '100%' }}>
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" strokeLinejoin="round" />
