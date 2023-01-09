@@ -43,6 +43,7 @@ export type TimelineProps = {
 
   onCreateTask?: (task: Task, row: number) => Promise<void>;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
+  onUpdateTaskOrder?: (task: Task, newIx: number) => void;
   
   onCreateLink?: (link: Link) => void;
   // onDeleteLink?: (link: Link) => void;
@@ -67,6 +68,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
   onDateChange,
   onUpdateTask,
   onCreateLink,
+  onUpdateTaskOrder,
   onSelectItem,
   horizon,
   onHorizonChange,
@@ -623,6 +625,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             onUp={doMouseUp}
             onCancel={doMouseLeave}
             
+            onUpdateTaskOrder={onUpdateTaskOrder}
             onUpdateTask={_onUpdateTask}
             onTaskChanging={onTaskChanging}
 
