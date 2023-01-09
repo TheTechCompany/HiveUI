@@ -15,6 +15,10 @@ export const globalTheme = createTheme({
       navigation: {
         main: '#e3d1c7',
         // dark: '#b39f7d'
+      },
+      background: {
+        // default: '',
+        paper: '#fff8f2'
       }
     }
   })
@@ -27,7 +31,7 @@ export const HexHiveTheme = createTheme({
       MuiPaper: {
         styleOverrides: {
           root: {
-            background: globalTheme.palette.primary.light,
+            // background: globalTheme.palette.primary.light,
             borderRadius: '6px',
             overflow: "hidden"
           }

@@ -316,10 +316,9 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 
   const Wrapper = props.item?.hoverInfo ? (props: any) => <Tooltip title={(
     <Box
-    sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}
-    >
-    {props.item?.hoverInfo}
-  </Box>
+    sx={{ zIndex: 999999999, boxShadow: '5px 5px 15px -5px #000' }}>
+      {props.item?.hoverInfo}
+    </Box>
   )}>{props.children}</Tooltip> : (props: any) => <>{props.children}</>;
 
   return (
@@ -345,6 +344,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           height: props.height - 5,
           left: left,
           width: width,
+          transform: `translateZ(-1px)`,
           pointerEvents: props.pointerEvents as any
         }}
       >

@@ -579,10 +579,11 @@ const BaseTimeline : React.FC<TimelineProps> = ({
           WebkitPrintColorAdjust: 'exact',
           display: 'flex',
           flexDirection: 'row',
+          // paddingLeft: '200px',
         }}
       
         className={`${className} timeLine`} style={{position: 'relative', flex: 1}}>
-        <div className="timeLine-side-main" style={sideStyle}>
+        {/* <div className="timeLine-side-main" style={sideStyle}>
           <TaskList
             startRow={startRow}
             endRow={endRow}
@@ -598,11 +599,11 @@ const BaseTimeline : React.FC<TimelineProps> = ({
           <VerticalSpliter
             enabled={resizable}
             onTaskListSizing={onTaskListSizing} />
-        </div>
+        </div> */}
 
         <div className="timeLine-main">
          
-        <Box style={{position: 'absolute', display: 'flex', height: '100%', width: '100%', top: 0, left: 0}} className="header-container">
+        <Box style={{position: 'absolute', display: 'flex', height: '100%', width: 'calc(100% - 200px)', top: 0, left: '200px'}} className="header-container">
           <Header
               dayStatus={dayStatus}
               dayInfo={dayInfo}
