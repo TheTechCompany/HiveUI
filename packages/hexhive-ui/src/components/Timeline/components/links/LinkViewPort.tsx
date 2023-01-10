@@ -116,6 +116,13 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
    
       startItem = _tasks?.find((a) => a.id == link?.source)
 
+      
+      if (!startItem) {
+        //ret.concat([null])
+        continue;
+      }
+
+
       if(reordering?.id != link.source){ 
         startItem.index = _tasks?.findIndex((a) => a.id == link?.source);
   
@@ -124,25 +131,19 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
 
       }
   
-      
-      if (!startItem) {
-        //ret.concat([null])
-        continue;
-      }
-
     
       endItem = _tasks?.find((a) => a.id == link?.target)
+      
+      if (!endItem) {
+      //  setCache(cache.concat([null]))
+        continue;
+      }
 
       if(reordering?.id != link.target){
         endItem.index = _tasks?.findIndex((a) => a.id == link?.target);
       
       }else{
         endItem.moving = true;
-      }
-      
-      if (!endItem) {
-      //  setCache(cache.concat([null]))
-        continue;
       }
 
 
