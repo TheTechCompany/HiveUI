@@ -336,6 +336,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           props.onSelectItem(props.item);
         }}
         style={{
+          zIndex: 1,
           position: 'absolute',
           top: 0,
           paddingTop: '6px',
@@ -345,6 +346,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           left: left,
           width: width,
           transform: `translateZ(-1px)`,
+          cursor: props.onSelectItem && 'pointer',
           pointerEvents: props.pointerEvents as any
         }}
       >

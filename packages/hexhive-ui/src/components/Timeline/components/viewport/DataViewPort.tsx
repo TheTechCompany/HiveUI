@@ -299,7 +299,6 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
 
   const handleDragEnd = ({ active, over }: any) => {
     if (active.id !== over.id) {
-      console.log({active, over})
 
       let overIndex = tasks?.findIndex((a) => a.id == over.id);
 

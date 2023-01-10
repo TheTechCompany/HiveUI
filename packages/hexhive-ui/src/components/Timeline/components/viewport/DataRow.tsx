@@ -27,7 +27,7 @@ export interface DataRowProps {
 
 export const DataRow: React.FC<DataRowProps> = (props: any) => {
 
-  const { nowposition, dayWidth, onDragCreate } = useContext(TimelineContext)
+  const { nowposition, dayWidth, onSelectItem, onDragCreate } = useContext(TimelineContext)
   const [hoverAnchor, setHoverAnchor] = useState<{ x: number, y: number } | null>(null);
 
   const [ isHovering, setHover ] = useState(false);
@@ -87,7 +87,7 @@ export const DataRow: React.FC<DataRowProps> = (props: any) => {
           display: 'flex', 
           alignItems: 'center',
           // background: 'white', 
-          zIndex: 1, 
+          zIndex: 3, 
           // height: '100%', 
           position: 'sticky', 
           height: props.itemheight + 2,
@@ -97,6 +97,9 @@ export const DataRow: React.FC<DataRowProps> = (props: any) => {
           // borderLeft: '1px solid black',
           // transform: 'translateZ(1px)',
           width: '200px'
+        }}
+        onClick={() => {
+          onSelectItem?.(props.item)
         }}>
           <DragHandle 
             ref={setNodeRef as any}
@@ -193,7 +196,7 @@ export const DataRow: React.FC<DataRowProps> = (props: any) => {
       style={{
         ...Config.values.dataViewPort.rows.style,
         // top: props.top,
-        zIndex: -1,
+        // zIndex: -1,
         marginLeft: '200px',
         height: props.itemheight,
         borderBottom: `2px dashed ${HexHiveTheme.palette.secondary.main + "42"}`,
