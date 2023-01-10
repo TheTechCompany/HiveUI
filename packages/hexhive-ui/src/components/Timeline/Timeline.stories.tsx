@@ -169,6 +169,55 @@ WithLinks.args = {
 
 
 
+export const WithOverflow = Template.bind({});
+WithOverflow.args = {
+  date: new Date(),
+  links: [
+    {
+      id: '3', 
+      source: '1',
+      target: '5',
+    },
+    {
+      id: '4', 
+      source: '6',
+      target: '2'
+    },
+    {
+      id: '5',
+      source: '7',
+      target: '3'
+    }
+  ],
+  data: [
+    {id: '1', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 5", color: 'red', showLabel: true},
+    {id: '2', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '3', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '4', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+    {id: '5', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '6', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+    {id: '7', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 5", color: 'red', showLabel: true},
+    {id: '8', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '9', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '10', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+    {id: '11', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '12', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+    {id: '13', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 5", color: 'red', showLabel: true},
+    {id: '14', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
+    {id: '15', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+  
+  ],
+  primary: true,
+  color: 'green',
+  size: '10px',
+  dayStatus: (day: Date) => {
+    // console.log("Day", day)
+    return 'red';
+  }
+};
+
+
+
 export const WithLatency = Template.bind({});
 WithLatency.args = {
   date: new Date(),

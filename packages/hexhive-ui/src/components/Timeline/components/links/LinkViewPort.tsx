@@ -246,7 +246,7 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
             <path d="M 0 0 L 10 5 L 0 10 z" strokeLinejoin="round" />
           </marker>
         </defs>
-        <g transform={`matrix(1,0,0,1,${-((props.scrollLeft || 0) - (props.nowposition||0))},${-(props.scrollTop||0)})`}>
+        <g transform={`matrix(1,0,0,1,${-((props.scrollLeft || 0) - (props.nowposition || 0))},${-(props.scrollTop || 0)})`}>
           {renderLinks()}
           {renderCreateLink()}
         </g>

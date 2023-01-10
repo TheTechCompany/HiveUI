@@ -209,18 +209,22 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const verticalChange = (vertical: any) => {
     if (scrollTop == vertical) return;
+
     //Check if we have scrolling rows
-    let rowInfo = calculateStartEndRows(numVisibleRows, data, vertical);
+    
+    // let rowInfo = calculateStartEndRows(numVisibleRows, data, vertical);
     
     setScrollTop(vertical)
 
-    if (rowInfo.start !== startRow) {
+    console.log({vertical})
+
+    // if (rowInfo.start !== startRow) {
 
 
-      setStartRow(rowInfo.start)
-      // setEndRow(rowInfo.end)
+    //   setStartRow(rowInfo.start)
+    //   // setEndRow(rowInfo.end)
 
-    }
+    // }
   };
 
   const calculateStartEndRows = (numVisibleRows: number, data: Task[], scrollTop: number) => {
@@ -285,7 +289,7 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     setNowPosition(new_nowposition)
     setHeaderData(headerData)
     setScrollLeft(new_left)
-    setStartRow(new_startRow)
+    // setStartRow(new_startRow)
     // setEndRow(new_endRow)
 
   };
@@ -657,6 +661,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             onUpdateTask={_onUpdateTask}
             onTaskChanging={onTaskChanging}
 
+            onScroll={verticalChange}
+
             onStartCreateLink={onCreateLink && onStartCreateLink}
             onFinishCreateLink={onCreateLink && onFinishCreateLink}
       
@@ -796,6 +802,7 @@ export const Timeline = styled(BaseTimeline)`
   flex: 1 1 auto;
   position: relative;
   overflow: hidden;
+  overflow-y: auto;
 }
 .timeLine-main-data-container {
   position: relative;

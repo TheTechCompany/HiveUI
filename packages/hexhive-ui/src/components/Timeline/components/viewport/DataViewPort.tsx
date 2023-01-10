@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useRef, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { DATA_CONTAINER_WIDTH } from '../../Const';
 import DataTask from './DataTask';
 import { DataRow } from './DataRow';
@@ -44,6 +44,8 @@ export interface DataViewPortProps {
   onUpdateTaskOrderMove?: (task: Task, pos: number, over?: number) => void;
 
   mode?: string;
+
+  onScroll?: (vertical: number) => void;
 
   onDown?: (e: { clientX: number, clientY: number }) => void;
   onMove?: (e: { clientX: number, clientY: number }) => void;
@@ -210,6 +212,7 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
     let new_width = DateHelper.dateToPixel(creatingTask?.end, nowposition, dayWidth || 0) - new_position;
 
     return (
+      <>
       <DataRow
         interactiveMode={props.interactiveMode}
         onDragCreate={async (task: any, finished: boolean) => {
@@ -220,7 +223,7 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
           }
         }}
         isSelected={selectedItem == item}
-        key={`data-row-${i}`}
+        key={`data-create-row`}
         label={item.name}
         item={item}
         top={i * (itemHeight + 5)}
@@ -261,6 +264,8 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
             {' '}
           </DataTask> */}
       </DataRow>
+      <div style={{height: '50px'}} />
+      </>
     )
   }
 
@@ -283,10 +288,10 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
   useEffect(() => {
     if (dataViewRef.current) {
       dataViewRef.current.scrollLeft = scrollLeft;
-      dataViewRef.current.scrollTop = scrollTop;
+      // dataViewRef.current.scrollTop = scrollTop;
       // console.log("Scroll data view", props.scrollTop, props.scrollLeft)
     }
-  }, [scrollLeft, scrollTop])
+  }, [scrollLeft])
 
   const backgroundStyle: any = (mode && style?.background) ? style?.background?.(mode, dayWidth || 0) : {
     background: `linear-gradient(
@@ -352,6 +357,25 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
     props.onUpdateTaskOrderMove?.(task, delta.y, overIndex)
   }
 
+  const onWheel = (evt: any) => {
+
+    if(evt.shiftKey){
+    //         //  evt.stopPropagation()
+            evt.preventDefault();
+    //         // console.log(evt.deltaX, evt.deltaY)
+    //         console.log(evt.deltaY, scrollLeft)
+    //   moveTimeline?.(scrollLeft + evt.deltaY)
+    }
+  }
+
+  useEffect(() => {
+    dataViewRef.current?.addEventListener('wheel', onWheel, {passive: false})
+
+    return () => {
+      dataViewRef.current?.removeEventListener('wheel', onWheel)
+    }
+  }, [])
+
   return (
     <DndContext
       collisionDetection={closestCenter}
@@ -377,9 +401,13 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
           id="timeLinedataViewPort"
           className={`${props.className} timeLine-main-data-viewPort`}
           onWheel={(evt) => {
-            //
-            moveTimeline?.((scrollLeft || 0) + evt.deltaX)
+
+            if(evt.shiftKey){
+              moveTimeline?.((scrollLeft || 0) + evt.deltaY)
+            }
           }}
+          onScroll={(e: any) => props.onScroll?.(e.target.scrollTop)}
+
           onMouseDown={(e) => e.button == 0 && onDown(e)}
           onMouseMove={(e) => onMove(e)}
           onMouseUp={props.onUp}
