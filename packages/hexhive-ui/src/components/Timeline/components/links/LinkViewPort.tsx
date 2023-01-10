@@ -7,6 +7,7 @@ import { TimelineContext } from '../../context';
 import { useState } from 'react';
 import { useLink, useLinks, useTaskLinks } from '../../hooks/useLinks'
 import { useData, useDataItem } from '../../hooks/useData'
+import { arrayMove } from '@dnd-kit/sortable'
 
 interface LinkViewPortProps {
   selectedItem?: any;
@@ -52,18 +53,20 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
 
   const tasks = useData();
 
-  const { links: dataLinks, dayWidth } = useContext(TimelineContext)
+  const { links: dataLinks, dayWidth, reordering } = useContext(TimelineContext)
 
   const [ selectedItem, setSelectedItem ] = useState<any>(null)
   const [ changingTask, setChangingTask ] = useState<any>()
 
   const [ cache, setCache ] = useState<any[]>([])
 
-  const renderLink = (startItem: { index: any } & Task, endItem: { index?: any; } & Task, link: Link, key: React.Key | null | undefined) => {
+  const renderLink = (startItem: { index: any, moving: boolean } & Task, endItem: { index?: any, moving: boolean } & Task, link: Link, key: React.Key | null | undefined) => {
     if(!startItem.end || !endItem.start) return;
 
-    let startPosition = getItemPosition(startItem.index, startItem.end);
-    let endPosition = getItemPosition(endItem.index, endItem.start);
+
+    let startPosition = getItemPosition(startItem.index, startItem.end, startItem.moving);
+    let endPosition = getItemPosition(endItem.index, endItem.start, endItem.moving);
+
     return (
       <LinkComponent
         key={link.id}
@@ -76,48 +79,78 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
     );
   }
 
-  const getItemPosition = (index: number, date: Date) => {
+  const getItemPosition = (index: number, date: Date, isMoving?: boolean) => {
     let itemHeight = (props.itemheight || 0 )+ 5
 
     let x = DateHelper.dateToPixel(date, 0, dayWidth || 0);
+
     let y = (index * (itemHeight)) + (itemHeight / 2);
 
+      if(isMoving){
+        y += (reordering?.pos || 0)
+      }
+    
     return { x: x, y: y };
   };
 
   const renderLinks = useCallback(() => {
+
+    let _tasks = tasks?.slice();
 
     let ret : any[] = [];
 
     let startItem: any = {}
     let endItem: any = {};
 
-    if (tasks?.length == 0) return;
+    if(reordering?.over != undefined){
+      let ix = tasks?.findIndex((a) => a.id == reordering.id);
+      if(ix != undefined){
+        _tasks = arrayMove(tasks || [], ix, reordering?.over)
+      }
+    }
+
+    if (_tasks?.length == 0) return;
     for (let i = 0; i < (links || []).length; i++) {
       let link = links?.[i];
       if (!link) return;
-     // if (renderLinks[link.id]) continue;
+   
+      startItem = _tasks?.find((a) => a.id == link?.source)
 
-      startItem = tasks?.find((a) => a.id == link?.source)
-    
+      if(reordering?.id != link.source){ 
+        startItem.index = _tasks?.findIndex((a) => a.id == link?.source);
+  
+      }else{
+        startItem.moving = true;
+
+      }
+  
+      
       if (!startItem) {
         //ret.concat([null])
         continue;
       }
-      endItem = tasks?.find((a) => a.id == link?.target)
 
+    
+      endItem = _tasks?.find((a) => a.id == link?.target)
+
+      if(reordering?.id != link.target){
+        endItem.index = _tasks?.findIndex((a) => a.id == link?.target);
+      
+      }else{
+        endItem.moving = true;
+      }
+      
       if (!endItem) {
       //  setCache(cache.concat([null]))
         continue;
       }
 
-      // console.log({startItem, endItem})
 
       ret = ret.concat([renderLink(startItem, endItem, link, i)])
      // renderLinks[link.id] = '';
     }
     return ret;
-  }, [tasks, links])
+  }, [tasks, links, reordering])
 
  
 

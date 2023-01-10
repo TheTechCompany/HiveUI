@@ -27,7 +27,7 @@ export interface DataRowProps {
 
 export const DataRow: React.FC<DataRowProps> = (props: any) => {
 
-  const { nowposition, dayWidth, onSelectItem, onDragCreate } = useContext(TimelineContext)
+  const { nowposition, dayWidth, onUpdateTaskOrder, onSelectItem, onDragCreate } = useContext(TimelineContext)
   const [hoverAnchor, setHoverAnchor] = useState<{ x: number, y: number } | null>(null);
 
   const [ isHovering, setHover ] = useState(false);
@@ -101,7 +101,7 @@ export const DataRow: React.FC<DataRowProps> = (props: any) => {
         onClick={() => {
           onSelectItem?.(props.item)
         }}>
-          <DragHandle 
+          {onUpdateTaskOrder && <DragHandle 
             ref={setNodeRef as any}
             {...attributes}
             {...listeners}  
@@ -110,7 +110,7 @@ export const DataRow: React.FC<DataRowProps> = (props: any) => {
             }}
             fontSize="small" 
             sx={{opacity: 0, marginRight: '6px'}}
-            className="drag-handle" />
+            className="drag-handle" />}
           <div className="color-dot" style={{
             width: 12,
             height: 12,

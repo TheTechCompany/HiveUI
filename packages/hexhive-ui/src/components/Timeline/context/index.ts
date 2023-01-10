@@ -17,6 +17,11 @@ export interface ITimelineContext {
     onCreateTask?: (task: Task, row: number) => Promise<void>;
     onDragCreate?: (task: Task, finished: boolean) => void;
 
+    reordering?: {id?: string, over?: number, pos?: number};
+
+    onUpdateTaskOrder?: (task: Task, newIx: number, finished?: boolean) => void;
+
+
     style?: TimelineStyle
 
     mode?: string;

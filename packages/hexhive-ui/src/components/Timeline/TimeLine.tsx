@@ -20,7 +20,7 @@ import { Box, CircularProgress } from '@mui/material';
 import styled from 'styled-components'
 import { Moment } from 'moment';
 import { isEqual } from 'lodash';
-
+import { arrayMove } from '@dnd-kit/sortable'
 
 export type TimelineProps = {
   className?: string;
@@ -113,6 +113,8 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const [ taskToCreate, setTaskToCreate ] = useState<{task: Task, position: string}>()
   const [ changingTask, setChangingTask ] = useState<any>()
+
+  const [ reorderingTask, setReorderingTask ] = useState<{id?: string, pos: any, over?: number}>()
 
   const dc = useRef<DataController>(new DataController())
   
@@ -361,8 +363,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
         if(!taskToCreate.task.id || !task.id) return;
 
-    console.log({onCreateLink, task, taskToCreate})
-
         let newLink = {
           id: nanoid(),
           source: taskToCreate.task.id,
@@ -532,7 +532,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
 
   const _onUpdateTask = (task: any, position: any) => {
               
-    console.log(_links);
 
     let tasks = _tasks.slice()
 
@@ -545,7 +544,6 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     }
     const { tasks: taskUpdate, updates } = propogateMovement({tasks, links: _links}, task) || {updates: []}
 
-    console.log({updates})
     if(updates.length > 0){
       updates.forEach((update) => {
         onUpdateTask?.(update, {start: update.start, end: update.end})
@@ -555,9 +553,36 @@ const BaseTimeline : React.FC<TimelineProps> = ({
     onUpdateTask?.(task, position)
   }
 
+  const handleUpdateTaskOrder = (task: Task, newIx: number, finished?: boolean) => {
+
+    if(onUpdateTaskOrder && finished){
+      setTasks((tasks) => {
+        let ix = tasks.findIndex((a) => a.id == task.id);
+
+        // if(!ix) return tasks;
+        return arrayMove(tasks, ix, newIx)
+      })
+
+    }
+
+
+    onUpdateTaskOrder?.(task, newIx, finished)
+  }
+
+  const handleUpdateTaskMove = (task: any, y: number, over?: number) => {
+    setReorderingTask({id: task.id, pos: y, over})
+  }
+
+  const handleUpdateTaskOrderEnd = () => {
+    setReorderingTask(undefined);
+
+  }
+
     return (
       <TimelineContext.Provider value={{
         onCreateTask,
+        reordering: reorderingTask,
+        onUpdateTaskOrder: onUpdateTaskOrder && handleUpdateTaskOrder,
         tasks: (tasks || []).map((x, ix) => ({...x, index: ix})),
         links,
         style: style,
@@ -625,7 +650,10 @@ const BaseTimeline : React.FC<TimelineProps> = ({
             onUp={doMouseUp}
             onCancel={doMouseLeave}
             
-            onUpdateTaskOrder={onUpdateTaskOrder}
+            onUpdateTaskOrder={onUpdateTaskOrder && handleUpdateTaskOrder}
+            onUpdateTaskOrderEnd={onUpdateTaskOrder && handleUpdateTaskOrderEnd}
+            onUpdateTaskOrderMove={onUpdateTaskOrder && handleUpdateTaskMove}
+
             onUpdateTask={_onUpdateTask}
             onTaskChanging={onTaskChanging}
 
