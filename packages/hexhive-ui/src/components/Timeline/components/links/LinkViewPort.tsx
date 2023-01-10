@@ -80,11 +80,11 @@ export const LinkViewPort : React.FC<LinkViewPortProps> = (props) => {
   }
 
   const getItemPosition = (index: number, date: Date, isMoving?: boolean) => {
-    let itemHeight = (props.itemheight || 0 )+ 5
+    let itemHeight = (props.itemheight || 0 ) + 7
 
     let x = DateHelper.dateToPixel(date, 0, dayWidth || 0);
 
-    let y = (index * (itemHeight)) + (itemHeight / 2);
+    let y = (index * (itemHeight)) + ((itemHeight) / 2);
 
       if(isMoving){
         y += (reordering?.pos || 0)

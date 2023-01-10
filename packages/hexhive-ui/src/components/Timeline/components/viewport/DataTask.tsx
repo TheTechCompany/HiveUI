@@ -339,7 +339,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
           zIndex: 1,
           position: 'absolute',
           top: 0,
-          paddingTop: '6px',
+          paddingTop: '4px',
           paddingBottom: '6px',
           display: 'flex',
           height: props.height - 5,

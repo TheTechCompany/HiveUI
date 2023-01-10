@@ -137,13 +137,26 @@ WithLinks.args = {
       id: '3', 
       source: '1',
       target: '5',
+    },
+    {
+      id: '4', 
+      source: '6',
+      target: '2'
+    },
+    {
+      id: '5',
+      source: '7',
+      target: '3'
     }
   ],
   data: [
     {id: '5', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), name: "Item 5", color: 'red', showLabel: true},
     {id: '1', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 5), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 10), name: "Item 1", color: 'red', showLabel: true},
-    {id: '2', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true},
-    {id: '3', start: new Date(), end: new Date(2022, 10, 12), name: "Item 1", color: 'red', showLabel: true}
+    {id: '6', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '2', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+    {id: '7', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() +10), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 15), name: "Item 5", color: 'red', showLabel: true},
+    {id: '3', start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 20), end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 25), name: "Item 1", color: 'red', showLabel: true},
+   
   ],
   primary: true,
   color: 'green',
