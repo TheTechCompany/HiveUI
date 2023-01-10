@@ -43,7 +43,7 @@ export type TimelineProps = {
 
   onCreateTask?: (task: Task, row: number) => Promise<void>;
   onUpdateTask?: (task: Task, position: {start: Date, end: Date}) => void;
-  onUpdateTaskOrder?: (task: Task, newIx: number) => void;
+  onUpdateTaskOrder?: (task: Task, newIx: number, finished?: boolean) => void;
   
   onCreateLink?: (link: Link) => void;
   // onDeleteLink?: (link: Link) => void;

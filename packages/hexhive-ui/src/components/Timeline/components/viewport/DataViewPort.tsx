@@ -38,7 +38,7 @@ export interface DataViewPortProps {
 
   onTaskChanging?: (item: any) => void;
   onUpdateTask?: (task: Task, position: { start: Date, end: Date }) => void;
-  onUpdateTaskOrder?: (task: Task, newIx: number) => void;
+  onUpdateTaskOrder?: (task: Task, newIx: number, finished?: boolean) => void;
 
   mode?: string;
 
@@ -306,7 +306,7 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
 
       if(!task || overIndex == undefined) return;
 
-      props.onUpdateTaskOrder?.(task, overIndex)
+      props.onUpdateTaskOrder?.(task, overIndex, true)
 
       // if(overIndex !== undefined){
       //   let nextTask = tasks?.[overIndex + 1]
@@ -323,10 +323,21 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
     }
   }
 
+  const handleDragOver = ({active, over}: any) => {
+    if(active.id !== over.id){
+      let overIndex = tasks?.findIndex((a) => a.id == over.id);
+      let task = tasks?.find((a) => a.id == active.id);
+
+      if(!task || overIndex == undefined) return;
+      props.onUpdateTaskOrder?.(task, overIndex, false)
+    }
+  }
+
   return (
     <DndContext
       collisionDetection={closestCenter}
       sensors={sensors}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}>
       <SortableContext
         items={(tasks || []).map((x) => x.id || '')}
