@@ -17,6 +17,9 @@ jobs:
 
       - name: Install deps
         run: yarn
+      
+      - name: Bootstrap
+        run: npx lerna bootstrap
 
-      - run: yarn build
-      - run: yarn test
+      - run: npx lerna run build
+      - run: npx lerna run test
