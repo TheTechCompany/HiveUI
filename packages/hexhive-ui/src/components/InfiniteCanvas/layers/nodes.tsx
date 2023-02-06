@@ -16,13 +16,15 @@ export interface NodeLayerProps {
     onClick?: Function;
 
     dragHandler?: (data: any) => void;
+    dragStart?: (data: any) => void;
 }
 
 export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     status = {},
     onClick = () => {},
     className,
-    dragHandler
+    dragHandler,
+    dragStart
 }) => {
     const {
         editable,
@@ -94,8 +96,6 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     const renderAssetContainer = (node: InfiniteCanvasNode, children: any) => {
         
-        console.log({node})
-
         let factory = factories?.[node.type];
 
         const props = {
@@ -211,6 +211,10 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         if(!nodeRefs) return;
 
         if(evt.button == 0){
+            
+            dragStart?.({id: elem})
+
+
             let doc = getHostForElement(evt.target as HTMLElement)
 
 
@@ -225,6 +229,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                     y: rect.y - evt.clientY
                 }
             }
+
             //start dragging
 
             const mouseMove = (evt: MouseEvent) => {
@@ -238,10 +243,12 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
             const mouseUp = (evt: MouseEvent) => {
                 evt.stopPropagation()
+                
                 updateNode?.(elem, {
                     x: evt.clientX + offsetRect?.x, 
                     y: evt.clientY + offsetRect?.y
                 })
+
                 doc.removeEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
                 doc.removeEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
             }
@@ -278,7 +285,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                     <Typography variant="subtitle2">{hoverNode && status && (status[hoverNode.value] || status[hoverNode.label])}</Typography>
                 </div>
             </Popover>*/}
-            {_nodes && _nodes.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1)).map((node) => renderAssetContainer(
+            {_nodes && _nodes?.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1)).map((node) => renderAssetContainer(
                     node,
                     (<NodeIdContext.Provider value={{
                         nodeId: node.id,

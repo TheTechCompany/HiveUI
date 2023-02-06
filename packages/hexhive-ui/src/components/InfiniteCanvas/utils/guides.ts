@@ -29,8 +29,6 @@ export const calculateGuidePositions = (dimensions: {left: number, top: number, 
 
 export const proximityListener = (active: any, allGuides: any) => {
 
-	console.log("Proximity listener", {allGuides}, active);
-
 	const xAxisGuidesForActiveBox = allGuides[active].x;
 	const yAxisGuidesForActiveBox = allGuides[active].y;
 

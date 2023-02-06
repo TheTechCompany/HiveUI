@@ -226,9 +226,12 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         scalingFactor: 5
     });
 
-    const { guides, setActive, dragHandler, guidelines: { xAxisGuides, yAxisGuides } } = useGuides(canvasRef.current?.getBoundingClientRect(), _nodes, _offset, _zoom)
-
-    console.log({xAxisGuides, yAxisGuides});
+    const {  guides, dragStart, dragHandler, guidelines: { xAxisGuides, yAxisGuides } } = useGuides({
+        boundingBox: canvasRef.current?.getBoundingClientRect(), 
+        boxes: _nodes, 
+        offset: _offset, 
+        zoom: _zoom
+    })
 
     const FIT_TO_BUFFER = 50
 
@@ -249,7 +252,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         // }
     }, [nodeBounds, canvasBounds, fitToBounds])
 
-    console.log({_offset})
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
     const [ _factories, setFactories ] = useState<{[key: string]: IAbstractNodeFactory | IAbstractPathFactory}>({})
@@ -707,7 +709,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         selectNode: (node) => {
             onSelect?.('node', node)
 
-            setActive?.(`box${node}`);
+            // setActive?.(`box${node}`);
         },
         selectPath: (path) => onSelect?.('path', path),
         changeZoom: (z) => setZoom(_zoom + (z)),
@@ -730,8 +732,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             setFactories(f)
         }
     }, [factories])
-
-    console.log({xAxisGuides: xAxisGuides?.filter((a) => a != null), yAxisGuides: yAxisGuides?.filter((a) => a != null)});
 
     return (
         <InfiniteCanvasContext.Provider
@@ -825,7 +825,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 selectNode: (node) => {
                     onSelect?.('node', node)
         
-                    setActive?.(`box${node}`);
+                    // setActive?.(`box${node}`);
                 },
                 selectPath: (path) => onSelect?.('path', path),
                 changeZoom: (z) => setZoom(_zoom + (z)),
@@ -874,7 +874,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     x={menuPos?.x}/>}
                 <GridLayer />
                 <PathLayer />
-                <NodeLayer dragHandler={dragHandler} />
+                <NodeLayer dragStart={dragStart} dragHandler={dragHandler} />
                 <GuideLayer guides={[...(xAxisGuides || []), ...(yAxisGuides || [])]} />
                 <InformationLayer />
                 {/* {xAxisGuides}

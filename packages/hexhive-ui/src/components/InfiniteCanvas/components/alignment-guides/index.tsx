@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InfiniteCanvasNode } from '../../types';
 
 import {
@@ -14,19 +14,32 @@ import { Guideline } from './guideline';
 import styles from './styles.scss';
 
 
-export const useGuides = (boundingBox: {left: number, top: number, width: number, height: number} | undefined, _nodes: InfiniteCanvasNode[], offset: any, zoom: number ) => {
+export const useGuides = (options: {
+    xFactor?: number,
+    yFactor?: number,
+    userXGuides?: any,
+    userYGuides?: any,
+    boundingBox: {left: number, top: number, width: number, height: number} | undefined,
 
+    boxes: InfiniteCanvasNode[], 
+    offset: any, 
+    zoom: number 
+}) => {
 
-    console.log({boundingBox});
+    const [ activeBoxes, setActiveBoxes ] = useState<any[]>([]);
 
     const [ guides, setGuides ] = useState<{[key: string]: { x: number[], y: number[] }}>({});
     const [ nodes, setNodes ] = useState<{[key: string]: any}>({});
 
     const [ match, setMatch ] = useState<any>();
     
-    const [ active, setActive ] = useState<string>();
+    const active = useRef<{value: string | null}>({value: null});
 
     const [ guidesActive, setGuidesActive ] = useState(false);
+
+    const [ activeBoxSnappedPosition, setActiveBoxSnappedPosition ] = useState<any>({});
+
+    const { boundingBox, zoom, offset } = options;
 
     const realHeight = useMemo(() => boundingBox && boundingBox?.height * (zoom / 100), [boundingBox, zoom]);
     const realWidth = useMemo(() => boundingBox && boundingBox?.width * (zoom / 100), [boundingBox, zoom]);
@@ -34,50 +47,193 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
     const offsetX = useMemo(() => -(offset.x * (zoom / 100)), [offset])
     const offsetY = useMemo(() => -(offset.y), [offset])
 
+    //Set up everything
     useEffect(() => {
+        // Set the dimensions of the bounding box and the draggable boxes when the component mounts.
+        if (options.boundingBox) {
+            const boundingBox = options.boundingBox
+            const boxes : any = {};
+            const guides : any = {};
+            const activeBoxes : any[] = [];
+            let active = '';
+            const captionGroupsToIndexMap = {};
 
-        if(boundingBox){
-
-        
-            // console.log({height: boundingBox.height * (zoom / 100), boundingBox, zoom})
-
-            let guides : any = {};
-            let nodes : any = {};
-
+            // Adding the guides for the bounding box to the guides object
             guides.boundingBox = {
-                x: calculateGuidePositions(boundingBox, 'x').map((value) => value - boundingBox.left),
-                y: calculateGuidePositions(boundingBox, 'y').map((value) => value - boundingBox.top)
+                x: calculateGuidePositions(boundingBox, 'x').map(value => value - boundingBox.left),
+                y: calculateGuidePositions(boundingBox, 'y').map(value => value - boundingBox.top)
+            };
+
+            options.boxes.forEach((dimensions, index) => {
+                boxes[`box${dimensions.id}`] = Object.assign({}, dimensions, {
+                    isHeightZero: !isNaN(Number(dimensions?.height)) ? Math.round(dimensions?.height || 0) <= 0 : undefined,
+                    isWidthZero: !isNaN(Number(dimensions?.width)) ? Math.round(dimensions?.width || 0) <= 0 : undefined,
+                });
+
+                guides[`box${dimensions.id}`] = {
+                    x: calculateGuidePositions({ left: dimensions.x, top: dimensions.y, width: (dimensions.width || 0), height: (dimensions.height || 0) }, 'x'),
+                    y: calculateGuidePositions({ left: dimensions.x, top: dimensions.y, width: (dimensions.width || 0), height: (dimensions.height || 0) }, 'y')
+                };
+
+                if(active === dimensions.id){
+                    console.log("ACTIVE", dimensions)
+                    activeBoxes.push(`box${dimensions.id}`);
+
+                }
+                // if (dimensions.active) {
+                //     activeBoxes.push(`box${index}`);
+                // }
+
+                // if (dimensions?.metadata?.url) {
+                //     const img = new Image();
+                //     img.src = dimensions.metadata.url;
+                // }
+
+            });
+
+            if (activeBoxes.length > 1) {
+                boxes['box-ms'] = getMultipleSelectionCoordinates(boxes, activeBoxes);
+                boxes['box-ms'].type = 'group';
+                boxes['box-ms'].zIndex = 12;
+                const selections = [];
+                for (let box in boxes) {
+                    if (boxes.hasOwnProperty(box) && activeBoxes.includes(box)) {
+                        selections.push(boxes[box]);
+                    }
+                }
+
+                boxes['box-ms'].selections = selections;
+                active = 'box-ms';
+            } else 
+            
+            if (activeBoxes.length === 1) {
+                active = activeBoxes[0];
+            }
+            // Checking if Groups are present and if the length of array of group > 0 then we create grouped boxes.
+            // if (this.props?.groups?.length > 0) {
+            //     // for each group we are creating a new box starting with 'box-ms-'
+            //     this.props.groups.forEach((groupArray, index) => {
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`] = getGroupCoordinates(boxes, groupArray);
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].type = 'group';
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].zIndex = 12;
+            //         const selections = [];
+            //         const selectedIndexes = [];
+            //         let allElementsInsideGroupAreSelected = true;
+            //         // Checking for all the boxes present inside that group and storing them in selections
+            //         for (let box in boxes) {
+            //             if (boxes.hasOwnProperty(box) && groupArray.includes(boxes?.[box]?.metadata?.captionIndex)) {
+            //                 selections.push(boxes[box]);
+            //                 selectedIndexes.push(box);
+            //                 if (boxes[box].active !== true) {
+            //                     allElementsInsideGroupAreSelected = false;
+            //                 }
+            //             }
+            //         }
+            //         if (allElementsInsideGroupAreSelected) {
+            //             selectedIndexes.forEach(val => {
+            //                 activeBoxes.splice(activeBoxes.indexOf(val), 1);
+            //             });
+            //             activeBoxes.push(`${GROUP_BOX_PREFIX}${index}`);
+            //         }
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].metadata = {type:'group'};
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].selections = selections;
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].identifier = `${GROUP_BOX_PREFIX}${index}`;
+            //         boxes[`${GROUP_BOX_PREFIX}${index}`].isLayerLocked = checkGroupChildElementsLocked(selections);
+            //         // storing all the indexes inside a particular group to map it later if we need
+            //         captionGroupsToIndexMap[`${GROUP_BOX_PREFIX}${index}`] = groupArray;
+            //         // active = `box-ms-${index}`;
+            //     });
+            //     delete boxes['box-ms'];
+            // }
+
+            if (activeBoxes.length > 1) {
+                boxes['box-ms'] = getMultipleSelectionCoordinates(boxes, activeBoxes);
+                boxes['box-ms'].type = 'group';
+                boxes['box-ms'].zIndex = 12;
+                const selections = [];
+                for (let box in boxes) {
+                    if (boxes.hasOwnProperty(box) && activeBoxes.includes(box)) {
+                        selections.push(boxes[box]);
+                    }
+                }
+
+                boxes['box-ms'].selections = selections;
+                active = 'box-ms';
+            } else if (activeBoxes.length === 1) {
+                active = activeBoxes[0];
             }
 
-            _nodes.forEach((node, index) => {
-                nodes[`box${node.id}`] = Object.assign({}, node, {
-                    isHeightZero: !isNaN(Number(node?.height)) ? Math.round((node?.height || 0)) <= 0 : undefined,
-            		isWidthZero: !isNaN(Number(node?.width)) ? Math.round((node?.width || 0)) <= 0 : undefined,
-                })
-                guides[`box${node.id}`] = {
-                    x: calculateGuidePositions({left: node.x, top: node.y, width: (node.width || 0), height: (node.height || 0)}, 'x'),
-                    y: calculateGuidePositions({left: node.x, top: node.y, width: (node.width || 0), height: (node.height || 0)}, 'y')
-                };
-            })
+            // adding guidelines for snapping
+            addGuidelinesForSnapping(guides);
 
-            console.log({guides, nodes})
+            // document.addEventListener('click', this.unSelectBox);
+            // window.addEventListener('blur', this.unSelectBox);
+            // document.addEventListener('keydown', this.setShiftKeyState);
+            // document.addEventListener('keydown', this.unSelectBox);
+            // document.addEventListener('keyup', this.setShiftKeyState);
+            // document.addEventListener('contextmenu', this.selectBox);
 
-            console.log("IN", {guides})
+            setNodes(boxes);
             setGuides(guides);
-            setNodes(nodes)
-    
+            setActiveBoxes(activeBoxes);
+            // setActive()
+
+            // this.setState({
+            //     boundingBox,
+            //     boxes,
+            //     guides,
+            //     activeBoxes,
+            //     active,
+            //     captionGroupsToIndexMap,
+            // });
         }
 
-    }, [ JSON.stringify(_nodes) ])
+    // if (this.props.isStylingPanelEnabled) {
+    //     this.mouseDragHandler();
+    // }
 
+    }, [options.boxes])
+
+
+    //Update com
+    useEffect(() => {
+
+        if (activeBoxes.length > 0) {
+			const activeBoxWithoutLock = activeBoxes.filter(activeBox => {
+				return !nodes[activeBox] || !nodes[activeBox].isLayerLocked;
+			});
+			if (JSON.stringify(activeBoxes) !== JSON.stringify(activeBoxWithoutLock)) {
+                setActiveBoxes(activeBoxWithoutLock)
+                // this.setState({
+				// 	activeBoxes: activeBoxWithoutLock
+				// });
+			}
+		}
+
+		
+		
+		
+
+		// // adding user guides for snapping
+		// if (
+		// 	this.props.xFactor !== prevProps.xFactor ||
+		// 	this.props.yFactor !== prevProps.yFactor ||
+		// 	this.props.userXGuides !== prevProps.userXGuides ||
+		// 	this.props.userYGuides !== prevProps.userYGuides
+		// ) {
+		// 	// const guides = this.state.guides
+		// 	addGuidelinesForSnapping(guides)
+		// 	// this.setState({
+		// 	// 	guides,
+		// 	// })
+		// }
+    }, [nodes, activeBoxes])
 
 
     const guidelines = useMemo(() => {
 
         let xAxisGuides = null;
 		let yAxisGuides = null;
-
-        console.log("GUIDLINES", guides, active, match)
 
 		if (guides) {
 			xAxisGuides = Object.keys(guides).reduce((result, box) => {
@@ -86,8 +242,8 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 				if (guides[box] && guides[box].x) {
 					xAxisGuidesForCurrentBox = guides[box].x.map((position, index) => {
 						if (
-							active &&
-							active === box &&
+							active.current &&
+							active.current.value === box &&
 							match &&
 							match.x &&
 							match.x.intersection &&
@@ -109,11 +265,10 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 				let yAxisGuidesForCurrentBox : any = null;
 				if (guides[box] && guides[box].y) {
 					yAxisGuidesForCurrentBox = guides[box].y.map((position, index) => {
-                        console.log({match, active, box, position})
 
 						if (
 							active &&
-							active === box &&
+							active.current?.value === box &&
 							match &&
 							match.y &&
 							match.y.intersection &&
@@ -139,47 +294,54 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 
     }, [ JSON.stringify(guides), JSON.stringify(nodes), JSON.stringify(match), offset, zoom ])
 
+    const dragStart = (data: any) => {
+        active.current.value = `box${data.id}`;
+        // setActive(data.id)
 
-    console.log({active});
+        setActiveBoxes([`box${data.id}`])
+
+        console.log({data})
+    }
 
     const dragHandler = useCallback((data: any) => {
         let newData: any;
-        console.log("DRAG HANDLER 1")
 
-        if(active){
-            let boxes = Object.assign({}, nodes, {
-                [active]: Object.assign({}, nodes[active], {
-                    ...nodes[active],
-                    x: data.x,
-                    y: data.y,
-                    // left: data.left,
-                    // top: data.top,
-                    // width: data.width,
-                    // height: data.height,
-                    // deltaX: data.deltaX,
-                    // deltaY: data.deltaY,
-                })
-            });
+        // if(active){
+      
+            
+        //     let boxes = _nodes.slice();
+        //     let ix = boxes.findIndex((a) => a.id == active);
+        //     boxes[ix] = {
+        //         ...boxes[ix],
+        //         x: data.x,
+        //         y: data.y,
+        //     }
 
-            let newGuides = Object.assign({}, guides, {
-                [active]: Object.assign({}, guides[active], {
-                    x: calculateGuidePositions(boxes[active], 'x'),
-                    y: calculateGuidePositions(boxes[active], 'y')
-                })
-            });
+        //     setNodes(boxes)
+       
+        //     let box = boxes.find((a) => a.id == active);
+        //     if(box){
+        //         let newGuides = Object.assign({}, guides, {
+        //             [active]: Object.assign({}, guides[active], {
+        //                 x: calculateGuidePositions({left: box.x, top: box.y, width: (box.width || 0), height: (box.height || 0)}, 'x'),
+        //                 y: calculateGuidePositions({left: box.x, top: box.y, width: (box.width || 0), height: (box.height || 0)}, 'y')
+        //             })
+        //         });
+        //         setGuides(newGuides)
+        //     }
 
-            setNodes(boxes)
-            setGuides(newGuides)
-        }
+        // }
+        console.log("Drag active", active)
 
-        if(active){
+        if(active.current.value){
+
     
+            const match = proximityListener(active.current.value, guides)
 
-            const match = proximityListener(active, guides)
-            console.log("DRAG HANDLER 2", {match})
+            setMatch(match);
 
-            let newActiveBoxLeft = nodes[active].left;
-            let newActiveBoxTop = nodes[active].top;
+            let newActiveBoxLeft = nodes[active.current.value]?.x;
+            let newActiveBoxTop = nodes[active.current.value]?.y;
                 
             for (let axis in match) {
 
@@ -189,54 +351,65 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 
 					if (axis === 'x') {
 						if (activeBoxGuides[activeBoxProximityIndex] > matchedArray[matchedBoxProximityIndex]) {
-							newActiveBoxLeft = nodes[active].left - proximity.value;
+							newActiveBoxLeft = (nodes[active.current.value]?.x || 0) - proximity.value;
 						} else {
-							newActiveBoxLeft = nodes[active].left + proximity.value;
+							newActiveBoxLeft = (nodes[active.current.value]?.x || 0) + proximity.value;
 						}
 					} else {
 						if (activeBoxGuides[activeBoxProximityIndex] > matchedArray[matchedBoxProximityIndex]) {
-							newActiveBoxTop = nodes[active].top - proximity.value;
+							newActiveBoxTop = (nodes[active.current.value]?.y || 0) - proximity.value;
 						} else {
-							newActiveBoxTop = nodes[active].top + proximity.value;
+							newActiveBoxTop = (nodes[active.current.value]?.y || 0) + proximity.value;
 						}
 					}
-				}
+			}
                 
-				const boxes = Object.assign({}, nodes, {
-					[active]: Object.assign({}, nodes[active], {
-						left: newActiveBoxLeft,
-						top: newActiveBoxTop
-					})
-				});
-				const newGuides = Object.assign({}, guides, {
-					[active]: Object.assign({}, guides[active], {
-						x: calculateGuidePositions(nodes[active], 'x'),
-						y: calculateGuidePositions(nodes[active], 'y')
-					})
-				})
+                
+			// 	let boxes = _nodes.slice();
+            //     let boxIx = boxes.findIndex((a) => a.id == active);
+            //     boxes[boxIx] = {
+            //         ...boxes[boxIx],
+            //         x: (newActiveBoxLeft || 0),
+            //         y: (newActiveBoxTop || 0)
+            //     }
+                
+            //     let box = boxes.find((a) => a.id === active);
+            //     if(box){
+                
+            //         const newGuides = Object.assign({}, guides, {
+            //             [active]: Object.assign({}, guides[active], {
+            //                 x: calculateGuidePositions({left: box.x, top: box.y, width: (box.width || 0), height: (box.height || 0)}, 'x'),
+            //                 y: calculateGuidePositions({left: box.x, top: box.y, width: (box.width || 0), height: (box.height || 0)}, 'y')
+            //             })
+            //         })
+
+
+                let activeNode = nodes[active.current.value];
 
 				const activeBox = {
-					left: nodes[active].left,
-					top: nodes[active].top,
-					x: nodes[active]?.x || 0,
-					y: nodes[active]?.y || 0,
+					left: activeNode?.x,
+					top: activeNode?.y,
+					x: activeNode?.x || 0,
+					y: activeNode?.y || 0,
 				}
 
-				Object.keys(newGuides).map(box => {
-					newGuides?.[box]?.x?.map((position: number) => {
-						if (match?.x?.intersection === position) {
-							activeBox.left = newActiveBoxLeft;
-							activeBox.x = newActiveBoxLeft;
-						}
-					});
 
-					newGuides?.[box]?.y?.map((position: number) => {
-						if (match?.y?.intersection === position) {
-							activeBox.top = newActiveBoxTop;
-							activeBox.y = newActiveBoxTop;
-						}
-					});
-				});
+
+			// 	Object.keys(newGuides).map(box => {
+			// 		newGuides?.[box]?.x?.map((position: number) => {
+			// 			if (match?.x?.intersection === position) {
+			// 				activeBox.left = newActiveBoxLeft;
+			// 				activeBox.x = newActiveBoxLeft;
+			// 			}
+			// 		});
+
+			// 		newGuides?.[box]?.y?.map((position: number) => {
+			// 			if (match?.y?.intersection === position) {
+			// 				activeBox.top = newActiveBoxTop;
+			// 				activeBox.y = newActiveBoxTop;
+			// 			}
+			// 		});
+			// 	});
 
 				newData = Object.assign({}, newData, {
 					// calculating starting position: (newData.x - newData.deltaX) for snapped delta
@@ -246,19 +419,29 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 				});
 
 				const newBoxes = Object.assign({}, nodes, {
-					[active] : Object.assign({}, nodes[active], {
+					[active.current.value] : Object.assign({}, nodes[active.current.value], {
 						...activeBox,
 						deltaX: newData.deltaX,
 						deltaY: newData.deltaY,
 					})
 				});
-				
-                setNodes(newBoxes)
-                setGuides(newGuides)
-                
-                console.log({match})
 
-                setMatch(match)
+                console.log({newBoxes, activeBox, newData})
+				
+            //     setNodes(newBoxes)
+            //     setGuides(newGuides)
+                
+            //     console.log({match})
+
+            //     setMatch(match)
+
+            //     setActiveBoxSnappedPosition(Object.assign({}, {
+            //         deltaX: activeBox.x - (newData.x - newData.deltaX),
+            //         deltaY: activeBox.y - (newData.y - newData.deltaY),
+            //         ...activeBox
+            //     }))
+        }
+
 
 
 				// this.setState({
@@ -271,35 +454,39 @@ export const useGuides = (boundingBox: {left: number, top: number, width: number
 				// 		...activeBox
 				// 	})
 				// });
-        }
+        // }
     }, [active, guides, nodes])
-    // const addGuidelinesForSnapping = (guides) => {
-    //     const xFactor = props.xFactor || 1;
-    //     const yFactor = props.yFactor || 1
-    //     const userXGuidesPos = this.props.userXGuides
 
-    //     ? Object.keys(this.props.userXGuides).map((guideId) =>
-    //                 Math.round(this.props.userXGuides[guideId] / xFactor)
-    //             )
-    //         : []
-    //     const userYGuidesPos = this.props.userYGuides
-    //         ? Object.keys(this.props.userYGuides).map((guideId) =>
-    //                 Math.round(this.props.userYGuides[guideId] / yFactor)
-    //             )
-    //         : []
+    const addGuidelinesForSnapping = (guides: any) => {
+        const xFactor = options.xFactor || 1;
+        const yFactor = options.yFactor || 1
 
-    //     guides.userGuides = {
-    //         x: userXGuidesPos.sort((x, y) => x - y),
-    //         y: userYGuidesPos.sort((x, y) => x - y),
-    //     }
-    // }
+        const userXGuidesPos = options.userXGuides
+
+        ? Object.keys(options.userXGuides).map((guideId) =>
+                    Math.round(options.userXGuides[guideId] / xFactor)
+                )
+            : []
+        const userYGuidesPos = options.userYGuides
+            ? Object.keys(options.userYGuides).map((guideId) =>
+                    Math.round(options.userYGuides[guideId] / yFactor)
+                )
+            : []
+
+        guides.userGuides = {
+            x: userXGuidesPos.sort((x, y) => x - y),
+            y: userYGuidesPos.sort((x, y) => x - y),
+        }
+    }
 
     return {
-        nodes,
+        // _nodes: Object.keys(nodes).map((x) => nodes[x]),
+        // nodes,
         guides,
         guidelines,
+        dragStart,
         dragHandler,
-        active,
-        setActive
+        active
+        // setActive
     }
 }
