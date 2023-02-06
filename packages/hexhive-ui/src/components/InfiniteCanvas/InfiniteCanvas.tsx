@@ -139,7 +139,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     zoom,
     finite = false,
 
-    fitToBounds = true,
+    fitToBounds,
 
     router,
     routerOptions,
@@ -235,22 +235,24 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const FIT_TO_BUFFER = 50
 
-    useEffect(() => {
-        // if(fitToBounds){
-        //     let widthRatio =  ((nodeBounds?.width || 0) + FIT_TO_BUFFER) / (canvasBounds?.width || 0)
-        //     let heightRatio =  ((nodeBounds?.height || 0) + FIT_TO_BUFFER) / (canvasBounds?.height || 0)
-            
-        //     if(widthRatio > heightRatio){
-        //         setZoom(widthRatio * 100)
-        //     }else if(heightRatio > widthRatio){
-        //         setZoom(heightRatio * 100)
-        //     }else{
-        //         setZoom(widthRatio * 100)
-        //     }
+    // const [ hasFitToBounds, ]
 
-        //     setOffset({x: -((nodeBounds?.x || 0) - (FIT_TO_BUFFER /2)), y: -((nodeBounds?.y || 0) - (FIT_TO_BUFFER / 2))})
-        // }
-    }, [nodeBounds, canvasBounds, fitToBounds])
+    useEffect(() => {
+        if(fitToBounds && canvasBounds){
+            let widthRatio =  ((nodeBounds?.width || 0) + FIT_TO_BUFFER) / (canvasBounds?.width || 0)
+            let heightRatio =  ((nodeBounds?.height || 0) + FIT_TO_BUFFER) / (canvasBounds?.height || 0)
+            
+            if(widthRatio > heightRatio){
+                setZoom(widthRatio * 100)
+            }else if(heightRatio > widthRatio){
+                setZoom(heightRatio * 100)
+            }else{
+                setZoom(widthRatio * 100)
+            }
+
+            setOffset({x: -((nodeBounds?.x || 0) - (FIT_TO_BUFFER /2)), y: -((nodeBounds?.y || 0) - (FIT_TO_BUFFER / 2))})
+        }
+    }, [JSON.stringify(nodeBounds), canvasBounds, fitToBounds])
 
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
