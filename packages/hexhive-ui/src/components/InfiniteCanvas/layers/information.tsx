@@ -39,4 +39,5 @@ export const InformationLayer : React.FC<InformationLayerProps> = ({className}) 
 			{Array.isArray(information) ? information?.map((x: any) => x.component(getRelativeCanvasPos?.({x: x.x, y: x.y}))) : information}
 		</div>
 	)
+	
 }
