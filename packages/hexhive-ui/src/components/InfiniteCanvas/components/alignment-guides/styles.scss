@@ -1,0 +1,444 @@
+* {
+	box-sizing: border-box;
+}
+
+.boundingBox {
+	padding: 0;
+	position: fixed;
+	background-color: transparent;
+}
+
+.box {
+	background-color: transparent;
+	position: absolute;
+	outline: none;
+	z-index: 10;
+	transform-origin: center center;
+
+	&:hover {
+		outline: 2px dashed #ffffff !important;
+		box-shadow: 0 0 0 2px #000;
+	}
+}
+
+.selected,
+.boxGroup {
+	background-color: transparent;
+	outline: 2px dashed #ffffff !important;
+	box-shadow: 0 0 0 2px #000;
+}
+
+.boxGroup {
+	position: absolute;
+	background-color: transparent !important;
+}
+
+.groupElement {
+    background-color: transparent;
+	outline: 1px dashed #1b47f3 !important;
+	box-shadow: 0 0 0 1px #1b47f3;
+    //outline: 2px solid rgba(235, 75, 72, 0.8) !important; // Reduce the outline opacity for boxes that are part of a group/multiple selection
+}
+
+.guide {
+	background: #1b47f3;
+	color: #1b47f3;
+	display: none;
+	left: 0;
+	position: absolute;
+	top: 0;
+	z-index: 100;
+}
+
+.active {
+	display: block;
+}
+
+.xAxis {
+	height: 100%;
+	width: 1px;
+}
+
+.yAxis {
+	height: 1px;
+	width: 100%;
+}
+
+// Displaying coordinates and dimensions
+.coordinates {
+	overflow: hidden;
+    white-space: nowrap;
+	line-height: normal;
+	font-size: 9px;
+	position: absolute;
+	padding: 2px;
+	top: -23px;
+	left: 0;
+	//color: #EB4B48;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	color: rgb(255, 255, 255);
+	// text-shadow: 1px 1px 0 black;
+	background-color: #44B2FB;
+	border: 1px solid #44B2FB;
+	border-radius: 2px;
+	pointer-events: none;
+}
+
+.dimensions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	font-size: 9px; 
+	font-weight: bold;
+	//color: #EB4B48;
+	color: rgb(255, 255, 255);
+	margin-top: -5px;
+    pointer-events: none;
+}
+
+.dimensions_style{
+	background-color: #44B2FB;
+	border: 1px solid #44B2FB;
+	padding-right: 1px;
+	border-radius: 2px;
+	line-height: normal;
+	padding: 2px;
+	pointer-events: none;
+}
+
+// .width {
+// 	height: 10px;
+// }
+
+// Resize Handles
+.resizeCorners,
+.rotateHandle {
+	width: 10px;
+	height: 10px;
+	background-color: #FFF;
+	border: 1px solid #1b47f3;
+	position: absolute;
+	pointer-events: all;
+}
+
+.resizeCorners {
+	z-index: 99;
+}
+
+.resizeEdges {
+	background-color: #EB4B48;
+	position: absolute;
+}
+
+.resize-tr {
+	top: -5px;
+	right: -5px;
+}
+
+.resize-tl {
+	top: -5px;
+	left: -5px;
+}
+
+.resize-br {
+	bottom: -5px;
+	right: -5px;
+}
+
+.resize-bl {
+	bottom: -5px;
+	left: -5px;
+}
+
+.resize-cl, .resize-cr, .resize-ct, .resize-cb {
+    opacity: 0;
+}
+
+.resize-cb, .resize-ct {
+	left: 8px;
+	width: calc(100% - 16px);
+	height: 6px;
+	cursor: ns-resize;
+}
+
+.resize-cl, .resize-cr {
+	top: 8px;
+	height: calc(100% - 16px);
+	width: 6px;
+	cursor: ew-resize;
+}
+
+.resize-ct {
+	top: -3px;
+}
+
+.resize-cb {
+	bottom: -3px;
+}
+
+.resize-cl {
+	left: -3px;
+}
+
+.resize-cr {
+	right: -3px;
+}
+
+.stretchable-resize-cl, .stretchable-resize-cr {
+	height: 20px !important;
+	top: calc(50% - 10px) !important;
+	width: 5px !important;
+	opacity: 1;
+	border-radius: 30px;
+}
+.stretchable-resize-ct, .stretchable-resize-cb {
+	width: 20px !important;
+	left: calc(50% - 10px) !important;
+	height: 5px !important;
+	opacity: 1;
+	border-radius: 30px;
+}
+
+.stretchable-resize-cl {
+	left: -3px;
+}
+.stretchable-resize-cr {
+	right: -3px;
+}
+.stretchable-resize-ct {
+	top: -3px;
+}
+.stretchable-resize-cb {
+	bottom: -3px;
+}
+
+.resize-tr, .resize-bl {
+	cursor: nesw-resize;
+}
+
+.resize-tl, .resize-br {
+	cursor: nwse-resize;
+}
+
+// Rotate handles
+
+// Load the rotate icon svg and rotate it appropriately for each corner
+.rotateHandle {
+	width: 35px;
+	height: 35px;
+	z-index: 98;
+	opacity: 0;
+	background-repeat: no-repeat;
+	background-color: transparent;
+  background-position: center;
+	border: none;
+	cursor: none;
+
+	&:hover{
+		opacity: 1;
+	}
+}
+
+@svg-load rotate-tr url(./assets/rotate.svg) {
+	fill: #333;
+	stroke: #FFF;
+	width: 15px;
+	height: 15px;
+}
+
+@svg-load rotate-tl url(./assets/rotate.svg) {
+	fill: #333;
+	stroke: #FFF;
+	width: 15px;
+	height: 15px;
+	transform: rotate(-90deg);
+}
+
+@svg-load rotate-br url(./assets/rotate.svg) {
+	fill: #333;
+	stroke: #FFF;
+	width: 15px;
+	height: 15px;
+	transform: rotate(90deg);
+}
+
+@svg-load rotate-bl url(./assets/rotate.svg) {
+	fill: #333;
+	stroke: #FFF;
+	width: 15px;
+	height: 15px;
+	transform: rotate(180deg);
+}
+
+.rotate-tr {
+	background-image: svg-inline(rotate-tr);
+	top: -30px;
+	right: -30px;
+}
+
+.rotate-tl {
+	background-image: svg-inline(rotate-tl);
+	top: -30px;
+	left: -30px;
+}
+
+.rotate-br {
+	background-image: svg-inline(rotate-br);
+	bottom: -30px;
+	right: -30px;
+}
+
+.rotate-bl {
+	background-image: svg-inline(rotate-bl);
+	bottom: -30px;
+	left: -30px;
+}
+
+
+.fadeOut {
+	animation: fadeOut ease 4s;
+	-webkit-animation: fadeOut ease 4s;
+	-moz-animation: fadeOut ease 4s;
+	-o-animation: fadeOut ease 4s;
+	-ms-animation: fadeOut ease 4s;
+  }
+  @keyframes fadeOut {
+	0% {
+	  opacity:1;
+	}
+	100% {
+	  opacity:0;
+	}
+  }
+  
+  @-moz-keyframes fadeOut {
+	0% {
+	  opacity:1;
+	}
+	100% {
+	  opacity:0;
+	}
+  }
+  
+  @-webkit-keyframes fadeOut {
+	0% {
+	  opacity:1;
+	}
+	100% {
+	  opacity:0;
+	}
+  }
+  
+  @-o-keyframes fadeOut {
+	0% {
+	  opacity:1;
+	}
+	100% {
+	  opacity:0;
+	}
+  }
+  
+  @-ms-keyframes fadeOut {
+	0% {
+	  opacity:1;
+	}
+	100% {
+	  opacity:0;
+  }
+}
+
+.cropper_notch_lb {
+	position: absolute;
+	bottom: -4px;
+	left: -4px;
+}
+
+.cropper_notch_lt {
+	position: absolute;
+	top: -4px;
+    left: -4px;
+    transform: scaleY(-1);
+}
+
+.cropper_notch_rt {
+	position: absolute;
+	top: -4px;
+	right: -4px;
+    transform: scale(-1);
+}
+
+.cropper_notch_rb {
+	position: absolute;
+	bottom: -4px;
+	right: -4px;
+	transform: scaleX(-1);
+}
+
+.cropper_notch_lc {
+	position: absolute;
+	top: calc(50% - 8px);
+    left: -10px;
+    transform: rotate(90deg) scaleX(1.5);
+}
+
+.cropper_notch_tc {
+	position: absolute;
+	top: -4px;
+    left: calc(50% - 8px);
+    transform: scaleX(1.5);
+}
+
+.cropper_notch_rc {
+	position: absolute;
+	top: calc(50% - 4px);
+    right: -10px;
+    transform: rotate(90deg) scaleX(1.5);
+}
+
+.cropper_notch_bc {
+	position: absolute;
+	bottom: -4px;
+    left: calc(50% - 8px);
+    transform: scaleX(1.5);
+}
+
+.cropper_border {
+	width: calc(100%);
+    height: calc(100%);
+    position: absolute;
+    // top: -4px;
+    // left: -4px;
+	// border: 4px solid #00000020;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hideBorders {
+	outline: 1px solid transparent !important;
+	box-shadow: 0 0 0 1px transparent !important;
+
+	& {
+		.zeroDimensionBox {
+			pointer-events: none;
+		}
+		
+		.zeroDimensionBoxSelected {
+			outline: 1px solid #1b47f3;
+			box-shadow: 0 0 0 1px #1b47f3;
+		}
+	}
+
+	&:hover {
+		outline: 1px solid transparent !important;
+		box-shadow: 0 0 0 1px transparent !important;
+		.zeroDimensionBox {
+			outline: 1px solid #1b47f3;
+			box-shadow: 0 0 0 1px #1b47f3;
+		}
+	}
+}
