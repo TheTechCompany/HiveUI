@@ -14,12 +14,15 @@ export interface NodeLayerProps {
     }
   
     onClick?: Function;
+
+    dragHandler?: (data: any) => void;
 }
 
 export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     status = {},
     onClick = () => {},
-    className
+    className,
+    dragHandler
 }) => {
     const {
         editable,
@@ -52,6 +55,10 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     const _moveNode = (node: string, position: InfiniteCanvasPosition) => {
         
         // if(node) onSelect?.("node", node)
+
+        console.log("MOVE NODE")
+
+        dragHandler?.(position)
 
         let pos = getRelativeCanvasPos?.(position)
         // pos = lockToGrid(pos, snapToGrid || false, grid)
@@ -87,6 +94,8 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     const renderAssetContainer = (node: InfiniteCanvasNode, children: any) => {
         
+        console.log({node})
+
         let factory = factories?.[node.type];
 
         const props = {

@@ -370,3 +370,82 @@ Finite.args = {
     },
   ],
 };
+
+
+export const FitToBounds = ControlledTemplate.bind({});
+FitToBounds.args = {
+  grid: { width: 100, height: 100, divisions: 5 },
+  // snapToGrid: true,
+  fitToBounds: true,
+  // finite: true,
+  router: "JumpPointFinder",
+  routerOptions: {
+    heuristic: 'manhattan',
+    allowDiagonal: false,
+  },
+  editable: true,
+  style: {
+    background: 'lightgray',
+    pathColor: 'blue',
+    portColor: "gray",
+    portDotColor: 'gray'
+  },
+  // snapToGrid: true,
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  nodes: [
+    {
+      id: "1",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      width: 150,
+      height: 50,
+      x: 371,
+      y: 1000,
+    },
+    {
+      id: "2",
+      type: "action-node",
+      menu: <div></div>,
+      width: 150,
+      height: 50,
+      x: 20,
+      y: 100,
+    },
+    {
+      id: "3",
+      type: "icon-node",
+      extras: {
+        label: "Run",
+        icon: "NaviteNext",
+        color: "purple",
+      },
+      width: 70,
+      height: 70,
+      x: 2000,
+      y: 20,
+    },
+    {
+      id: "5",
+      type: "icon-node",
+      extras: {
+        icon: "NavigateNext",
+        color: "purple",
+      },
+      x: 300,
+      y: 100,
+    },
+  ],
+  paths: [
+    {
+      id: "2",
+      points: [{ x: 100, y: 100 }],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+  ],
+};

@@ -1,7 +1,7 @@
 import { off } from 'process';
 import React, { createRef,  useCallback,  useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import styled from 'styled-components'
-import { isBuffer, isEqual, throttle, update, xor } from 'lodash'
+import { debounce, isBuffer, isEqual, throttle, update, xor } from 'lodash'
 import { PortWidget } from './components/ports'
 import { getHostForElement } from './utils';
 import { IInfiniteCanvasContext, InfiniteCanvasContext } from './context/context';
@@ -28,6 +28,8 @@ import * as PF from 'pathfinding';
 import { InformationLayer } from './layers/information';
 import { useEngine } from './hooks';
 import { AbstractPathFactory, IAbstractPathFactory } from './factories/abstract-path-factory';
+import { useGuides } from './components/alignment-guides';
+import { GuideLayer } from './layers/guides';
 
 export * from './types'
 
@@ -56,6 +58,7 @@ export interface Block {
 export interface InfiniteCanvasProps {
 
     finite?: boolean;
+    fitToBounds?: boolean; //Will take each new batch of node+paths and make sure viewport shows all
 
     style?: {
         background: string,
@@ -135,6 +138,9 @@ const initialState : any = {nodes: [], paths: []};
 export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     zoom,
     finite = false,
+
+    fitToBounds = true,
+
     router,
     routerOptions,
     style,
@@ -187,6 +193,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         portRef.current = ports;
         _setPorts(ports)
     }
+
     const isDragging = useRef<{dragging: boolean}>({dragging: false});
 
     const [ menuPos, setMenuPos ] = useState<{x?: number, y?: number}>()
@@ -206,7 +213,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         setNodes,
         setPaths,
         setZoom,
-        setOffset
+        setOffset,
+        nodeBounds,
+        canvasBounds
     }] = useEngine({
         windowRef: canvasRef, 
         initialWindow: {
@@ -217,7 +226,30 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         scalingFactor: 5
     });
 
+    const { guides, setActive, dragHandler, guidelines: { xAxisGuides, yAxisGuides } } = useGuides(canvasRef.current?.getBoundingClientRect(), _nodes, _offset, _zoom)
 
+    console.log({xAxisGuides, yAxisGuides});
+
+    const FIT_TO_BUFFER = 50
+
+    useEffect(() => {
+        // if(fitToBounds){
+        //     let widthRatio =  ((nodeBounds?.width || 0) + FIT_TO_BUFFER) / (canvasBounds?.width || 0)
+        //     let heightRatio =  ((nodeBounds?.height || 0) + FIT_TO_BUFFER) / (canvasBounds?.height || 0)
+            
+        //     if(widthRatio > heightRatio){
+        //         setZoom(widthRatio * 100)
+        //     }else if(heightRatio > widthRatio){
+        //         setZoom(heightRatio * 100)
+        //     }else{
+        //         setZoom(widthRatio * 100)
+        //     }
+
+        //     setOffset({x: -((nodeBounds?.x || 0) - (FIT_TO_BUFFER /2)), y: -((nodeBounds?.y || 0) - (FIT_TO_BUFFER / 2))})
+        // }
+    }, [nodeBounds, canvasBounds, fitToBounds])
+
+    console.log({_offset})
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
     const [ _factories, setFactories ] = useState<{[key: string]: IAbstractNodeFactory | IAbstractPathFactory}>({})
@@ -342,9 +374,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     //TODO add zoom rectifier when bounded to bring offset back to bounds when zooming
     const onWheel = (evt: React.WheelEvent) => {
+
+
         let oldZoomFactor = _zoom / 100;
 
-        let zoomY = evt.deltaY / 60;
+        let zoomY = (evt.detail < 0 || evt.deltaY > 0) ? 1 : -1  //evt.deltaY // / 30;
 
         let new_zoom = _zoom + zoomY;
 
@@ -396,6 +430,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         onViewportChanged?.({offset: new_offset, zoom: _zoom})
     }
 
+
+    const debouncedWheel = useMemo(() => debounce(onWheel, 20), [_zoom, _offset])
 
 
     const dragPort = (e: React.MouseEvent, handleId?: string, nodeId?: string) => {
@@ -668,7 +704,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             generatePath
         },
         selected,
-        selectNode: (node) => onSelect?.('node', node),
+        selectNode: (node) => {
+            onSelect?.('node', node)
+
+            setActive?.(`box${node}`);
+        },
         selectPath: (path) => onSelect?.('path', path),
         changeZoom: (z) => setZoom(_zoom + (z)),
         onRightClick: (item, pos) => {
@@ -690,6 +730,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             setFactories(f)
         }
     }, [factories])
+
+    console.log({xAxisGuides: xAxisGuides?.filter((a) => a != null), yAxisGuides: yAxisGuides?.filter((a) => a != null)});
 
     return (
         <InfiniteCanvasContext.Provider
@@ -780,7 +822,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     generatePath
                 },
                 selected,
-                selectNode: (node) => onSelect?.('node', node),
+                selectNode: (node) => {
+                    onSelect?.('node', node)
+        
+                    setActive?.(`box${node}`);
+                },
                 selectPath: (path) => onSelect?.('path', path),
                 changeZoom: (z) => setZoom(_zoom + (z)),
                 onRightClick: (item, pos) => {
@@ -795,7 +841,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 onKeyDown={onKeyDown}
                 onMouseDown={onMouseDown}
                 onTouchStart={onTouchStart}
-                onWheel={onWheel}
+                onWheel={debouncedWheel}
                 onDragOver={onDragOver}
                 onDrop={_onDrop}
                 className={className}
@@ -828,8 +874,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     x={menuPos?.x}/>}
                 <GridLayer />
                 <PathLayer />
-                <NodeLayer />
+                <NodeLayer dragHandler={dragHandler} />
+                <GuideLayer guides={[...(xAxisGuides || []), ...(yAxisGuides || [])]} />
                 <InformationLayer />
+                {/* {xAxisGuides}
+                {yAxisGuides} */}
                 {children}
             </div>
             {menu}

@@ -28,6 +28,8 @@ export interface Engine {
     setOffset: React.Dispatch<React.SetStateAction<InfiniteCanvasPosition>>; // (offset: InfiniteCanvasPosition) => void;
     setNodes: React.Dispatch<React.SetStateAction<InfiniteCanvasNode[]>> //(nodes: InfiniteCanvasNode[]) => void;
     setPaths: React.Dispatch<React.SetStateAction<InfiniteCanvasPath[]>>; //(paths: InfiniteCanvasPath[]) => void;
+    nodeBounds: {width: number, height: number, x: number, y: number} | null
+    canvasBounds: {width: number, height: number} | null
 }
 
 export interface EngineOptions {
@@ -54,6 +56,8 @@ export const useEngine = (options: EngineOptions): [Engine] => {
     // });
 
     const [bounds, setBounds] = useState<{ width: number, height: number }>({ width: 100, height: 100 });
+
+    const [ nodeBounds, setNodeBounds ] = useState<{x: number, y: number, width: number, height: number} | null>(null)
 
     const { widthScale, heightScale } = useMemo(() => {
         return {
@@ -97,6 +101,23 @@ export const useEngine = (options: EngineOptions): [Engine] => {
     const [zoom, setZoom] = useState<number>(options.initialWindow.zoom || 100);
 
     const ASTAR = false;
+
+    useEffect(() => {
+        let minX = Math.min(...nodes.map((x) => x.x ))
+        let maxX = Math.max(...nodes.map((x) => x.x + (x.width || 0) ))
+        let minY = Math.min(...nodes.map((x) => x.y ))
+        let maxY = Math.max(...nodes.map((x) => x.y + (x.height || 0) ))
+
+        let width = maxX - minX;
+        let height = maxY - minY;
+
+        setNodeBounds({
+            width,
+            height,
+            x: minX,
+            y: minY
+        })
+    }, [nodes])
 
     // const {minimap, grid, graph} = useMemo(() => {
 
@@ -296,7 +317,9 @@ export const useEngine = (options: EngineOptions): [Engine] => {
             setZoom,
             setOffset,
             setNodes,
-            setPaths
+            setPaths,
+            nodeBounds,
+            canvasBounds: bounds
         }
     ];
 }
