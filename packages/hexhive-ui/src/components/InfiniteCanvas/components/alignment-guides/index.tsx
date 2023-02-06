@@ -11,8 +11,6 @@ import {
 } from '../../utils/guides'
 import { Guideline } from './guideline';
 
-import styles from './styles.scss';
-
 
 export const useGuides = (options: {
     xFactor?: number,
