@@ -449,3 +449,98 @@ FitToBounds.args = {
     },
   ],
 };
+
+
+
+export const FitToBoundsControlled = ControlledTemplate.bind({});
+FitToBoundsControlled.args = {
+  grid: { width: 100, height: 100, divisions: 5 },
+  // snapToGrid: true,
+  fitToBounds: true,
+
+  editable: true,
+  style: {
+    background: 'lightgray',
+    pathColor: 'blue',
+    portColor: "gray",
+    portDotColor: 'gray'
+  },
+  snapToGrid: true,
+  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory],
+  nodes: [
+    {
+      id: "1",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      width: 150,
+      height: 50,
+      x: 371,
+      y: 173,
+    },
+    {
+      id: "2",
+      type: "action-node",
+      menu: <div></div>,
+      width: 150,
+      height: 50,
+      x: 20,
+      y: 100,
+    },
+    {
+      id: "3",
+      type: "icon-node",
+      extras: {
+        label: "Run",
+        icon: "NavigateNext",
+        color: "purple",
+      },
+      width: 50,
+      height: 50,
+      x: 200,
+      y: 20,
+    },
+    {
+      id: "5",
+      type: "icon-node",
+      extras: {
+        icon: "NavigateNext",
+        color: "purple",
+      },
+      width: 50,
+      height: 50,
+      x: 300,
+      y: 20,
+    },
+  ],
+  paths: [
+    {
+      id: "2",
+      type: 'line',
+      points: [{ x: 420, y: 100 }, { x: 100, y: 100 }, {x: 100, y: 200}, {x: 200, y: 200}],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+    {
+      id: "3",
+      type: 'pipe-path',
+      points: [{ x: 420, y: 100 }, { x: 800, y: 100 }, {x: 800, y: 200}, {x: 900, y: 200}, {x: 900, y: 300}, {x: 1000, y: 300}, {x: 1000, y: 200}, {x: 1100, y: 200}, {x: 1100, y: 100}, {x: 1000, y: 100}, {x: 1000, y: 50}],
+      source: "1",
+      sourceHandle: "inlet",
+    },
+
+    {
+      id: '4',
+      type: 'pipe-path',
+      points: [],
+      source: "1",
+      sourceHandle: 'outlet',
+      target: '2',
+      targetHandle: 'inlet'
+    }
+  ],
+};

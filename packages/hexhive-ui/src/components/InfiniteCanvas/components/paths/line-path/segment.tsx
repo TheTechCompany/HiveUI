@@ -66,11 +66,7 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
             onContextMenu={props.onContextMenu}
             className={props.className}
              onMouseDown={props.onMouseDown}>
-
             
-
-         
-       
             <path d={d} className={"flow-path__pipe-border"}  />
             <path d={d} style={{stroke: style?.pathColor }} className={"flow-path__pipe"}  />
             <path d={d} style={{stroke: style?.pathColor,}} className={"flow-path"} {...{"marker-end": "url(#head)"}} />

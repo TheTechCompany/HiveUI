@@ -30,6 +30,7 @@ import { useEngine } from './hooks';
 import { AbstractPathFactory, IAbstractPathFactory } from './factories/abstract-path-factory';
 import { useGuides } from './components/alignment-guides';
 import { GuideLayer } from './layers/guides';
+import { height } from '@mui/system';
 
 export * from './types'
 
@@ -125,12 +126,6 @@ export interface InfiniteCanvasProps {
     onViewportChanged?: (viewport: {zoom: number, offset: {x: number, y: number}}) => void;
 }
 
-
-// const pathFinderInstance =  PF.JumpPointFinder({
-// 	heuristic: PF.Heuristic.manhattan,
-// 	diagonalMovement: PF.DiagonalMovement.Never
-// });
-
 const ROUTING_SCALING_FACTOR = 5;
 
 const initialState : any = {nodes: [], paths: []};
@@ -169,8 +164,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     onBackdropClick
 }) => {
 
-    
-  
     const [ ports, _setPorts ] = useState<{[key: string]: {
         relativeX: number;
         relativeY: number;
@@ -235,10 +228,9 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
     const FIT_TO_BUFFER = 50
 
-    // const [ hasFitToBounds, ]
-
     useEffect(() => {
-        if(fitToBounds && canvasBounds){
+        if(fitToBounds && canvasBounds && nodeBounds){
+
             let widthRatio =  ((nodeBounds?.width || 0) + FIT_TO_BUFFER) / (canvasBounds?.width || 0)
             let heightRatio =  ((nodeBounds?.height || 0) + FIT_TO_BUFFER) / (canvasBounds?.height || 0)
             
@@ -253,6 +245,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             setOffset({x: -((nodeBounds?.x || 0) - (FIT_TO_BUFFER /2)), y: -((nodeBounds?.y || 0) - (FIT_TO_BUFFER / 2))})
         }
     }, [JSON.stringify(nodeBounds), canvasBounds, fitToBounds])
+
 
     const [ isPortDragging, setPortDragging ] = useState<boolean>(false)
 
@@ -502,7 +495,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 setPortDragging(false)
 
                 let target = (event?.target as HTMLElement)
-                console.log({target, event: event?.relatedTarget});
 
                 if(target.hasAttribute('data-nodeid')){
 
@@ -525,11 +517,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                         onPathUpdate?.(linkPath(path, nodeId, {x: newX, y: newY}));
                     }   
 
-                    // let current_path = _paths?.find((a: InfiniteCanvasPath) => a.id == path.id)
-                    // console.log({current_path, paths: _paths, path})
-                    // if(!current_path) return;
-
-          //  onPathsChanged?.(linkPath(_paths.current, path.id, nodeId, handleId))
                 }
             }
         })
@@ -568,6 +555,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             width: opts.position.width,
             height: opts.position.height
         }
+
 
         setPorts(_ports)
 

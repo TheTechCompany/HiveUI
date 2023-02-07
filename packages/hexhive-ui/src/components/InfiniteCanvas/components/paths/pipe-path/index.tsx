@@ -7,30 +7,7 @@ import { PipePosition, PipeSegment } from "./segment";
 
 export const PipePathFactory : AbstractPathFactory = () => {
 
-
-    const find_angle = (ix: number, a: {x: number, y: number}, b: {x: number, y: number}, c: {x: number, y: number}) => {
-        // var ab = { x: b.x - a.x, y: b.y - a.y };
-        // var cb = { x: b.x - c.x, y: b.y - c.y };
-
-        // var dot = (ab.x * cb.x + ab.y * cb.y); // dot product
-        // var cross = (ab.x * cb.y - ab.y * cb.x); // cross product
-
-        // var alpha = -Math.atan2(cross, dot);
-        // if (alpha < 0) alpha += 2 * Math.PI;
-        // return alpha;
-
-        let ac = a// a.x < c.x ? a : c;
-        let ca = c //a.x < c.x ? c : a;
-
-        let ab1 = Math.atan2(b.y - ac.y, b.x - ac.x) * 180 / Math.PI;
-        let ab2 = Math.atan2(b.y - ca.y, b.x - ca.x) * 180 / Math.PI
-
-        return a.x < c.x && ab1 == 180 || ab1 == -90 || (ab1 == 0 && ab2 != 90) ? ab1 : ab1 + 90//a.x <= c.x ? Math.abs(ab2) : Math.abs(ab1);
-
-    }
-
-
-    const find_angle_new = (A: {x: number, y: number}, B: {x: number, y: number}, C: {x: number, y: number}) => {
+    const find_angle = (A: {x: number, y: number}, B: {x: number, y: number}, C: {x: number, y: number}) => {
 
         let dx1 = B.x - A.x;
         let dy1 = B.y - A.y;
@@ -48,52 +25,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
         }
 
         return angle;
-        // let dotProduct = (A.x * B.x + A.y * B.y);
-        // let magnitudeX = Math.sqrt(Math.pow(A.x, 2) + Math.pow(A.y, 2));
-        // let magnitudeY = Math.sqrt(Math.pow(B.x, 2) + Math.pow(B.y, 2));
-
-        // let angle = Math.acos((dotProduct) / (magnitudeX * magnitudeY));
-
-        // console.log({angle, dotProduct, magnitudeX, magnitudeY}) 
-        // return angle * 180 / Math.PI;
     }
-    // const find_angle = (ix: number, A: {x: number, y:number},B: {x: number, y:number},C: {x: number, y:number}) => {
-
-    //     // if()
-    //     const AA = Math.atan2(C.y - A.y, C.x - A.x) * 180 / Math.PI
-    //     const BB = Math.atan2(B.y - C.y, B.x - C.x) * 180 / Math.PI
-
-    //     console.log({AA});
-
-    //     // console.log({
-    //     //     ix,
-    //     //     A: Math.atan2(A.y - B.y, A.x - B.x) * 180 / Math.PI,
-    //     //     B: Math.atan2(B.y - C.y, B.x - C.x) * 180 / Math.PI,
-    //     //     C: AA + BB,
-    //     //     D: AA - BB,
-    //     //     E: BB - AA
-    //     // })
-       
-
-    //     var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    
-    //     var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2)); 
-    //     var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
-
-    //     let angle = ( Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB)) * 180 ) / Math.PI;    
-    //     // console.log({angle : angle, anglePow: angle + AA, angleBow: angle + BB, angleCow: angle + AA + BB, angleDow: angle + (AA - BB)})
-
-    //     // angle += (AA-BB)
-
-    //     // if(AA > 0 && BB > 0){
-    //     //     angle -= 90;
-    //     // }
-
-    //     // return Math.atan((A.y - C.y) / (A.x - C.x)) * 180 / Math.PI;
-    //     return {
-    //         A: AA,
-    //         B: BB
-    //     }
-    // }
 
 
     return {
@@ -206,7 +138,7 @@ export const PipePathFactory : AbstractPathFactory = () => {
  
             
       
-            angle = find_angle_new(startPoint, handle, endPoint)
+            angle = find_angle(startPoint, handle, endPoint)
 
             angle += Math.atan2(startPoint.y - handle.y, startPoint.x - handle.x) * 180 / Math.PI
           
@@ -246,8 +178,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                 const mouseMove = (e: MouseEvent) => {
                     let rp = getRelativeCanvasPos?.({x: e.clientX, y: e.clientY})
 
-                    console.log("Set point", {rp, x: e.clientX, y: e.clientY})
-
                     if(rp?.x != undefined || rp?.y != undefined){
                         setPoint({
                             x: rp?.x || 0,
@@ -263,8 +193,6 @@ export const PipePathFactory : AbstractPathFactory = () => {
                     // props.onPointsChanged?.(ix, {x: e.clientX, y: e.clientY})
 
                     let target = (e.target as HTMLElement)
-
-                    console.log({target});
 
                     if(target.hasAttribute('data-nodeid')){
 

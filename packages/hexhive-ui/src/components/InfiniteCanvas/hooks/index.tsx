@@ -40,21 +40,6 @@ export interface EngineOptions {
 
 export const useEngine = (options: EngineOptions): [Engine] => {
 
-    // const graph = new Graph([
-    //     [0,0,0],
-    //     [0,0,0]
-    // ])
-    // console.log({graph})
-    const pathFinderInstance = new AStarFinder({
-        diagonalMovement: PF.DiagonalMovement.Never,
-        heuristic: PF.Heuristic.manhattan,
-        avoidStaircase: true
-    })
-    //  PF.JumpPointFinder({
-    //     heuristic: PF.Heuristic.manhattan,
-    //     diagonalMovement: PF.DiagonalMovement.Never
-    // });
-
     const [bounds, setBounds] = useState<{ width: number, height: number }>({ width: 100, height: 100 });
 
     const [ nodeBounds, setNodeBounds ] = useState<{x: number, y: number, width: number, height: number} | null>(null)
@@ -100,23 +85,23 @@ export const useEngine = (options: EngineOptions): [Engine] => {
     const [offset, setOffset] = useState<InfiniteCanvasPosition>({ x: options.initialWindow.x || 0, y: options.initialWindow.y || 0 })
     const [zoom, setZoom] = useState<number>(options.initialWindow.zoom || 100);
 
-    const ASTAR = false;
-
     useEffect(() => {
-        let minX = Math.min(...nodes.map((x) => x.x ))
-        let maxX = Math.max(...nodes.map((x) => x.x + (x.width || 0) ))
-        let minY = Math.min(...nodes.map((x) => x.y ))
-        let maxY = Math.max(...nodes.map((x) => x.y + (x.height || 0) ))
+        if(nodes.length > 0){
+            let minX = Math.min(...nodes.map((x) => x.x ))
+            let maxX = Math.max(...nodes.map((x) => x.x + (x.width || 0) ))
+            let minY = Math.min(...nodes.map((x) => x.y ))
+            let maxY = Math.max(...nodes.map((x) => x.y + (x.height || 0) ))
 
-        let width = maxX - minX;
-        let height = maxY - minY;
+            let width = maxX - minX;
+            let height = maxY - minY;
 
-        setNodeBounds({
-            width,
-            height,
-            x: minX,
-            y: minY
-        })
+            setNodeBounds({
+                width,
+                height,
+                x: minX,
+                y: minY
+            })
+        }
     }, [nodes])
 
     // const {minimap, grid, graph} = useMemo(() => {

@@ -74,9 +74,7 @@ export const useGuides = (options: {
                 };
 
                 if(active === dimensions.id){
-                    console.log("ACTIVE", dimensions)
                     activeBoxes.push(`box${dimensions.id}`);
-
                 }
                 // if (dimensions.active) {
                 //     activeBoxes.push(`box${index}`);
@@ -285,9 +283,6 @@ export const useGuides = (options: {
 			}, []);
 		}
 
-        console.log("INSIDE", {  xAxisGuides: xAxisGuides?.filter((a) => a != null), yAxisGuides: yAxisGuides?.filter((a) => a != null) })
-
-
         return {xAxisGuides, yAxisGuides}
 
     }, [ JSON.stringify(guides), JSON.stringify(nodes), JSON.stringify(match), offset, zoom ])
@@ -298,7 +293,6 @@ export const useGuides = (options: {
 
         setActiveBoxes([`box${data.id}`])
 
-        console.log({data})
     }
 
     const dragHandler = useCallback((data: any) => {
@@ -329,7 +323,6 @@ export const useGuides = (options: {
         //     }
 
         // }
-        console.log("Drag active", active)
 
         if(active.current.value){
 
@@ -424,8 +417,6 @@ export const useGuides = (options: {
 					})
 				});
 
-                console.log({newBoxes, activeBox, newData})
-				
             //     setNodes(newBoxes)
             //     setGuides(newGuides)
                 

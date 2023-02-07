@@ -57,9 +57,6 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     const _moveNode = (node: string, position: InfiniteCanvasPosition) => {
         
         // if(node) onSelect?.("node", node)
-
-        console.log("MOVE NODE")
-
         dragHandler?.(position)
 
         let pos = getRelativeCanvasPos?.(position)
