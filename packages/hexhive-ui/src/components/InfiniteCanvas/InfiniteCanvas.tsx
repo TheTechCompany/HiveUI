@@ -23,8 +23,6 @@ import { InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition, Infinit
 import { HMIPosition } from './assets/hmi-spec';
 import { ContextMenu } from './components/context-menu';
 
-import * as PF from 'pathfinding';
-
 import { InformationLayer } from './layers/information';
 import { useEngine } from './hooks';
 import { AbstractPathFactory, IAbstractPathFactory } from './factories/abstract-path-factory';
@@ -60,6 +58,7 @@ export interface InfiniteCanvasProps {
 
     finite?: boolean;
     fitToBounds?: boolean; //Will take each new batch of node+paths and make sure viewport shows all
+    showGuides?: boolean;
 
     style?: {
         background: string,
@@ -135,6 +134,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     finite = false,
 
     fitToBounds,
+    showGuides,
 
     router,
     routerOptions,
@@ -864,8 +864,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     x={menuPos?.x}/>}
                 <GridLayer />
                 <PathLayer />
-                <NodeLayer dragStart={dragStart} dragHandler={dragHandler} />
-                <GuideLayer guides={[...(xAxisGuides || []), ...(yAxisGuides || [])]} />
+                <NodeLayer dragStart={showGuides ? dragStart : undefined} dragHandler={showGuides ? dragHandler: undefined} />
+                {showGuides && <GuideLayer guides={[...(xAxisGuides || []), ...(yAxisGuides || [])]} />}
                 <InformationLayer />
                 {/* {xAxisGuides}
                 {yAxisGuides} */}
