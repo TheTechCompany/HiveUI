@@ -535,16 +535,10 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         position: {x: number, y: number, width: number, height: number}
     }) => {
 
-        console.log("Report port position", opts.nodeId, opts.position, _offset, _zoom)
-
         let point = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, opts.position)
-
-        console.log(_zoom)
 
         const adjustedWidth = opts.position.width * (_zoom / 100)
         const adjustedHeight = opts.position.height * (_zoom / 100)
-
-        console.log("Report port relative", point, {adjustedHeight, adjustedWidth})
 
         let nodes : InfiniteCanvasNode[] = _nodes?.slice() || [];
 
