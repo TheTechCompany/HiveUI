@@ -154,6 +154,7 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
 
                     }
 
+                    console.log(node, {startX, startY})
 
                     if (startX != undefined && startY != undefined && node) {
 
@@ -161,6 +162,9 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
                             x: (node?.x || 0) + (startX || 0),// + ((port.width || 0) / 2),
                             y: (node?.y || 0) + (startY || 0) //+ ((port.height || 0) /2)
                         }
+
+                            console.log(node, {startX, startY})
+
                         points = [point, ...(points || [])]
 
                     }
