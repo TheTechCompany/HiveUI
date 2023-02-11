@@ -46,7 +46,7 @@ export interface IInfiniteCanvasContext {
     engine?: {generatePath: (start: HMIPosition, end: HMIPosition) => {x: number, y: number}[]}
     nodeRefs?: MutableRefObject<{[key: string]: any}>
 
-    ports?: {[key: string]: any}
+    ports?: {[key: string]: {relativeX: number, relativeY: number, width: number, height: number} }
 
     setPorts?: (ports: {[key: string]: any}) => void;
     setNodeRefs?: (nodeRefs: {[key: string]: any}) => void;

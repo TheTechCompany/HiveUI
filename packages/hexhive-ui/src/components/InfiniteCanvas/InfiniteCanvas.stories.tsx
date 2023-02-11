@@ -662,6 +662,7 @@ FitToBoundsControlled.args = {
 
 export const ChangesItems = SelfControlledTemplate.bind({});
 ChangesItems.args = {
+  zoom: 120,
   nodes: [
     {
       id: "1",

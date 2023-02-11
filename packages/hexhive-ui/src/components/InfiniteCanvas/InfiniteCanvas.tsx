@@ -16,8 +16,6 @@ import { BlockTray } from './components/block-tray'
 import { nanoid } from 'nanoid';
 import { AbstractNodeFactory, IAbstractNodeFactory } from './factories/abstract-node-factory';
 
-import { reducer } from './store';
-import * as actions from './store/actions'
 import { addPathSegment, getRelativeCanvasPos, linkPath, lockToGrid, moveNode, onDrag, onTouchDrag, updatePathSegment } from './utils/canvas';
 import { InfiniteCanvasNode, InfiniteCanvasPath, InfiniteCanvasPosition, InfinitePort } from './types/canvas';
 import { HMIPosition } from './assets/hmi-spec';
@@ -167,8 +165,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     const [ ports, _setPorts ] = useState<{[key: string]: {
         relativeX: number;
         relativeY: number;
-        x: number;
-        y: number;
+        // x: number;
+        // y: number;
         width: number;
         height: number;
     } }>({})
@@ -176,8 +174,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
     const portRef = useRef<{[key: string]: {
         relativeX: number;
         relativeY: number;
-        x: number;
-        y: number;
+        // x: number;
+        // y: number;
         width: number;
         height: number;
     } }>({})
@@ -541,7 +539,12 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         let point = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, opts.position)
 
-        console.log("Report port relative", point)
+        console.log(_zoom)
+
+        const adjustedWidth = opts.position.width * (_zoom / 100)
+        const adjustedHeight = opts.position.height * (_zoom / 100)
+
+        console.log("Report port relative", point, {adjustedHeight, adjustedWidth})
 
         let nodes : InfiniteCanvasNode[] = _nodes?.slice() || [];
 
@@ -554,10 +557,10 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         _ports[`${opts.nodeId}:${opts.handleId}`] = {
             relativeX: point.x - node.x,
             relativeY: point.y - node.y,
-            x: opts.position.x,
-            y: opts.position.y,
-            width: opts.position.width,
-            height: opts.position.height
+            // x: point.x || opts.position.x,
+            // y: point.y || opts.position.y,
+            width: adjustedWidth, //opts.position.width,
+            height: adjustedHeight //opts.position.height
         }
 
 
