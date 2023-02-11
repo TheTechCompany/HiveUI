@@ -537,6 +537,8 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         position: {x: number, y: number, width: number, height: number}
     }) => {
 
+        console.log("Report port position", opts.nodeId, opts.position)
+
         let point = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, opts.position)
 
         let nodes : InfiniteCanvasNode[] = _nodes?.slice() || [];

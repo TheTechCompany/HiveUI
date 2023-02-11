@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 //import useState from 'storybook-addon-state'
 import { Story, Meta, storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
@@ -31,6 +31,121 @@ const ControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
       pathRef.current = items;
       _setPaths(items);
     };
+
+    return (
+      <InfiniteCanvas
+        {...args}
+        nodes={nodes}
+        paths={pathRef.current}
+        onNodeUpdate={(node) => {
+
+          action("onNodesChanged");
+          let p = nodes.slice();
+          let p_ix = p.map((x) => x.id).indexOf(node.id);
+
+          p[p_ix] = {
+            ...p[p_ix],
+            ...node,
+          };
+
+          setNodes(p);
+          //setNodes(nodes)
+        }}
+        onPathCreate={(path) => {
+
+          let p = pathRef.current.slice();
+          path.type = 'pipe-path'
+          p.push(path);
+          setPaths(p);
+          // action('onPathsChanged')
+          // setPaths(paths)
+        }}
+        onPathUpdate={(path) => {
+          let p = pathRef.current.slice();
+          let p_ix = p.map((x) => x.id).indexOf(path.id);
+
+          p[p_ix] = {
+            ...p[p_ix],
+            ...path,
+          };
+
+          setPaths(p);
+        }}
+      >
+        <ZoomControls anchor={{ horizontal: "right", vertical: "bottom" }} />
+      </InfiniteCanvas>
+    );
+  })(args);
+};
+
+
+const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
+  return ((props) => {
+    const [nodes, setNodes] = useState(args.nodes || []);
+    const pathRef = useRef<any[]>(args.paths || []);
+    const [paths, _setPaths] = useState(args.paths || []); //args.paths
+
+    const setPaths = (items: any[]) => {
+      pathRef.current = items;
+      _setPaths(items);
+    };
+
+    useEffect(() => {
+
+      // setTimeout(() => {
+        
+      //   setNodes([
+      //     {
+      //       id: "1",
+      //       type: "action-node",
+      //       menu: (
+      //         <div>
+      //           <TextField label="Width" type="number" />
+      //           <TextField label="Height" type="number" />
+      //         </div>
+      //       ),
+      //       width: 150,
+      //       height: 50,
+      //       x: 500,
+      //       y: 200,
+      //     },
+      //     {
+      //       id: "2",
+      //       type: "action-node",
+      //       menu: (
+      //         <div>
+      //           <TextField label="Width" type="number" />
+      //           <TextField label="Height" type="number" />
+      //         </div>
+      //       ),
+      //       width: 150,
+      //       height: 50,
+      //       x: 500,
+      //       y: 100,
+      //     },
+      //   ])
+      //   setPaths([
+      //     {
+      //       id: "3",
+      //       type: 'pipe-path',
+      //       points: [], // [{ x: 420, y: 100 }, { x: 800, y: 100 }, {x: 800, y: 200}, {x: 900, y: 200}, {x: 900, y: 300}, {x: 1000, y: 300}, {x: 1000, y: 200}, {x: 1100, y: 200}, {x: 1100, y: 100}, {x: 1000, y: 100}, {x: 1000, y: 50}],
+      //       source: "1",
+      //       sourceHandle: "inlet",
+      //       target: '2',
+      //       targetHandle: 'outlet'
+      //     },
+      //   ])
+
+      //   // setNodes([]);
+      //   // setPaths([]);
+
+      // }, 5000)
+
+      // setTimeout(() => {
+      //   setNodes([]);
+      //   setPaths([]);
+      // }, 2000)
+    }, [])
 
     return (
       <InfiniteCanvas
@@ -544,3 +659,50 @@ FitToBoundsControlled.args = {
     }
   ],
 };
+
+export const ChangesItems = SelfControlledTemplate.bind({});
+ChangesItems.args = {
+  nodes: [
+    {
+      id: "1",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      width: 150,
+      height: 50,
+      x: 500,
+      y: 200,
+    },
+    {
+      id: "2",
+      type: "action-node",
+      menu: (
+        <div>
+          <TextField label="Width" type="number" />
+          <TextField label="Height" type="number" />
+        </div>
+      ),
+      width: 150,
+      height: 50,
+      x: 500,
+      y: 100,
+    },
+  ],
+  paths: [
+    {
+      id: "3",
+      type: 'pipe-path',
+      points: [], //{ x: 420, y: 100 }, { x: 800, y: 100 }, {x: 800, y: 200}, {x: 900, y: 200}, {x: 900, y: 300}, {x: 1000, y: 300}, {x: 1000, y: 200}, {x: 1100, y: 200}, {x: 1100, y: 100}, {x: 1000, y: 100}, {x: 1000, y: 50}],
+      source: "1",
+      sourceHandle: "inlet",
+      target: '2',
+      targetHandle: 'outlet'
+    },
+  ],
+  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory],
+
+}
