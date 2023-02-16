@@ -232,12 +232,21 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             let widthRatio =  ((nodeBounds?.width || 0) + FIT_TO_BUFFER) / (canvasBounds?.width || 0)
             let heightRatio =  ((nodeBounds?.height || 0) + FIT_TO_BUFFER) / (canvasBounds?.height || 0)
             
+            let newZoom = 100;
+
             if(widthRatio > heightRatio){
-                setZoom(widthRatio * 100)
+                newZoom = widthRatio * 100;
+                // setZoom(widthRatio * 100)
             }else if(heightRatio > widthRatio){
-                setZoom(heightRatio * 100)
+                newZoom = heightRatio * 100;
+                // setZoom(heightRatio * 100)
             }else{
-                setZoom(widthRatio * 100)
+                newZoom = widthRatio * 100;
+                // setZoom(widthRatio * 100)
+            }
+
+            if(newZoom > 100){
+                setZoom(newZoom)
             }
 
             setOffset({x: -((nodeBounds?.x || 0) - (FIT_TO_BUFFER /2)), y: -((nodeBounds?.y || 0) - (FIT_TO_BUFFER / 2))})
