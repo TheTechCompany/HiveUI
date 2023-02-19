@@ -85,7 +85,7 @@ export const FlowPathSegment = styled(BaseFlowPathSegment)`
         stroke-opacity: 0;
         stroke-linecap: round;
         stroke-linejoin: round;
-        // fill: none;
+        fill: none;
         stroke-width: 2px;
     }
 

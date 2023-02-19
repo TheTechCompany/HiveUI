@@ -290,6 +290,13 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
         return handles;
     }
 
+    const generateWholeLine = (
+        path: InfiniteCanvasPath,
+        setPoints: (points: InfiniteCanvasPosition[]) => void,
+        factory: IAbstractPathFactory
+    ) => {
+        return factory.renderPath?.(path, path.points, setPoints, 0) || null;
+    }
 
     const generateLine = (
         path: InfiniteCanvasPath,
@@ -306,12 +313,13 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
             return result;
         }, init)
 
-        return pairs.map((pair, ix) => factory.renderPathSegment(path, pair, setPoints, ix))
+        return pairs.map((pair, ix) => factory.renderPathSegment?.(path, pair, setPoints, ix))
     }
 
 
     const renderFactory = (path: InfiniteCanvasPath) => {
         if (!path.type) path.type = 'default';
+
         let factory = factories?.[path.type]
 
         if (!factory) {
@@ -335,10 +343,13 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
                 //         e.stopPropagation()
                 //     }
                 // }
-                return <>
-                    {generateLine(path, setPoints, factory as any)}
-                    {generateHandles(path, setPoints, factory as any)}
-                </>
+                return (factory as IAbstractPathFactory).renderPath ? 
+                    generateWholeLine(path, setPoints, factory as IAbstractPathFactory) : (
+                    <>
+                        {generateLine(path, setPoints, factory as any)}
+                        {generateHandles(path, setPoints, factory as any)}
+                    </>
+                )
             }
         } else {
             return null;

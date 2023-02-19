@@ -11,8 +11,11 @@ import { InfiniteCanvasPath, InfiniteCanvasPosition } from "../types";
 import { AbstractFactory } from "./abstract-factory";
 
 export interface IAbstractPathFactory extends AbstractFactory{
+    renderPath?(path: InfiniteCanvasPath, points: InfiniteCanvasPosition[], setPoints: (points: InfiniteCanvasPosition[]) => void, ix: number): JSX.Element;
+
     renderPathPoint?(path: InfiniteCanvasPath, point: InfiniteCanvasPosition, setPoint: (point: InfiniteCanvasPosition) => void, ix: number): JSX.Element | null;
-    renderPathSegment(path: InfiniteCanvasPath, points: InfiniteCanvasPosition[], setPoints: (points: InfiniteCanvasPosition[]) => void, ix: number): JSX.Element;
+    renderPathSegment?(path: InfiniteCanvasPath, points: InfiniteCanvasPosition[], setPoints: (points: InfiniteCanvasPosition[]) => void, ix: number): JSX.Element;
+    
     parseModel?(model: InfiniteCanvasPath): any;
 }
 

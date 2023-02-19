@@ -270,7 +270,7 @@ Controlled.args = {
     portDotColor: 'gray'
   },
   snapToGrid: true,
-  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory, PipePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory(true), PipePathFactory],
   nodes: [
     {
       id: "1",
@@ -360,7 +360,7 @@ Routed.args = {
     portDotColor: 'gray'
   },
   snapToGrid: true,
-  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory(true)],
   nodes: [
     {
       id: "1",
@@ -433,7 +433,7 @@ Finite.args = {
     portDotColor: 'gray'
   },
   snapToGrid: true,
-  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory(true)],
   nodes: [
     {
       id: "1",
@@ -506,7 +506,7 @@ FitToBounds.args = {
     portDotColor: 'gray'
   },
   // snapToGrid: true,
-  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, LinePathFactory(true)],
   nodes: [
     {
       id: "1",
@@ -581,7 +581,7 @@ FitToBoundsControlled.args = {
     portDotColor: 'gray'
   },
   snapToGrid: true,
-  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory(true)],
   nodes: [
     {
       id: "1",
@@ -704,6 +704,6 @@ ChangesItems.args = {
       targetHandle: 'outlet'
     },
   ],
-  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory],
+  factories: [ActionNodeFactory, IconNodeFactory, PipePathFactory, LinePathFactory(true)],
 
 }
