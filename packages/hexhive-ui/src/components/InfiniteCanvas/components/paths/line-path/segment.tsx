@@ -67,9 +67,9 @@ export const BaseFlowPathSegment : React.FC<FlowPathSegmentProps> = (props) => {
             className={props.className}
              onMouseDown={props.onMouseDown}>
             
-            <path d={d} className={"flow-path__pipe-border"}  />
+            <path d={d} style={{ stroke: style?.pathBorderColor }} className={"flow-path__pipe-border"}  />
             <path d={d} style={{stroke: style?.pathColor }} className={"flow-path__pipe"}  />
-            <path d={d} style={{stroke: style?.pathColor,}} className={"flow-path"} {...{"marker-end": "url(#head)"}} />
+            <path d={d} style={{stroke: style?.pathColor }} className={"flow-path"} {...{"marker-end": "url(#head)"}} />
 
             <path d={d} className={"flow-path__highlight"} /> 
           
@@ -93,8 +93,7 @@ export const FlowPathSegment = styled(BaseFlowPathSegment)`
         fill: none;
         stroke-linejoin: round;
         stroke-width: 4px;
-        stroke-opacity: 0.6;
-        stroke-border: 1px solid black;
+        stroke-opacity: 0.8;
         stroke: #dfdfdf;
     }
 

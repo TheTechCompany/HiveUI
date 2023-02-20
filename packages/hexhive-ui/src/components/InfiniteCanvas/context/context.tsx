@@ -10,6 +10,7 @@ export interface IInfiniteCanvasContext {
     style?: {
         lineColor?: string;
         pathColor?: string;
+        pathBorderColor?: string;
         dotColor?: string;
         background: string;
         portColor?: string;
