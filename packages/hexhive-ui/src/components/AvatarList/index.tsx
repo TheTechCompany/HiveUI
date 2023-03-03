@@ -8,6 +8,7 @@ export interface AvatarListProps {
   size?: number
 }
 
+
 export const AvatarList : React.FC<AvatarListProps> =  ({
   users = [],
   size = 32,
