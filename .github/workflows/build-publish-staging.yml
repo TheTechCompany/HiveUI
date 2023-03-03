@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - staging
-    paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/**/*", "packages/hexhive-ui/src/**/*" ]
+    paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/**", "packages/hexhive-ui/src/**" ]
 
 concurrency: hiveui-${{ github.ref }}
 
