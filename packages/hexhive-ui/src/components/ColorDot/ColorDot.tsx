@@ -5,6 +5,7 @@ export interface ColorDotProps {
   color: string;
 }
 
+
 export const ColorDot: React.FC<ColorDotProps> = ({ size, color }) => {
   return (
     <div
