@@ -7,6 +7,7 @@ export interface BumpInputProps {
 
 	value?: any;
 	onChange?: (value: any) => void;
+	
 
 	leftIcon?: any;
 	onLeftClick?: () => void;
