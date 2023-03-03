@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - staging
-    paths: 
-      - ".github/workflows/build-publish-staging.yml"
-      - "./packages/**/*"
+    # paths: 
+    #   - ".github/workflows/build-publish-staging.yml"
+    #   - "./packages/**/*"
 
 concurrency: hiveui-${{ github.ref }}
 
