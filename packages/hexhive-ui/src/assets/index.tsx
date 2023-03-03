@@ -1,1 +1,1 @@
-export { default as FileHex } from './FileHex'
+export * from './FileHex'

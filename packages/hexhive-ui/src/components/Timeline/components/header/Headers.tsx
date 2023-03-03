@@ -3,8 +3,8 @@ import moment, { Moment } from 'moment';
 import { BUFFER_DAYS, DATA_CONTAINER_WIDTH } from '../../Const';
 import { VIEW_MODE_DAY, VIEW_MODE_WEEK, VIEW_MODE_MONTH, VIEW_MODE_YEAR } from '../../Const';
 import { Box } from '@mui/material'
-import Config from '../../helpers/config/Config';
-import DateHelper from '../../helpers/DateHelper';
+import { config as Config } from '../../helpers/config/Config';
+import { helper as DateHelper} from '../../helpers/DateHelper';
 import { HeaderItem } from './HeaderItem';
 import { TimelineContext } from '../../context';
 import { BackgroundStripe } from './BackgroundStripe'
@@ -30,7 +30,7 @@ export interface HeaderProps {
   className?: string;
 }
 
-const Header : React.FC<HeaderProps> = (props) => {
+const BaseHeader : React.FC<HeaderProps> = (props) => {
   const headerRef = useRef<HTMLDivElement>(null)
 
   const { tasks, mode, dayWidth } = useContext(TimelineContext)
@@ -251,7 +251,7 @@ const Header : React.FC<HeaderProps> = (props) => {
   
 }
 
-export default styled(Header)`
+export const Header = styled(BaseHeader)`
 .header-top {
   height: 20px;
   color: white;

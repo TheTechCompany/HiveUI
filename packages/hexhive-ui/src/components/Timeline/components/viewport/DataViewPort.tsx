@@ -1,9 +1,9 @@
 import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { DATA_CONTAINER_WIDTH } from '../../Const';
-import DataTask from './DataTask';
+import {DataTask} from './DataTask';
 import { DataRow } from './DataRow';
-import DateHelper from '../../helpers/DateHelper';
-import Config from '../../helpers/config/Config';
+import {helper as DateHelper} from '../../helpers/DateHelper';
+import {config as Config} from '../../helpers/config/Config';
 import { useContext } from 'react';
 import { getBackgroundPosition, getBackgroundWidth } from '../../utils'
 import { TimelineContext } from '../../context'
@@ -442,12 +442,8 @@ export const BaseDataViewPort: React.FC<DataViewPortProps> = (props) => {
 
 export const DataViewPort = styled(BaseDataViewPort)`
 .timeLine-main-data-container{
-  background: ;
-  }
 
+}
 `
-
-export default DataViewPort;
-
 
 //sizeMe({ monitorWidth: true, monitorHeight: true })(DataViewPort);

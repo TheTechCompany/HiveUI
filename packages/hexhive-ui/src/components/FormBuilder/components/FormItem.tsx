@@ -2,7 +2,7 @@ import { Box, Paper } from "@mui/material";
 import React, { useContext, useRef } from "react";
 import { useDrag, useDrop, XYCoord } from "react-dnd";
 import { FormBuilderContext } from "../context";
-import { FormBuilderItemType } from "../FormBuilder";
+import { FormBuilderItemType } from "../types";
 
 
 interface DragItem {

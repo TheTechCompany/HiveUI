@@ -1,15 +1,15 @@
 import React, { Component, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import VerticalSpliter from './components/taskList/VerticalSpliter';
-import Header from './components/header/Headers';
-import DataViewPort from './components/viewport/DataViewPort';
+import {VerticalSpliter} from './components/taskList/VerticalSpliter';
+import {Header} from './components/header/Headers';
+import {DataViewPort} from './components/viewport/DataViewPort';
 import {LinkViewPort} from './components/links/LinkViewPort';
-import TaskList from './components/taskList/TaskList';
+import {TaskList} from './components/taskList/TaskList';
 import { BUFFER_DAYS, DATA_CONTAINER_WIDTH } from './Const';
 import { VIEW_MODE_DAY, VIEW_MODE_WEEK, VIEW_MODE_MONTH, VIEW_MODE_YEAR } from './Const';
 import { DAY_MONTH_MODE, DAY_WEEK_MODE, DAY_DAY_MODE, DAY_YEAR_MODE } from './Const';
-import DataController from './controller/DataController';
-import Config from './helpers/config/Config';
+import {DataController} from './controller/DataController';
+import {config as Config} from './helpers/config/Config';
 import { TimelineContext } from './context'
 import {nanoid} from 'nanoid'
 import { Link, Config as _Config, Task, TimelineStyle } from './types';

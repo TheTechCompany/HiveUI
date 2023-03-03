@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import React, { useContext, useMemo, useState } from "react";
 import { Component } from "react";
-import Config from '../../helpers/config/Config';
+import {config as Config} from '../../helpers/config/Config';
 import { HexHiveTheme } from '@hexhive/styles'
 import { DataTaskPlaceholder } from "./DataTaskPlaceholder";
-import DateHelper from "../../helpers/DateHelper";
+import {helper as DateHelper} from "../../helpers/DateHelper";
 import { TimelineContext } from "../../context";
 import { nanoid } from 'nanoid';
 import { DragHandle } from "@mui/icons-material";

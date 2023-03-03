@@ -1,4 +1,4 @@
-const  pages={  
+export const  pages={  
     "9-2018":[  
        {  
           "id":23760,
@@ -84,5 +84,3 @@ const  pages={
        "color":"#AB5946"
     }]
  }
-
- export default pages;

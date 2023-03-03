@@ -45,5 +45,4 @@ class DateHelper {
     return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
   }
 }
-const helper = new DateHelper();
-export default helper;
+export const helper = new DateHelper();

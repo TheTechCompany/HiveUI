@@ -1,7 +1,7 @@
 import { Box, Paper } from "@mui/material";
 import React from "react";
 import { useDrag } from "react-dnd";
-import { FormBuilderItemType } from "../FormBuilder";
+import { FormBuilderItemType } from "../types";
 
 export interface FormBuilderElement {
     component: JSX.Element

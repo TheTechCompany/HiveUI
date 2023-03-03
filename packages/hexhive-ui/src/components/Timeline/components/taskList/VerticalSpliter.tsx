@@ -1,6 +1,6 @@
 import React, { Component, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Config from '../../helpers/config/Config';
+import {config as Config} from '../../helpers/config/Config';
 import { ChevronLeft as CaretLeftFill, ChevronRight as CaretRightFill } from '@mui/icons-material'
 
 export interface VerticalSplitterProps {
@@ -9,7 +9,7 @@ export interface VerticalSplitterProps {
   onTaskListSizing?: (delta: number) => void;
 }
 
-const VerticalSpliter : React.FC<VerticalSplitterProps> = (props) => {
+const BaseVerticalSpliter : React.FC<VerticalSplitterProps> = (props) => {
   const verticalRef = useRef<HTMLDivElement>(null)
 
   const dragging = useRef<boolean>(false)
@@ -69,7 +69,7 @@ const VerticalSpliter : React.FC<VerticalSplitterProps> = (props) => {
 }
 
 
-export default styled(VerticalSpliter)`
+export const VerticalSpliter = styled(BaseVerticalSpliter)`
   width: 5px;
   transition: width 100ms ease-out;
   cursor: ${p => p.enabled ? 'col-resize' : 'auto'};

@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import React, { useCallback, useContext, useState } from "react";
 import { useDrop } from "react-dnd";
 import { FormBuilderContext } from "../context";
-import { FormBuilderItemType } from "../FormBuilder";
+import { FormBuilderItemType } from "../types";
 import { FormItem } from "./FormItem";
 import update from 'immutability-helper'
 

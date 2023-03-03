@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Link from './Link';
+import { Link } from './Link';
 
-export default class CreateLink extends Component<any, any> {
+export class CreateLink extends Component<any, any> {
   init: boolean;
   lastX: number;
   lastY: number;

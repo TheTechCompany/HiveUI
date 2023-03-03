@@ -9,7 +9,7 @@ export interface NoteTabProps {
   onChange?: Function;
 }
 
-const NoteTab: React.FC<NoteTabProps> = (props) => {
+export const NoteTab: React.FC<NoteTabProps> = (props) => {
 
   const _onChange = (ix: number, val: string) => {
     let data = props.data?.slice() || []
@@ -69,5 +69,3 @@ const NoteTab: React.FC<NoteTabProps> = (props) => {
   );
 
 }
-
-export default NoteTab;

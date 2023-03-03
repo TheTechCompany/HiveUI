@@ -3,7 +3,7 @@ import React, { Component, useEffect } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
 import { TimelineContext } from '../../context';
-import Config from '../../helpers/config/Config';
+import { config as Config } from '../../helpers/config/Config';
 import { Task } from '../../types';
 import { TaskRow } from './TaskRow'
 
@@ -34,7 +34,7 @@ export class VerticalLine extends Component<any, any>{
 
 //Task Lis
 
-const TaskList: React.FC<any> = (props) => {
+export const TaskList: React.FC<any> = (props) => {
   const taskViewRef = useRef<HTMLDivElement>(null)
 
   const { tasks, itemHeight } = useContext(TimelineContext)
@@ -118,5 +118,3 @@ const TaskList: React.FC<any> = (props) => {
   );
 
 }
-
-export default TaskList

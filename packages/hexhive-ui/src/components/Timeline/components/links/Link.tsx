@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Config from '../../helpers/config/Config';
+import { config as Config } from '../../helpers/config/Config';
 
 const SSHAPE_SIDE_WIDTH = 20;
 
-class Link extends Component<any, any>{
+export class Link extends Component<any, any>{
   constructor(props: any) {
     super(props);
 
@@ -81,4 +81,3 @@ class Link extends Component<any, any>{
   }
 }
 
-export default Link;

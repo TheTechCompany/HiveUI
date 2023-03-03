@@ -1,8 +1,8 @@
 import React, { Component, useCallback } from 'react';
-import DateHelper from '../../helpers/DateHelper';
+import {helper as DateHelper} from '../../helpers/DateHelper';
 import { MODE_NONE, MODE_MOVE, MOVE_RESIZE_LEFT, MOVE_RESIZE_RIGHT } from '../../Const';
 import { LINK_POS_LEFT, LINK_POS_RIGHT } from '../../Const';
-import Config from '../../helpers/config/Config';
+import {config as Config} from '../../helpers/config/Config';
 import { Box, Popover, Tooltip } from '@mui/material';
 import { Task } from '../../types';
 import styled from 'styled-components'
@@ -426,7 +426,7 @@ export const BaseDataTask: React.FC<DataTaskProps> = (props) => {
 }
 
 
-export default styled(BaseDataTask)`
+export const DataTask = styled(BaseDataTask)`
 
   .timeLine-main-data-task-side > .task-handle,   .timeLine-main-data-task-side > .task-handle-grip {
     opacity: 0;

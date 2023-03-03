@@ -4,7 +4,7 @@ import { AvatarList } from '../../components/AvatarList'
 import { Box, Button as GButton, Typography } from '@mui/material';
 import { PeopleTab } from './tabs/people-tab';
 import { EquipmentTab } from './tabs/equipment-tab';
-import NoteTab from './tabs/note-tab';
+import { NoteTab } from './tabs/note-tab';
 import moment from 'moment';
 
 import { Autocomplete, Dialog, Button, DialogContent, TextField } from '@mui/material';

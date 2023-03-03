@@ -1,8 +1,8 @@
 import React, { Component, useCallback, useContext, useEffect } from 'react';
 import {Link, Task} from '../../types/index';
-import CreateLink from './CreateLink';
-import DateHelper from '../../helpers/DateHelper';
-import LinkComponent from './Link';
+import {CreateLink} from './CreateLink';
+import {helper as DateHelper} from '../../helpers/DateHelper';
+import {Link as LinkComponent} from './Link';
 import { TimelineContext } from '../../context';
 import { useState } from 'react';
 import { useLink, useLinks, useTaskLinks } from '../../hooks/useLinks'

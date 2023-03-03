@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-export default class ContentEditable extends Component<any, any> {
+export class ContentEditable extends Component<any, any> {
   private textInput = React.createRef<HTMLInputElement>()
   isFocus: boolean;
   

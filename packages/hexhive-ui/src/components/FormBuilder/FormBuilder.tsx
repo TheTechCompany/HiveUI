@@ -9,9 +9,6 @@ import { FormOptions } from "./components/FormOptions";
 import { FormBuilderProvider } from "./context";
 // import { DragDropContext, Draggable, Droppable } from "react-dnd";
 
-export const FormBuilderItemType = {
-    ELEMENT: 'element'
-}
 
 export interface FormBuilderProps {
     form: any[];

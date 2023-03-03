@@ -1,8 +1,8 @@
-import DateHelper from '../helpers/DateHelper';
+import { helper as DateHelper } from '../helpers/DateHelper';
 const HORIZON_BUFFER = 500; //1000
 const HORIZON_BUFFER_ALERT = 250; //500;
 
-export default class DataController {
+export class DataController {
 
   // public initialized : boolean = false;
 

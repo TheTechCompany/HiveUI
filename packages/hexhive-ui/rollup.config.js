@@ -20,11 +20,15 @@ const external = [
 export default [
   {
     input,
-    output: {
-      dir: 'dist',
+    output: [{
+      dir: 'dist/esm',
       format: "esm",
       sourcemap: true,
-    },
+    }, {
+      dir: 'dist/cjs',
+      format: 'cjs',
+      sourcemap: true
+    }],
     preserveModules: true,
     plugins,
     external
