@@ -147,6 +147,15 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
       // }, 2000)
     }, [])
 
+    const [ text, setText ] = useState('asdf');
+
+    useEffect(() => {
+      let int = setInterval(() => setText((text) => text + '1'), 1000);
+      return () => {
+        clearInterval(int);
+      }
+    }, [])
+
     return (
       <InfiniteCanvas
         {...args}
@@ -186,6 +195,7 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
 
           setPaths(p);
         }}
+        information={(<div style={{position: 'absolute', padding: '12px', left: '50%', top: '50%', background: 'white'}}>{text}</div>)}
       >
         <ZoomControls anchor={{ horizontal: "right", vertical: "bottom" }} />
       </InfiniteCanvas>

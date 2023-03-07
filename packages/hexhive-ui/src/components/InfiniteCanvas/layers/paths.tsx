@@ -375,9 +375,9 @@ export const PathLayer: React.FC<PathLayerProps> = (props) => {
             <defs>
 
                 <linearGradient id="skeuamorphic" gradientTransform="rotate(90)">
-                    <stop offset="0" stop-color="#6f7173" />
-                    <stop offset="0.5" stop-color="#d3d5d6" />
-                    <stop offset="1" stop-color="#6f7173" />
+                    <stop offset="0" stopColor="#6f7173" />
+                    <stop offset="0.5" stopColor="#d3d5d6" />
+                    <stop offset="1" stopColor="#6f7173" />
                 </linearGradient>
             </defs>
             {path_components.map((Path) => Path ? <Path /> : null)}
