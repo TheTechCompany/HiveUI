@@ -97,6 +97,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
         const props = {
             'data-nodeid': node.id,
+            key: `node:${node.id}`,
             ref: (element: any) => {
                 if(!nodeRefs) return;
                 nodeRefs.current[node.id] = element;
