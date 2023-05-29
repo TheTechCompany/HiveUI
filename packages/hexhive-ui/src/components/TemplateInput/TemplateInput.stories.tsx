@@ -20,5 +20,8 @@ const Template: ComponentStory<typeof TemplateInput> = (args) => {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  delimeter: `{{`
+  // delimeter: `{{`
+  options: [
+    {label: 'msg.payload.id', type: 'keyword'}
+  ]
 };

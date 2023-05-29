@@ -162,7 +162,7 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
         nodes={nodes}
         paths={pathRef.current}
         onNodeUpdate={(node) => {
-
+          console.log("NodeUpdate")
           action("onNodesChanged");
           let p = nodes.slice();
           let p_ix = p.map((x) => x.id).indexOf(node.id);
@@ -172,6 +172,7 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
             ...node,
           };
 
+          console.log({node})
           setNodes(p);
           //setNodes(nodes)
         }}
@@ -204,7 +205,11 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
 };
 
 const Template: Story<InfiniteCanvasProps> = (args) => (
-  <InfiniteCanvas {...args}>
+  <InfiniteCanvas 
+    {...args}
+    onNodeUpdate={(node) => {
+      console.log("NODE UPDATE", {node})
+    }}>
     <ZoomControls anchor={{ horizontal: "right", vertical: "bottom" }} />
   </InfiniteCanvas>
 );
@@ -227,6 +232,7 @@ NodeOptions.args = {
     // new IconNodeFactory(),
     // new StartNodeFactory(),
   ],
+
   nodes: [
     {
       id: "1",
@@ -257,15 +263,56 @@ NodeOptions.args = {
 export const Uncontrolled = Template.bind({});
 Uncontrolled.args = {
   editable: true,
-  factories: [ActionNodeFactory],
+  factories: [ActionNodeFactory, LinePathFactory(true)],
   nodes: [
     {
       id: "1",
       type: "action-node",
+      extras: {
+        title: 'Flowingly action',
+      },
       x: 20,
       y: 20,
     },
+    {
+      id: "2",
+      type: "action-node",
+      extras: {
+        title: 'Salesforce action',
+      },
+      x: 20,
+      y: 100
+    },
+    {
+      id: '3',
+      type: 'action-node',
+      extras: {
+        title: 'Slack notification',
+      },
+      x: 20,
+      y: 180
+    }
   ],
+  paths: [
+    {
+      id: '5',
+      points: [],
+      type: 'line',
+      source: '1',
+      sourceHandle: 'outlet',
+      target: '2',
+      targetHandle: 'inlet'
+    },
+    {
+      id: '6',
+      points: [],
+      type: 'line',
+      source: '2',
+      target: '3',
+      targetHandle: 'inlet',
+      sourceHandle: 'outlet'
+    }
+  ]
 };
 
 export const Controlled = ControlledTemplate.bind({});

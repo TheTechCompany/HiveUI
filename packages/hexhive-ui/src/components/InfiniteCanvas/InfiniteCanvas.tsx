@@ -685,8 +685,6 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         },
         updateNode: (node, position) => {
-            // if(node) onSelect?.("node", node)
-
             
             let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
             pos = lockToGrid(pos, snapToGrid || false, grid)
@@ -697,9 +695,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 
                 onNodeUpdate?.(updatedNode)
             }
-
             
-            // let node = _nodes.find((a) => a.id == node.id)
         },
         reportPosition: reportPortPosition,
         engine: {
@@ -799,13 +795,13 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                     let updated = updateFn(fNode)
 
                     onNodeUpdate?.(updated)
-
                 },
                 updateNode: (node, position) => {
-                    // if(node) onSelect?.("node", node)
-            
+
                     let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
                     pos = lockToGrid(pos, snapToGrid || false, grid)
+
+
                     if(editable && pos){
                         let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == node)
                         if(!fNode) return;
@@ -813,9 +809,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                         
                         onNodeUpdate?.(updatedNode)
                         
-            
                     }
-                    // let node = _nodes.find((a) => a.id == node.id)
                 },
                 reportPosition: reportPortPosition,
                 engine: {

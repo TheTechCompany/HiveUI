@@ -11,7 +11,6 @@ export interface ActionNodeProps {
 
 export const BaseActionNode : React.FC<ActionNodeProps> = (props) => {
 
-
         return (
             <div className={props.className}>
                 <PortWidget type="in" id="inlet" />
@@ -26,7 +25,7 @@ export const BaseActionNode : React.FC<ActionNodeProps> = (props) => {
 export const ActionNodeWidget = styled(BaseActionNode)`
     display: flex;
     background-color: #dfdfdf;
-    height: 50px;
+    min-height: 50px;
     width: 150px;
     border-radius: 5px;
     display: flex;

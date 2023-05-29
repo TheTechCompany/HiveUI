@@ -9,11 +9,19 @@ export const addNode = (nodes: any[], node: any) => {
     return n
 }
 
+export const roundNumber = (num: number, digits: number = 2, base?: number) => {
+    const pow = Math.pow(base ?? 10, digits);
+    return Math.round(num*pow)/pow;
+}
+
 export const moveNode = (node: InfiniteCanvasNode, pos: {x: number, y: number}) => {
 
+    //Strip all but 2 decimal points
+    // console.log(pos, roundNumber(pos.x), roundNumber(pos.y))
     return {
         ...node,
-        ...pos   
+        x: roundNumber(pos.x),
+        y: roundNumber(pos.y)
     };
 }
 
