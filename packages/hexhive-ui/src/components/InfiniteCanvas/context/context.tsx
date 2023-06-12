@@ -25,6 +25,7 @@ export interface IInfiniteCanvasContext {
     router?: any;
 
     // nodeRefs?: Ref<{[key: string]: any}>[];
+    bounds?: {width: number, height: number},
 
     setNodes?: (nodes: InfiniteCanvasNode[]) => void
     paths?: InfiniteCanvasPath[]

@@ -12,16 +12,16 @@ export interface NodeLayerProps {
     status?: {
         [key: string]: any;
     }
-  
+
     onClick?: Function;
 
     dragHandler?: (data: any) => void;
     dragStart?: (data: any) => void;
 }
 
-export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
+export const BaseNodeLayer: React.FC<NodeLayerProps> = ({
     status = {},
-    onClick = () => {},
+    onClick = () => { },
     className,
     dragHandler,
     dragStart
@@ -32,10 +32,10 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         factories = {},
         updateNode,
         selectNode,
-        zoom, 
-        assets = {}, 
-        offset, 
-        nodes:_nodes = [],
+        zoom,
+        assets = {},
+        offset,
+        nodes: _nodes = [],
         setNodes,
         nodeRefs,
         openContextMenu,
@@ -43,38 +43,45 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         getRelativeCanvasPos
     } = useContext(InfiniteCanvasContext)
 
-   /* const nodeModels = useMemo(() => {
-        let models : any = {};
-        nodes.forEach((x) => 
-            models[x.id || ''] = factories[x.type].generateModel(x)
-        )
-        return models;
-    }, [nodes])
-
-    */
+    /* const nodeModels = useMemo(() => {
+         let models : any = {};
+         nodes.forEach((x) => 
+             models[x.id || ''] = factories[x.type].generateModel(x)
+         )
+         return models;
+     }, [nodes])
+ 
+     */
 
 
     const _moveNode = (node: string, position: InfiniteCanvasPosition) => {
-        
+
         // if(node) onSelect?.("node", node)
         dragHandler?.(position)
 
         let pos = getRelativeCanvasPos?.(position)
         // pos = lockToGrid(pos, snapToGrid || false, grid)
-        if(editable && pos){
-            let fNode = (_nodes || []).find((a) => a.id == node)
-            if(!fNode) return;
-            let updatedNode = moveNode(fNode, pos)
-            
-            let newNodes = _nodes.slice();
-            let ix = newNodes.map(x => x.id).indexOf(node)
-            newNodes[ix] = {
-                ...newNodes[ix],
-                ...updatedNode
-            }
 
-            setNodes?.(newNodes)
-        }
+
+        setNodes?.(((_nodes: any[]) => {
+            if (editable && pos) {
+
+                let fNode = (_nodes || []).find((a) => a.id == node)
+                if (!fNode) return;
+                let updatedNode = moveNode(fNode, pos)
+
+                let newNodes = _nodes.slice();
+                let ix = newNodes.map(x => x.id).indexOf(node)
+                newNodes[ix] = {
+                    ...newNodes[ix],
+                    ...updatedNode
+                }
+
+                return newNodes;
+            }
+            return _nodes;
+        }) as any)
+
     }
 
     // const [ _nodes, setNodes ] = useState<InfiniteCanvasNode[]>([]);
@@ -82,9 +89,9 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     // const itemRefs = useRef<{[key: string]: HTMLDivElement | null}>({})
 
-    const [ hoverEl, setHoverEl ] = useState<any>(null);
+    const [hoverEl, setHoverEl] = useState<any>(null);
 
-    const [ hoverNode, setHoverNode ] = useState<any>(null);
+    const [hoverNode, setHoverNode] = useState<any>(null);
 
     // useEffect(() => {
     //     setNodes?.(nodes);
@@ -92,24 +99,24 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
 
     const renderAssetContainer = (node: InfiniteCanvasNode, children: any) => {
-        
+
         let factory = factories?.[node.type];
 
         const props = {
             'data-nodeid': node.id,
             key: `node:${node.id}`,
             ref: (element: any) => {
-                if(!nodeRefs) return;
+                if (!nodeRefs) return;
                 nodeRefs.current[node.id] = element;
             },
-            className: `node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected': ''}`,
+            className: `node-container ${(selected?.find((a) => a.key == 'node' && a.id == node.id) != null) ? 'selected' : ''}`,
             onClick: (e: any) => {
                 selectNode?.(node.id)
             },
             onMouseDown: (evt: any) => mouseDown(node.id, evt),
             style: {
                 pointerEvents: 'all',
-                left: node.x, 
+                left: node.x,
                 top: node.y,
                 transform: `rotate(${node?.extras?.rotation}deg)
                             scaleX(${node?.extras?.scaleX || 1})
@@ -117,17 +124,17 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
             }
         }
 
-        if((factory as any).renderNodeContainer){
+        if ((factory as any).renderNodeContainer) {
             return (factory as any).renderNodeContainer(node, props, children)
-        }else{
+        } else {
             return (
                 <div
                     {...props as any}
                     onContextMenu={(e) => {
-                        openContextMenu?.({x: e.clientX, y: e.clientY}, {type: 'node', id: node.id})
+                        openContextMenu?.({ x: e.clientX, y: e.clientY }, { type: 'node', id: node.id })
                     }}
-                 
-                  >
+
+                >
                     {children}
                 </div>
             )
@@ -140,12 +147,12 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         let value = node.value ? status[node.value] : status[key];
 
         let factory = factories?.[node.type];
-        
-        if(!factory){
+
+        if (!factory) {
             console.error(`Factory not found for type ${node.type}`)
             return null;
         }
-        
+
         // if(!factory.renderNode){ return null; }
 
         // if(!(factory instanceof IAbstractNodeFactory)){
@@ -154,8 +161,8 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
         // }  
 
         node.isSelected = selected;
-        
-        if(factory){
+
+        if (factory) {
             return (factory as any).renderNode(node)
         }
 
@@ -163,7 +170,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
     const getDirection = (dir?: string) => {
         let deg = 0;
-        switch(dir){
+        switch (dir) {
             case 'left-right':
                 deg = 0;
                 break;
@@ -176,52 +183,52 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
             case 'down-up':
                 deg = 270;
                 return `rotate(270deg) scaleY(-1)`
-            default :
+            default:
                 deg = 0;
         }
         return `rotate(${deg}deg)`
     }
 
     const nodeHover = (target: HTMLDivElement, node_key: any) => {
-        if(_nodes && _nodes[node_key]){
+        if (_nodes && _nodes[node_key]) {
             setHoverEl(target)
             let node = _nodes[node_key]
             node.label = node_key;
             setHoverNode(node)
         }
     }
-    
+
     const nodeHoverEnd = () => {
         setHoverEl(null)
         setHoverNode(null)
     }
 
     const nodeClick = (node?: any) => {
-        if(onClick){
+        if (onClick) {
             onClick(node.asset, node.label)
         }
-     //   console.log(node)
+        //   console.log(node)
     }
 
     const mouseDown = (elem: string, evt: React.MouseEvent) => {
         evt.stopPropagation()
-        
-        if(!nodeRefs) return;
 
-        if(evt.button == 0){
-            
-            dragStart?.({id: elem})
+        if (!nodeRefs) return;
+
+        if (evt.button == 0) {
+
+            dragStart?.({ id: elem })
 
 
             let doc = getHostForElement(evt.target as HTMLElement)
 
 
-            let offsetRect : any = {
+            let offsetRect: any = {
                 x: 0,
                 y: 0
             }
             let rect = nodeRefs.current[elem]?.getBoundingClientRect()
-            if(rect){
+            if (rect) {
                 offsetRect = {
                     x: rect.x - evt.clientX,
                     y: rect.y - evt.clientY
@@ -234,16 +241,16 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                 evt.stopPropagation()
 
                 _moveNode?.(elem, {
-                    x: evt.clientX + offsetRect?.x, 
+                    x: evt.clientX + offsetRect?.x,
                     y: evt.clientY + offsetRect?.y
                 })
             }
 
             const mouseUp = (evt: MouseEvent) => {
                 evt.stopPropagation()
-                
+
                 updateNode?.(elem, {
-                    x: evt.clientX + offsetRect?.x, 
+                    x: evt.clientX + offsetRect?.x,
                     y: evt.clientY + offsetRect?.y
                 })
 
@@ -253,7 +260,7 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
 
             doc.addEventListener('mousemove', mouseMove as EventListenerOrEventListenerObject)
             doc.addEventListener('mouseup', mouseUp as EventListenerOrEventListenerObject)
-        }else{
+        } else {
             // alert("Right")
             onRightClick?.(elem, {
                 x: evt.clientX,
@@ -263,13 +270,13 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
     }
 
     return (
-        <div 
-            className={className} 
+        <div
+            className={className}
             style={{
                 pointerEvents: 'none',
                 transform: `matrix(${zoom}, 0, 0, ${zoom}, ${offset.x}, ${offset.y})`
             }}>
-           {/* <Popover
+            {/* <Popover
                 style={{pointerEvents: 'none'}}
                 disableRestoreFocus
                 anchorOrigin={{
@@ -284,25 +291,25 @@ export const BaseNodeLayer : React.FC<NodeLayerProps> = ({
                 </div>
             </Popover>*/}
             {_nodes && _nodes?.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1)).map((node) => renderAssetContainer(
-                    node,
-                    (<NodeIdContext.Provider value={{
-                        nodeId: node.id,
-                        rotation: node?.extras?.rotation || 0,
-                        scaleX: node?.extras?.scaleX || 1,
-                        scaleY: node?.extras?.scaleY || 1,
-                        position: {
-                            x: node.x,
-                            y: node.y
-                        },
-                        dimensions: {
-                            width: node.width || 0,
-                            height: node.height || 0
-                        }
-                    }}>
+                node,
+                (<NodeIdContext.Provider value={{
+                    nodeId: node.id,
+                    rotation: node?.extras?.rotation || 0,
+                    scaleX: node?.extras?.scaleX || 1,
+                    scaleY: node?.extras?.scaleY || 1,
+                    position: {
+                        x: node.x,
+                        y: node.y
+                    },
+                    dimensions: {
+                        width: node.width || 0,
+                        height: node.height || 0
+                    }
+                }}>
                     {renderAssetBundle(node.id, node, (selected?.find((a) => a.key == "node" && a?.id == node.id) != undefined))}
-                    </NodeIdContext.Provider>)
-                
-                
+                </NodeIdContext.Provider>)
+
+
             ))}
         </div>
     )

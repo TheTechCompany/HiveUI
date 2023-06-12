@@ -82,6 +82,8 @@ export const useEngine = (options: EngineOptions): [Engine] => {
     const [nodes, setNodes] = useState<InfiniteCanvasNode[]>([]);
     const [paths, setPaths] = useState<InfiniteCanvasPath[]>([])
 
+    // const setNodes = () => {};
+
     const [offset, setOffset] = useState<InfiniteCanvasPosition>({ x: options.initialWindow.x || 0, y: options.initialWindow.y || 0 })
     const [zoom, setZoom] = useState<number>(options.initialWindow.zoom || 100);
 

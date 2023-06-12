@@ -10,11 +10,20 @@ export const GuideLayer : React.FC<GuideLayerProps> = (props) => {
 
     const { 
         zoom,
-        offset
+        offset,
+        nodes,
+        bounds
     } = useContext(InfiniteCanvasContext)
+
+    // const { guidelines } = useGuidelines(nodes || [], {
+    //     offset, 
+    //     zoom,
+    //     boundingBox: bounds || {width: 0, height: 0}
+    // })
 
     return (
         <Box
+            className="guide-layer"
             sx={{
                 pointerEvents: 'none',
                 transformOrigin: '0 0',

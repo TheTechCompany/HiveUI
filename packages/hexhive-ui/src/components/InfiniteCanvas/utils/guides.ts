@@ -29,11 +29,16 @@ export const calculateGuidePositions = (dimensions: {left: number, top: number, 
 
 export const proximityListener = (active: any, allGuides: any) => {
 
-	const xAxisGuidesForActiveBox = allGuides[active].x;
-	const yAxisGuidesForActiveBox = allGuides[active].y;
+	console.log({active, allGuides})
+
+	if(!allGuides[active]) return;
+	
+	const xAxisGuidesForActiveBox = allGuides[active]?.x;
+	const yAxisGuidesForActiveBox = allGuides[active]?.y;
 
 	const xAxisAllGuides = getAllGuidesForGivenAxisExceptActiveBox(allGuides, xAxisGuidesForActiveBox, 'x');
 	const yAxisAllGuides = getAllGuidesForGivenAxisExceptActiveBox(allGuides, yAxisGuidesForActiveBox, 'y');
+
 	const xAxisMatchedGuides = checkValueProximities(xAxisGuidesForActiveBox, xAxisAllGuides);
 	const yAxisMatchedGuides = checkValueProximities(yAxisGuidesForActiveBox, yAxisAllGuides);
 
@@ -74,6 +79,7 @@ export const checkValueProximities = (activeBoxGuidesInOneAxis: any[], allOtherG
 	let intersection = null;
 	let matchedArray = [];
 	const snapThreshold = 5;
+	
 	for (let index = 0; index < allOtherGuidesInOneAxis.length; index += 1) {
 		let index2 = 0;
 		let index3 = 0;

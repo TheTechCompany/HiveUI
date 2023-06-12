@@ -217,12 +217,26 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         scalingFactor: 5
     });
 
-    const {  guides, dragStart, dragHandler, guidelines: { xAxisGuides, yAxisGuides } } = useGuides({
+    const {  boxes, guides, dragStart, dragHandler, guidelines: { xAxisGuides, yAxisGuides } } = useGuides({
         boundingBox: canvasRef.current?.getBoundingClientRect(), 
-        boxes: _nodes, 
+        boxes: _nodes.map((x) => ({...x, x: parseInt(x.x.toString()), y: parseInt(x.y.toString())})), 
         offset: _offset, 
-        zoom: _zoom
+        zoom: _zoom,
+        // onSnap: (box, position) => {
+
+        //     // let pos = getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, position)
+        //     // pos = lockToGrid(pos, snapToGrid || false, grid)
+        //     if(position){
+        //         console.log("onSnap")
+        //         let fNode = (_nodes || []).find((a: InfiniteCanvasNode) => a.id == box)
+        //         if(!fNode) return;
+        //         let updatedNode = moveNode(fNode, position)
+                
+        //         onNodeUpdate?.(updatedNode)
+        //     }
+        // }
     })
+
 
     const FIT_TO_BUFFER = 50
 
@@ -627,7 +641,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
         editable: editable,
         router: router,
         factories: _factories,
-        nodes: _nodes,
+        nodes: _nodes.map((x, ix) => ({
+            ...x,
+            x: boxes?.[ix]?.x || x.x,
+            y: boxes?.[ix]?.y || x.y,
+        })),
         setNodes: setNodes,
         paths: _paths,
         setPaths: setPaths,
@@ -635,7 +653,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
 
         assets: assets,
         nodeRefs,
-
+        bounds: canvasRef.current?.getBoundingClientRect(),
         getRelativeCanvasPos: (pos) => {
             return getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
         },
@@ -740,7 +758,11 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 editable: editable,
                 router: router,
                 factories: _factories,
-                nodes: _nodes,
+                nodes: _nodes.map((x, ix) => ({
+                    ...x,
+                    x: boxes?.[ix]?.x || x.x,
+                    y: boxes?.[ix]?.y || x.y,
+                })),
                 setNodes: setNodes,
                 paths: _paths,
                 setPaths: setPaths,
@@ -748,7 +770,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
             
                 assets: assets,
                 nodeRefs,
-            
+                bounds: canvasRef.current?.getBoundingClientRect(),
                 getRelativeCanvasPos: (pos) => {
                     return getRelativeCanvasPos(canvasRef, {offset: _offset, zoom: _zoom}, pos)
                 },
@@ -869,6 +891,7 @@ export const BaseInfiniteCanvas: React.FC<InfiniteCanvasProps> = ({
                 <GridLayer />
                 <PathLayer />
                 <NodeLayer dragStart={showGuides ? dragStart : undefined} dragHandler={showGuides ? dragHandler: undefined} />
+
                 {showGuides && <GuideLayer guides={[...(xAxisGuides || []), ...(yAxisGuides || [])]} />}
                 <InformationLayer />
                 {/* {xAxisGuides}

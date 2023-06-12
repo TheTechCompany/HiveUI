@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 const BaseGuideline = (props: any) => {
     return (
-        <div className={props.className} style={{ top: props.top, left: props.left, background: 'blue' }} />
+        <div 
+            className={props.className} 
+            style={{ top: props.top, left: props.left, background: 'blue' }} />
     )
 }
 

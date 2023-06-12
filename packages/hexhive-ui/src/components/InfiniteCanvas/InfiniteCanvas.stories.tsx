@@ -162,7 +162,6 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
         nodes={nodes}
         paths={pathRef.current}
         onNodeUpdate={(node) => {
-          console.log("NodeUpdate")
           action("onNodesChanged");
           let p = nodes.slice();
           let p_ix = p.map((x) => x.id).indexOf(node.id);
@@ -172,7 +171,6 @@ const SelfControlledTemplate: Story<InfiniteCanvasProps> = (args) => {
             ...node,
           };
 
-          console.log({node})
           setNodes(p);
           //setNodes(nodes)
         }}
@@ -208,7 +206,7 @@ const Template: Story<InfiniteCanvasProps> = (args) => (
   <InfiniteCanvas 
     {...args}
     onNodeUpdate={(node) => {
-      console.log("NODE UPDATE", {node})
+
     }}>
     <ZoomControls anchor={{ horizontal: "right", vertical: "bottom" }} />
   </InfiniteCanvas>
@@ -550,6 +548,7 @@ FitToBounds.args = {
   // snapToGrid: true,
   fitToBounds: true,
   // finite: true,
+  showGuides: true,
   router: "JumpPointFinder",
   routerOptions: {
     heuristic: 'manhattan',
@@ -576,7 +575,7 @@ FitToBounds.args = {
       ),
       width: 150,
       height: 50,
-      x: 371,
+      x: 370,
       y: 1000,
     },
     {
@@ -608,6 +607,8 @@ FitToBounds.args = {
         icon: "NavigateNext",
         color: "purple",
       },
+      width: 50,
+      height: 50,
       x: 300,
       y: 100,
     },
