@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+	  "baseUrl": "./packages",
+	  "paths": {
+		"@hexhive/styles": ["./hexhive-styles/src"],
+		"@hexhive/ui": ["./hexhive-ui/src"],
+
+		"react": ["../node_modules/react"],
+		"@types/react": ["../node_modules/@types/react"],
+
+	  }
+	}
+}

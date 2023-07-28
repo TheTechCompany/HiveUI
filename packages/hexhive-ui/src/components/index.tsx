@@ -25,3 +25,4 @@ export * from './DateInput'
 export * from './Box';
 export * from './LightBox'
 export * from './InfiniteScrubber'
+export * from './DelayedSwitch'
