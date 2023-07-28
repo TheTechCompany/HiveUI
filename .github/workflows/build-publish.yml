@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - master
-    paths: ["src/components/**", "src/views/**", "src/modals/**", "src/hooks/**"]
+    paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/", "packages/hexhive-ui/src/" ]
+
+concurrency: hiveui-${{ github.ref }}
 
 jobs:
   build-and-deploy:

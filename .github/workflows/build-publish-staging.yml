@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - staging
-    paths: ["src/components/**", "src/views/**", "src/modals/**", "src/hooks/**"]
+    paths: [".github/workflows/build-publish-staging.yml", "packages/hexhive-styles/src/**", "packages/hexhive-ui/src/**" ]
+
+concurrency: hiveui-${{ github.ref }}
 
 jobs:
   build-and-deploy:
@@ -11,42 +13,35 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
-      
-  
-      - name: git config
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
-      - uses: actions/setup-node@v2
+       
+      - name: "Use NodeJS 16"
+        uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
+          node-version: '16.13.0'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Setup NPM Token
-        run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+      # - name: Setup NPM Token
+      #   run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
 
-      - name: Install  deps
-        run: yarn
-      
-      - name: Test
-        run: yarn test
-
-      - name: Build
-        run: yarn build
-
-      - name: Get version
+      - name: Install dependencies
         run: |
-         echo "PKG_VERSION=$(cat package.json \
-          | grep version \
-          | head -1 \
-          | awk -F: '{ print $2 }' \
-          | sed 's/[",]//g')" >> $GITHUB_ENV
-        
-      - name: Release
+          yarn
+          npx lerna bootstrap --no-ci
+
+      - name: Build # Build all packages
+        run: npx lerna run build
+
+      - name: "Version and publish" # Interesting step
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if [[ "$PKG_VERSION" =~ ^.*alpha.*$ ]]; then
-            npm run release -- --preRelease=alpha
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor}}@users.noreply.github.com"
+
+          if [ ${{ github.ref }} = refs/heads/staging ]; then
+            npx lerna version --conventional-commits --conventional-prerelease --preid alpha --yes 
           else
-            npm run release -- prepatch --preRelease=alpha
+            npx lerna version --conventional-commits --conventional-graduate --yes
           fi
+
+          npx lerna publish from-git --no-verify-access --yes 

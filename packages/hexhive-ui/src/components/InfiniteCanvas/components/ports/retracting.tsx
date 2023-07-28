@@ -1,0 +1,72 @@
+import React, { useContext } from 'react';
+import styled from 'styled-components';
+import { usePort } from './base';
+import { InfiniteCanvasContext } from '../../context/context';
+import { NodeIdContext } from '../../context/nodeid';
+import { Port } from './base';
+
+export interface RetractingPortProps {
+    id?: string;
+    direction?: string;
+
+    hidden?: boolean;
+
+    x?: any;
+    y?: any;
+
+    width?: number;
+    height?: number;
+
+    scaleX?: number;
+    scaleY?: number;
+
+    rotation?: number;
+    className?: string;
+}
+
+export const BaseRetractingPort : React.FC<RetractingPortProps> = (props) => {
+    const { isPortDragging, editable, style } = useContext(InfiniteCanvasContext)
+
+    const { extraProps, dragPort } = usePort({id: props.id})
+
+    return (
+        <div  
+            className={`${props.className} ${props.hidden ? 'hidden' : ''} ${isPortDragging ? 'open' : 'closed'}`}>
+                <div 
+                    {...extraProps}
+                    className="connector" 
+                    style={{backgroundColor: style?.portDotColor || style?.portColor}}
+                    onMouseDown={(e) => dragPort?.(e)} />
+                <div className="retractor" style={{backgroundColor: style?.portColor}} />
+        </div>
+    )
+}
+
+export const RetractingPort = styled(BaseRetractingPort)`
+    position: absolute;
+    left: -10px;
+    width: ${p => !p.hidden ? (p.height ? `${p.height * 20}px` : '20px') : 0};
+    top: ${p => p.y || '50px'};
+    left: ${p => p.x || '0px'};
+    transform: rotate(${p => p.rotation || 0}deg) ${p => p.scaleY ? `scaleY(${1 / p.scaleY})` : ''} ${p => p.scaleX ? `scaleX(${Math.abs(1 / p.scaleX)})`: ''} ${p => p.scaleX && p.scaleX > 1 ? `translateX(${1/p.scaleX * 100}%)` : ''} ${p => p.scaleY && p.scaleY > 1 ? `translateY(${1/p.scaleY * 100}%)` : ''};
+    transition: left 250ms ease-out, width 250ms ease-out;
+
+
+    .connector{
+        position: absolute;
+        left: ${p => !p.hidden ? '-10px' : '0px'};
+        top: 0px;
+        width: ${p => !p.hidden ? '10px' : '0px'};
+        height: ${p => !p.hidden ? '10px' : '0px'};
+        border-radius: 5px;
+        background-color: lightblue;
+    }
+
+    .retractor{
+        position: absolute;
+        width: 100%;
+        bottom: -6px;
+        height: 2px;
+        background-color: gray;
+    }
+`

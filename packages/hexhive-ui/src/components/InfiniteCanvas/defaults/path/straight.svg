@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 14.37 86.24">
+  <defs>
+    <linearGradient id="a" x1="3313.87" y1="-1293.81" x2="3328.25" y2="-1293.81" gradientTransform="translate(3328.25 -1250.69) rotate(180)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6f7173"/>
+      <stop offset="0.5" stop-color="#d3d5d6"/>
+      <stop offset="1" stop-color="#6f7173"/>
+    </linearGradient>
+  </defs>
+  <polygon points="14.37 86.24 14.37 71.87 14.37 57.49 14.37 43.12 14.37 28.75 14.37 14.37 14.37 0 0 0 0 14.37 0 28.75 0 43.12 0 57.49 0 71.87 0 86.24 14.37 86.24" style="fill: url(#a)"/>
+</svg>
